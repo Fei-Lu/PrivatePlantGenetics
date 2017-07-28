@@ -13,10 +13,16 @@ public class Maize2kGo {
     
     public Maize2kGo () {
         this.seqQualityTestPipe();
+        //this.processReference();
     }
     
-    public void seqQualityTestPipe () {
-        
+    
+    private void seqQualityTestPipe () {
+        new FastqQuality ();
+    }
+    
+    private void processReference () {
+        new ReferenceProcessor();
     }
     
     public static void main (String[] args) {
