@@ -60,8 +60,8 @@ public class FastqQuality {
                 String temp2 = null;
                 for (int i = 0; i < n; i++) {
                     if (i%interval == 0) {
-                        bw1.write(br1.readLine());bw1.write(br1.readLine());bw1.write(br1.readLine());bw1.write(br1.readLine());
-                        bw2.write(br2.readLine());bw2.write(br2.readLine());bw2.write(br2.readLine());bw2.write(br2.readLine());
+                        bw1.write(br1.readLine()+"\n");bw1.write(br1.readLine()+"\n");bw1.write(br1.readLine()+"\n");bw1.write(br1.readLine()+"\n");
+                        bw2.write(br2.readLine()+"\n");bw2.write(br2.readLine()+"\n");bw2.write(br2.readLine()+"\n");bw2.write(br2.readLine()+"\n");
                     }
                     else {
                         br1.readLine();br1.readLine();br1.readLine();br1.readLine();
