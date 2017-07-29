@@ -5,6 +5,9 @@
  */
 package analysis.maize2k;
 
+import format.Table;
+import graphcis.r.DensityPlot;
+import graphcis.r.Histogram;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,8 +24,10 @@ import utils.IOUtils;
 public class FastqQuality {
     
     public FastqQuality () {
-        this.covergage();
+        //this.covergage();
+        this.covergagePlot();
         //this.sampleReads();
+        
     }
     
     private void sampleReads () {
@@ -72,6 +77,18 @@ public class FastqQuality {
             }
             
         });
+    }
+    
+    private void covergagePlot () {
+        String infileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/coverage/coverage.txt";
+        String outfileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/coverage/coverage.pdf";
+        Table t = new Table (infileS);
+        double[] value = t.getDoubleArrayByColumn(3);
+        DensityPlot h = new DensityPlot(value);
+        h.setTitle("Coverage of 40 maize samples");
+        h.setXLab("Coverage");
+        h.setYLab("Density");
+        h.saveGraph(outfileS);
     }
     
     private void covergage () {
