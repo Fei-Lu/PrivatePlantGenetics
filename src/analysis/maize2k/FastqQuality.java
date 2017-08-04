@@ -5,6 +5,10 @@
  */
 package analysis.maize2k;
 
+import format.Fasta;
+import format.FastqChunk;
+import format.Read;
+import format.ReadUtils;
 import format.Table;
 import graphcis.r.DensityPlot;
 import java.io.BufferedReader;
@@ -19,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import utils.IOFileFormat;
 import utils.IOUtils;
 
 /**
@@ -33,6 +38,88 @@ public class FastqQuality {
         //this.sampleReads();
         //this.fastQC();
         //this.fastQCsummary();
+        //this.contamination();
+        this.trimming();
+    }
+    
+    private void trimming () {
+        //java -jar /Users/feilu/Software/Trimmomatic-0.36/trimmomatic-0.36.jar
+        //PE -phred33 -trimlog /Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/log.txt  
+        //Users/feilu/Documents/analysisL/pipelineTt/maize2k/sampleSeq/K16BJS0001_1.fq.gz /Users/feilu/Documents/analysisL/pipelineTest/maize2k/sampleSeq/K16BJS0001_2.fq.gz 
+        ///Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/r1_paired.txt.gz /Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/r1_unpaired.txt.gz 
+        ///Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/r2_paired.txt.gz /Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/r2_unpaired.txt.gz 
+        //ILLUMINACLIP:/Users/feilu/Software/Trimmomatic-0.36/adapters/TruSeq3-PE.fa:2:30:10
+        String trimJarPath = "/Users/feilu/Software/Trimmomatic-0.36/trimmomatic-0.36.jar";
+        String infileDirS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/sampleSeq";
+        String outfilePairedDirS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/paired";
+        String outfileUnpairedDirS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/unpaired";
+        String libraryPath = "/Users/feilu/Software/Trimmomatic-0.36/adapters/TruSeq3-PE.fa";
+        String outputFileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/summary.txt";
+        File[] fs = new File (infileDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".gz");
+        HashSet<String> nameSet = new HashSet();
+        for (int i = 0; i < fs.length; i++) {
+            nameSet.add(fs[i].getName().split("_")[0]);
+        }
+        String[] names = nameSet.toArray(new String[nameSet.size()]);
+        Arrays.sort(names);
+        int numCores = Runtime.getRuntime().availableProcessors();
+        new File (outfilePairedDirS).mkdir();
+        new File (outfileUnpairedDirS).mkdir();
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outputFileS);
+            bw.write("Samples\tSurvivingRate");
+            bw.newLine();
+            for (int i = 0; i < names.length; i++) {
+                StringBuilder sb = new StringBuilder("java -jar ");
+                sb.append(trimJarPath).append(" PE -phred33 -threads ").append(numCores).append(" ");
+                sb.append(new File(infileDirS, names[i]+"_1.fq.gz").getAbsolutePath()).append(" ");
+                sb.append(new File(infileDirS, names[i]+"_2.fq.gz").getAbsolutePath()).append(" ");
+                sb.append(new File(outfilePairedDirS, names[i]+"_1.paired.fq.gz").getAbsolutePath()).append(" ");
+                sb.append(new File(outfileUnpairedDirS, names[i]+"_1.unpaired.fq.gz").getAbsolutePath()).append(" ");
+                sb.append(new File(outfilePairedDirS, names[i]+"_2.paired.fq.gz").getAbsolutePath()).append(" ");
+                sb.append(new File(outfileUnpairedDirS, names[i]+"_2.unpaired.fq.gz").getAbsolutePath()).append(" ");
+                sb.append("ILLUMINACLIP:").append(libraryPath).append(":2:30:10");
+                String cmd = sb.toString();
+                System.out.println(cmd);
+                Runtime run = Runtime.getRuntime();
+                Process p = run.exec(cmd);
+                BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                String temp = null;
+                while ((temp = br.readLine()) != null) {
+                    if (!temp.startsWith("Input Read Pairs:")) continue;
+                    String[] tem = temp.split("\\(");
+                    tem = tem[1].split("\\)");
+                    bw.write(names[i]+"\t"+tem[0]);
+                    bw.newLine();
+                }
+                p.waitFor();
+                if ((i+1)%10 == 0) System.out.println(String.valueOf(i+1) + " files processed");
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+            
+        
+        
+    }
+    
+    private void contamination () {
+        String infileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/sampleSeq/K16BJS0001_1.fq.gz";
+        String outfileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/fastQC/contamination/K16BJS0001_1.fq.txt";
+        double lowGC = 0.6;
+        double highGC = 0.65;      
+        FastqChunk fc = new FastqChunk (infileS);
+        boolean[] ifOut = new boolean[fc.getReadNum()];
+        for (int i = 0; i < fc.getReadNum(); i++) {
+            double gc = fc.getRead(i).getGCContent();
+            if (gc > lowGC && gc < highGC) ifOut[i] = true;
+        }
+        fc.writeFasta(outfileS, ifOut);
+        //no contamination identified
     }
     
     private void fastQCsummary () {
