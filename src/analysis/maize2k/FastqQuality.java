@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -39,7 +40,55 @@ public class FastqQuality {
         //this.fastQC();
         //this.fastQCsummary();
         //this.contamination();
-        this.trimming();
+        //this.trimming();
+        this.alignBWA();
+    }
+    
+    private void alignBWA () {
+        String bwaPath = "/Users/feilu/Software/bwa-0.7.15/bwa";
+        String indexFileS = "/Users/feilu/Documents/database/maize/reference/bwaLib/maizeAGPv4.fa";
+        String inputDirS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/trimmedSeq/paired";
+        String outputDirS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/alignment/sam/";
+        String outputPerlS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/alignment/runAlign.pl";
+        File[] fs = new File (inputDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".gz");
+        HashSet<String> nameSet = new HashSet();
+        for (int i = 0; i < fs.length; i++) {
+            nameSet.add(fs[i].getName().split("_")[0]);
+        }
+        String[] names = nameSet.toArray(new String[nameSet.size()]);
+        Arrays.sort(names);
+        //bwa mem -t  nthreads ref.fa read1.fq read2.fq > aln-pe.sam
+        int numCores = Runtime.getRuntime().availableProcessors();
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outputPerlS);
+            for (int i = 0; i < names.length; i++) {
+                StringBuilder sb = new StringBuilder(bwaPath+" mem ");
+                sb.append(" -t ").append(numCores).append(" ").append(indexFileS).append(" ");
+                sb.append(new File(inputDirS, names[i]+"_1.paired.fq.gz").getAbsolutePath()).append(" ");
+                sb.append(new File(inputDirS, names[i]+"_2.paired.fq.gz").getAbsolutePath());
+                sb.append(" > ").append(new File(outputDirS, names[i]+".pe.sam").getAbsolutePath());
+                String cmd = sb.toString();
+                String command = "system(\""+cmd+"\");";
+                bw.write(command);
+                bw.newLine();
+                
+            }
+            bw.flush();
+            bw.close();
+            StringBuilder sb = new StringBuilder("perl ");
+            sb.append(outputPerlS);
+            Runtime run = Runtime.getRuntime();
+            Process p = run.exec(sb.toString());
+            System.out.println(sb.toString());
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            p.waitFor();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        
     }
     
     private void trimming () {
