@@ -10,6 +10,7 @@ import format.FastqChunk;
 import format.Read;
 import format.ReadUtils;
 import format.Table;
+import format.alignment.ShortreadPEAlignment;
 import graphcis.r.DensityPlot;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -24,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import utils.IOFileFormat;
 import utils.IOUtils;
 
@@ -41,7 +43,74 @@ public class FastqQuality {
         //this.fastQCsummary();
         //this.contamination();
         //this.trimming();
-        this.alignBWA();
+        //this.alignBWA();
+        //this.estimateLibrarySize();
+        this.plastid();
+    }
+    
+    public void plastid () {
+        String inputDirS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/alignment/sam";
+        String outfileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/plastid/summary.txt";
+        File[] fs = new File (inputDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".sam");
+        double[][] plastid = new double[fs.length][2];
+        for (int i = 0; i < fs.length; i++) {
+            ShortreadPEAlignment sa = new ShortreadPEAlignment ();
+            sa.readFromBWAMEM(fs[i].getAbsolutePath());
+            for (int j = 0; j < sa.getAlignmentNumber(); j++) {
+                if (sa.getHitF(j).equals("11")) plastid[i][0]++;
+                if (sa.getHitB(j).equals("12")) plastid[i][1]++;
+            }
+            plastid[i][0] = plastid[i][0]/sa.getAlignmentNumber()/2;
+            plastid[i][1] = plastid[i][1]/sa.getAlignmentNumber()/2;
+        }
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write("Sample\tMt\tPt");
+            bw.newLine();
+            for (int i = 0; i < fs.length; i++) {
+                StringBuilder sb = new StringBuilder(fs[i].getName());
+                sb.append("\t").append(plastid[i][0]).append("\t").append(plastid[i][1]);
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void estimateLibrarySize () {
+        String inputDirS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/alignment/sam";
+        String outputDirS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/alignment/librarysize";
+        new File (outputDirS).mkdir();
+        int sampleSize = 3000;
+        File[] fs = new File (inputDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".sam");
+        int[] insertSize = new int [fs.length];
+        for (int i = 0; i < fs.length; i++) {
+            ShortreadPEAlignment sa = new ShortreadPEAlignment ();
+            sa.readFromBWAMEM(fs[i].getAbsolutePath());
+            double[] fragmentSize = new double[sampleSize];
+            int cnt = 0;
+            for (int j = 0; j < sa.getAlignmentNumber(); j++) {
+                if (sa.getMappingQualityF(j) < 30) continue;
+                if (sa.getMappingQualityB(j) < 30) continue;
+                if (!sa.isPerfectMatchF(j)) continue;
+                if (!sa.isPerfectMatchF(j)) continue;
+                if (!sa.getHitF(j).equals(sa.getHitB(j))) continue;
+                fragmentSize[cnt] = sa.getPEFragmentSize(j);
+                cnt++;
+                if (cnt == sampleSize) break;
+            }
+            String outfileS = new File (outputDirS, fs[i].getName()+".pdf").getAbsolutePath();
+            DensityPlot d = new DensityPlot (fragmentSize);
+            d.setXLim(0, 800);
+            d.saveGraph(outfileS);
+        }
+        
     }
     
     private void alignBWA () {
