@@ -40,12 +40,12 @@ public class FastqQuality {
         //this.covergagePlot();
         //this.sampleReads();
         //this.fastQC();
-        //this.fastQCsummary();
+        this.fastQCsummary();
         //this.contamination();
         //this.trimming();
         //this.alignBWA();
         //this.estimateLibrarySize();
-        this.plastid();
+        //this.plastid();
     }
     
     public void plastid () {
@@ -59,10 +59,10 @@ public class FastqQuality {
             sa.readFromBWAMEM(fs[i].getAbsolutePath());
             for (int j = 0; j < sa.getAlignmentNumber(); j++) {
                 if (sa.getHitF(j).equals("11")) plastid[i][0]++;
-                if (sa.getHitB(j).equals("12")) plastid[i][1]++;
+                if (sa.getHitF(j).equals("12")) plastid[i][1]++;
             }
-            plastid[i][0] = plastid[i][0]/sa.getAlignmentNumber()/2;
-            plastid[i][1] = plastid[i][1]/sa.getAlignmentNumber()/2;
+            plastid[i][0] = plastid[i][0]/sa.getAlignmentNumber();
+            plastid[i][1] = plastid[i][1]/sa.getAlignmentNumber();
         }
         try {
             BufferedWriter bw = IOUtils.getTextWriter(outfileS);
