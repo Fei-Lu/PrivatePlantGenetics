@@ -10,63 +10,112 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import utils.CLIInterface;
 
 /**
  *
  * @author feilu
  */
-public class CpScoreGo {
+public class CpScoreGo implements CLIInterface {
     Options options = new Options();
     HelpFormatter optionFormat = new HelpFormatter();
-    String usage = null;
+    String introduction = null;
+    String mode = null;
+    String kmerLengthS = null;
+    String inputGenomeFileS = null;
+    String libFileS = null;
+    String outputDirS = null;
     int kmerLength = 0;
     
     public CpScoreGo (String[] args) {
-        usage = this.getUsage();
-        this.buildOptions();
-        this.outputUsage();
-        this.initialize(args);
+        introduction = this.createIntroduction();
+        this.createOptions();
+        this.retrieveParameters (args);
+        this.runProfiler();
+    }
+
+    void runProfiler () {
+        if (mode.equals("b")) {
+            new ReferenceKmerLib(kmerLength, inputGenomeFileS, libFileS);
+        }
+        else if (mode.equals("p")) {
+            //new CpProfiler(kmerLength, inputGenomeFileS, libFileS, outputDirS);
+        }
     }
     
-    
-    void initialize (String[] args) {
+    public void retrieveParameters (String[] args) {
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine line = parser.parse( options, args);
-            String value = null;
-            if( line.hasOption( "m" ) ) {
-                value = line.getOptionValue("m");
-                System.out.println( line.getOptionValue( "l" ) );
+            mode = line.getOptionValue("m");
+            kmerLengthS = line.getOptionValue("k");
+            inputGenomeFileS = line.getOptionValue("i");
+            libFileS = line.getOptionValue("l");
+            outputDirS = line.getOptionValue("o");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        if (mode == null) {
+            this.printIntroductionAndUsage();
+            return;
+        }
+        else if (mode.equals("b")) {
+            if (kmerLengthS == null) {
+                this.printIntroductionAndUsage();
+                return;
+            }
+            else if (kmerLengthS.equals("32") || kmerLengthS.equals("16")) {
+                kmerLength = Integer.valueOf(kmerLengthS);
+            }
+            else {
+                this.printIntroductionAndUsage();
+                return;
             }
         }
-        catch(ParseException exp ) {
-            System.out.println( "Unexpected exception:" + exp.getMessage() );
+        else if (mode.equals("p")) {
+            if (kmerLengthS == null) {
+                this.printIntroductionAndUsage();
+                return;
+            }
+            else if (kmerLengthS.equals("32") || kmerLengthS.equals("16")) {
+                kmerLength = Integer.valueOf(kmerLengthS);
+            }
+            else {
+                this.printIntroductionAndUsage();
+                return;
+            }
+        }
+        else {
+            this.printIntroductionAndUsage();
+            return;
         }
     }
     
-    void outputUsage () {
-        optionFormat.printHelp( usage, options );
+    public void printIntroductionAndUsage () {
+        System.out.println("Incorrect parameter input. Program quits.");
+        System.out.println(introduction);
+        optionFormat.printHelp("CpScoreProfiler.jar", options );
     }
     
-    void buildOptions () {
+    public void createOptions () {
         options = new Options();
         options.addOption("m", true, "Analysis mode. Two modes are available, building reference kmer library (b option) and profiling CpScore (p option). e.g. -m b");
         options.addOption("k", true, "Kmer length. Only 32 and 16 are supported. e.g. -k 32");
-        options.addOption("i", true, "Input file. e.g -i maizeAGPV4.fa");
+        options.addOption("i", true, "Input genome file. e.g -i maizeAGPV4.fa");
         options.addOption("l", true, "Kmer library file. e.g -l maize_32mer.lib");
-        options.addOption("o", true, "Output file or directory. e.g -o maize_32mer.lib");
+        options.addOption("o", true, "Output directory. e.g -o CML247_Cp");
     }
     
-    String getUsage () {
+    public String createIntroduction () {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nThe program CpScoreProfiler.jar is designed to calculate base copy number of a given genome.");
-        sb.append("It has 2 seperate analysis modes. The first is to build kmer library from the reference genome. The second is to calculate the CpScore from another non-reference genome.\n\n");
-        sb.append("Command line example:\n");
+        sb.append("\nThe program CpScoreProfiler.jar is designed to calculate base copy number of a given genome. ");
+        sb.append("It has 2 analysis modes. The first is to build kmer library from the reference genome. The second is to calculate the CpScore from another non-reference genome.\n\n");
+        sb.append("Command line example:\n\n");
         sb.append("\t1. Build kmer library from reference genome.\n");
-        sb.append("\tjava -jar CpScoreProfiler.jar -m b -k 32 -i maizeAGPV4.fa -o maize_32mer.lib\n");
+        sb.append("\t\tjava -jar CpScoreProfiler.jar -m b -k 32 -i maizeAGPV4.fa -l maize_32mer.lib\n");
         sb.append("\t2. Calculate CpScore from another non-reference genome\n");
-        sb.append("\tjava -jar CpScoreProfiler.jar -m p -k 32 -l maize_32mer.lib -i CML247.fa -o CML247_Cp\n\n");
+        sb.append("\t\tjava -jar CpScoreProfiler.jar -m p -k 32 -l maize_32mer.lib -i CML247.fa -o CML247_Cp\n");
         return sb.toString();
     }
     
