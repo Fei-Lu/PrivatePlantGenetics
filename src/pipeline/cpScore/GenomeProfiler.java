@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import utils.BaseEncoder;
+import format.dna.BaseEncoder;
 import utils.Benchmark;
 import utils.FArrayUtils;
 import utils.FStringUtils;

@@ -7,7 +7,7 @@ import com.koloboke.collect.set.hash.HashLongSet;
 import com.koloboke.collect.set.hash.HashLongSets;
 import format.Fasta;
 import java.io.DataOutputStream;
-import utils.BaseEncoder;
+import format.dna.BaseEncoder;
 
 import utils.Benchmark;
 import utils.IOUtils;
