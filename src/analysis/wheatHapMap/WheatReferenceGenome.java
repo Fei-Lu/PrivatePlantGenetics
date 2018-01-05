@@ -43,6 +43,7 @@ class WheatReferenceGenome {
         String infileDirS = "/Users/feilu/Documents/database/wheat/reference/v1.0/byChr" ;
         String abdFileS = "/Users/feilu/Documents/database/wheat/reference/v1.0/ABD/abd_iwgscV1.fa.gz";
         String aFileS = "/Users/feilu/Documents/database/wheat/reference/v1.0/A/a_iwgscV1.fa.gz";
+        String bFileS = "/Users/feilu/Documents/database/wheat/reference/v1.0/B/b_iwgscV1.fa.gz";
         String abFileS = "/Users/feilu/Documents/database/wheat/reference/v1.0/AB/ab_iwgscV1.fa.gz";
         String dFileS = "/Users/feilu/Documents/database/wheat/reference/v1.0/D/d_iwgscV1.fa.gz";
         File[] fArray = new File(infileDirS).listFiles();
@@ -86,7 +87,14 @@ class WheatReferenceGenome {
             if (afb.getName(i).contains("Un")) ifOut[i] = true;
         }
         afb.writeFasta(dFileS, ifOut, IOFileFormat.TextGzip);
-        
+        ifOut = new boolean[afb.getSeqNumber()];
+        for (int i = 0; i < afb.getSeqNumber(); i++) {
+            if (afb.getName(i).split("_")[0].endsWith("B")) ifOut[i] = true;
+            if (afb.getName(i).contains("Mit")) ifOut[i] = true;
+            if (afb.getName(i).contains("Chl")) ifOut[i] = true;
+            if (afb.getName(i).contains("Un")) ifOut[i] = true;
+        }
+        afb.writeFasta(bFileS, ifOut, IOFileFormat.TextGzip);
     }
     
     public void splitGenomeByChr () {
