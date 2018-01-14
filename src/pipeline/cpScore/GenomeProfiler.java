@@ -23,7 +23,7 @@ import java.util.Set;
 import format.dna.BaseEncoder;
 import utils.Benchmark;
 import utils.FArrayUtils;
-import utils.FStringUtils;
+import utils.PStringUtils;
 import utils.IOUtils;
 
 /**
@@ -66,7 +66,7 @@ public class GenomeProfiler {
                 bArray[i] = ascIIByteMap.get(bArray[i]);
             }
             StringBuilder sb  = new StringBuilder();
-            sb.append("chr").append(FStringUtils.getNDigitNumber(3, chr)).append("_CpScore.txt.gz");
+            sb.append("chr").append(PStringUtils.getNDigitNumber(3, chr)).append("_CpScore.txt.gz");
             String outfileS = new File(outputDir, sb.toString()).getAbsolutePath();
             int[][] bound = FArrayUtils.getSubsetsIndicesBySubsetSize(seq.length(), fragmentSize);
             try {

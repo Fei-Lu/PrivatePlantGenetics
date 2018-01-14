@@ -5,6 +5,13 @@
  */
 package analysis.wheatHapMap;
 
+import format.table.ColumnTable;
+import format.table.RowTable;
+import format.table.TableInterface;
+import java.util.Arrays;
+import java.util.List;
+import utils.IOFileFormat;
+
 /**
  *
  * @author feilu
@@ -12,7 +19,12 @@ package analysis.wheatHapMap;
 class WheatHmpGo {
     
     public WheatHmpGo () {
-        this.referenceGenome();
+        //this.referenceGenome();
+        this.test();
+    }
+    
+    public void test () {
+        
     }
     
     public void referenceGenome () {

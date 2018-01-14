@@ -9,14 +9,14 @@ import format.Fasta;
 import format.FastqChunk;
 import format.Read;
 import format.ReadUtils;
-import format.Table;
 import format.alignment.ShortreadPEAlignment;
+import format.table.RowTable;
+import format.table.TableInterface;
 import graphcis.r.DensityPlot;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -25,8 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import utils.IOFileFormat;
 import utils.IOUtils;
 
 /**
@@ -392,8 +390,9 @@ public class FastqQuality {
     private void covergagePlot () {
         String infileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/coverage/coverage.txt";
         String outfileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/coverage/coverage.pdf";
-        Table t = new Table (infileS);
-        double[] value = t.getDoubleArrayByColumn(3);
+        //SimpleTable t = new SimpleTable (infileS);
+        TableInterface<String> t = new RowTable (infileS);
+        double[] value = t.getColumnAsDoubleArray(3);
         DensityPlot h = new DensityPlot(value);
         h.setTitle("Coverage of 40 maize samples");
         h.setXLab("Coverage");
