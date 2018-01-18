@@ -10,7 +10,6 @@ import format.table.RowTable;
 import format.table.TableInterface;
 import java.util.Arrays;
 import java.util.List;
-import utils.IOFileFormat;
 
 /**
  *

@@ -34,11 +34,11 @@ public class IlluminaQCGo {
 
     public IlluminaQCGo (String parameterFileS) {
         this.initializeParameter(parameterFileS);
-        this.mkSubDirectories();
-        this.sampleFastq();
-        //this.fastQC();
+//        this.mkSubDirectories();
+//        this.sampleFastq();
+//        this.fastQC();
         //this.alignBWA();
-        //this.mkSummary();
+        this.mkSummary();
     }
 
     private void mkSummary () {
@@ -170,7 +170,7 @@ public class IlluminaQCGo {
             }
             double mitoProportion = mitoCnt/sa.getAlignmentNumber();
             result[taxonIndex*2][fastQCColNum+1] = String.valueOf(mitoProportion);
-            result[taxonIndex*2+1][fastQCColNum+1] = result[taxonIndex*2+1][fastQCColNum+1];
+            result[taxonIndex*2+1][fastQCColNum+1] = result[taxonIndex*2][fastQCColNum+1];
             double chloroProportion = chloCnt/sa.getAlignmentNumber();
             result[taxonIndex*2][fastQCColNum+2] = String.valueOf(chloroProportion);
             result[taxonIndex*2+1][fastQCColNum+2] = result[taxonIndex*2][fastQCColNum+2];
