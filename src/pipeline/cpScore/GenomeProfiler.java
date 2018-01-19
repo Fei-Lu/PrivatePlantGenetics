@@ -10,17 +10,15 @@ import com.koloboke.collect.map.hash.HashIntIntMap;
 import com.koloboke.collect.map.hash.HashIntIntMaps;
 import com.koloboke.collect.map.hash.HashLongIntMap;
 import com.koloboke.collect.map.hash.HashLongIntMaps;
-import format.Fasta;
 import gnu.trove.list.array.TIntArrayList;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import format.dna.BaseEncoder;
+import format.dna.FastaByte;
 import utils.Benchmark;
 import utils.FArrayUtils;
 import utils.PStringUtils;
@@ -50,7 +48,7 @@ public class GenomeProfiler {
         outputDir.mkdir();
         int fragmentSize = 100000;
         HashByteByteMap ascIIByteMap = BaseEncoder.getAscIIByteMap();
-        Fasta f = new Fasta(referenceGenomeFileS);
+        FastaByte f = new FastaByte(referenceGenomeFileS);
         HashMap<Integer, String> chrSeqMap = new HashMap();
         for (int i = 0; i < f.getSeqNumber(); i++) {
             chrSeqMap.put(Integer.valueOf(f.getName(i)), f.getSeq(i));
@@ -156,7 +154,7 @@ public class GenomeProfiler {
           
     void countKmers (String inputGenomeFileS) {
 //        inputGenomeFileS = "/Users/feilu/Documents/analysisL/pipelineTest/cpScore/maize_chr12.fa";
-        Fasta f = new Fasta (inputGenomeFileS);
+        FastaByte f = new FastaByte (inputGenomeFileS);
         
         HashByteByteMap ascIIByteMap = BaseEncoder.getAscIIByteMap();
         System.out.println("Start counting kmers in genome " + inputGenomeFileS);

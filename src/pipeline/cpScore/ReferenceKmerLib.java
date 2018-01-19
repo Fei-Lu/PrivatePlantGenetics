@@ -5,9 +5,9 @@ import com.koloboke.collect.set.hash.HashIntSet;
 import com.koloboke.collect.set.hash.HashIntSets;
 import com.koloboke.collect.set.hash.HashLongSet;
 import com.koloboke.collect.set.hash.HashLongSets;
-import format.Fasta;
 import java.io.DataOutputStream;
 import format.dna.BaseEncoder;
+import format.dna.FastaByte;
 
 import utils.Benchmark;
 import utils.IOUtils;
@@ -26,7 +26,7 @@ public class ReferenceKmerLib {
 //        referenceGenomeFileS = "/Users/feilu/Documents/analysisL/pipelineTest/cpScore/maize_chr12.fa";
 //        inputGenomeFileS = "/Users/feilu/Documents/database/maize/reference/AGPv4/maizeAGPv4.fa";
 //        inputGenomeFileS = "/Users/feilu/Documents/database/maize/reference/download/Zea_mays.AGPv4.dna.chromosome.10.fa.gz";
-        Fasta f = new Fasta(referenceGenomeFileS);
+        FastaByte f = new FastaByte(referenceGenomeFileS);
         HashByteByteMap ascIIByteMap = BaseEncoder.getAscIIByteMap();
         System.out.println("Building kmer library from reference...");
         System.out.println("KmerLength = "+String.valueOf(kmerLength)+ " bp");
@@ -68,7 +68,7 @@ public class ReferenceKmerLib {
         System.out.println("Kmer library is written to " + libFileS);
     }
     
-    private HashLongSet getLongKmerSet (Fasta f, HashByteByteMap ascIIByteMap) {
+    private HashLongSet getLongKmerSet (FastaByte f, HashByteByteMap ascIIByteMap) {
         int genomeSize = (int)f.getTotalSeqLength();
         HashLongSet kmerSet = HashLongSets.newMutableSet(genomeSize);
         for (int k = 0; k < f.getSeqNumber(); k++) {
@@ -106,7 +106,7 @@ public class ReferenceKmerLib {
         return kmerSet;
     }
     
-    private HashIntSet getIntKmerSet (Fasta f, HashByteByteMap ascIIByteMap) {
+    private HashIntSet getIntKmerSet (FastaByte f, HashByteByteMap ascIIByteMap) {
         int genomeSize = (int)f.getTotalSeqLength();
         HashIntSet kmerSet = HashIntSets.newMutableSet(genomeSize);
         for (int k = 0; k < f.getSeqNumber(); k++) {

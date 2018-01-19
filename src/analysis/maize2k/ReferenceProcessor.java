@@ -5,9 +5,10 @@
  */
 package analysis.maize2k;
 
-import format.Fasta;
+import format.dna.FastaByte;
 import java.io.File;
 import java.util.ArrayList;
+import utils.IOFileFormat;
 
 /**
  *
@@ -24,26 +25,26 @@ public class ReferenceProcessor {
     private void merge () {
         String inputDirS = "/Users/feilu/Documents/database/maize/reference/download";
         String outputFileS = "/Users/feilu/Documents/database/maize/reference/merged/maizeAGPv4.fa";
-        ArrayList<Fasta> faList = new ArrayList();
+        ArrayList<FastaByte> faList = new ArrayList();
         String chr0FileS =  "/Users/feilu/Documents/database/maize/reference/download/Zea_mays.AGPv4.dna.nonchromosomal.fa.gz";
-        Fasta fa = new Fasta (chr0FileS);
+        FastaByte fa = new FastaByte (chr0FileS);
         faList.add(fa);
         for (int i = 0; i < 10; i++) {
             String inputFileS = new File (inputDirS, "Zea_mays.AGPv4.dna.chromosome." +String.valueOf(i+1)+ ".fa.gz").getAbsolutePath();
-            fa = new Fasta (inputFileS);
+            fa = new FastaByte (inputFileS);
             faList.add(fa);
         }
         String mtFileS =  "/Users/feilu/Documents/database/maize/reference/download/Zea_mays.AGPv4.dna.chromosome.Mt.fa.gz";
-        fa = new Fasta (mtFileS);
+        fa = new FastaByte (mtFileS);
         faList.add(fa);
         String ptFileS =  "/Users/feilu/Documents/database/maize/reference/download/Zea_mays.AGPv4.dna.chromosome.Pt.fa.gz";
-        fa = new Fasta (ptFileS);
+        fa = new FastaByte (ptFileS);
         faList.add(fa);
         String[] names = new String[faList.size()];
         String[] seqs = new String[faList.size()];
         int[] ids = new int[faList.size()];
         String ns = "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN";
-        Fasta[] fas = faList.toArray(new Fasta[faList.size()]);
+        FastaByte[] fas = faList.toArray(new FastaByte[faList.size()]);
         for (int i = 0; i < fas.length; i++) {
             names[i] = String.valueOf(i);
             ids[i] = i + 1;
@@ -53,14 +54,14 @@ public class ReferenceProcessor {
             }
             seqs[i] = sb.toString();
         }
-        fa = new Fasta (names, seqs, ids);
+        fa = new FastaByte (names, seqs, ids);
         System.out.println(fa.getSeqLength(0));
-        fa.writeFasta(outputFileS);
+        fa.writeFasta(outputFileS, IOFileFormat.TextGzip);
     }
     
     private void statistics () {
         String infileS = "/Users/feilu/Documents/database/maize/reference/merged/maizeAGPv4.fa";
-        Fasta f = new Fasta(infileS);
+        FastaByte f = new FastaByte(infileS);
         System.out.println("Chromosomes\tLength");
         for (int i = 0; i < f.getSeqNumber(); i++) {
             System.out.println(String.valueOf(i)+"\t"+String.valueOf(f.getSeqLength(i)));

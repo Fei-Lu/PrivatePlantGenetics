@@ -5,11 +5,8 @@
  */
 package analysis.maize2k;
 
-import format.Fasta;
-import format.FastqChunk;
-import format.Read;
-import format.ReadUtils;
 import format.alignment.ShortreadPEAlignment;
+import format.dna.Fastq;
 import format.table.RowTable;
 import format.table.TableInterface;
 import graphcis.r.DensityPlot;
@@ -228,7 +225,7 @@ public class FastqQuality {
         String outfileS = "/Users/feilu/Documents/analysisL/pipelineTest/maize2k/fastQC/contamination/K16BJS0001_1.fq.txt";
         double lowGC = 0.6;
         double highGC = 0.65;      
-        FastqChunk fc = new FastqChunk (infileS);
+        Fastq fc = new Fastq (infileS);
         boolean[] ifOut = new boolean[fc.getReadNum()];
         for (int i = 0; i < fc.getReadNum(); i++) {
             double gc = fc.getRead(i).getGCContent();
