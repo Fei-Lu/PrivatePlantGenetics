@@ -35,7 +35,7 @@ public class FastqQuality {
         //this.covergagePlot();
         //this.sampleReads();
         //this.fastQC();
-        this.fastQCsummary();
+        //this.fastQCsummary();
         //this.contamination();
         //this.trimming();
         //this.alignBWA();

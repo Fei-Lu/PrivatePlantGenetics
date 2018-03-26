@@ -12,10 +12,16 @@ package analysis.maize2k;
 public class Maize2kGo {
     
     public Maize2kGo () {
-        this.seqQualityTestPipe();
         //this.processReference();
+        //this.seqQualityTestPipe();
+        this.setHapScannerPipe();
     }
     
+    private void setHapScannerPipe () {
+        //new HapMap3Processor();
+        String parameterFileS = "/Users/feilu/Documents/analysisL/pipelineTest/HapScanner/parameters_hapScanner.txt";
+        new HapScanner(parameterFileS);
+    }
     
     private void seqQualityTestPipe () {
         new FastqQuality ();
