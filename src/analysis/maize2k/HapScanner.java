@@ -53,7 +53,7 @@ public class HapScanner {
     public HapScanner (String infileS) {
         this.parseParameters(infileS);
         this.mkDir();
-        //this.scanIndiVCF();
+        this.scanIndiVCF();
         this.mkFinalVCF();
     }
     
@@ -103,7 +103,7 @@ public class HapScanner {
                 for (int i = 0; i < brs.length; i++) {
                     genoList.add(brs[i].readLine());
                 }
-                sb.append(this.getInfo(genoList)).append("\tGT:AD:GL");
+                sb.append(this.getInfo(genoList, temList.get(3))).append("\tGT:AD:GL");
                 for (int i = 0; i < genoList.size(); i++) {
                     sb.append("\t").append(genoList.get(i));
                 }
@@ -122,10 +122,65 @@ public class HapScanner {
         }
     }
     
-    private String getInfo (List<String> genoList) {
+    private String getInfo (List<String> genoList, String altList) {
         int dp = 0;
         int nz = 0;
-        return "DP=";
+        int nAlt = PStringUtils.fastSplit(altList, ",").size();
+        int[] adCnt = new int[1+nAlt];
+        int[] acCnt = new int[1+nAlt];
+        int[][] gnCnt = new int[1+nAlt][1+nAlt];
+        int ht = 0;
+        List<String> tempList = null;
+        List<String> temList = null;
+        for (int i = 0; i < genoList.size(); i++) {
+            if (genoList.get(i).startsWith(".")) {
+                nz++;
+                continue;
+            }
+            tempList = PStringUtils.fastSplit(genoList.get(i), ":");
+            temList = PStringUtils.fastSplit(tempList.get(1), ",");
+            for (int j = 0; j < temList.size(); j++) {
+                int c = Integer.parseInt(temList.get(j));
+                dp+=c;
+                adCnt[j] += c;
+            }
+            temList = PStringUtils.fastSplit(tempList.get(0), "/");
+            for (int j = 0; j < temList.size(); j++) {
+                int c = Integer.parseInt(temList.get(j));
+                acCnt[c]++;
+            }
+            int index1 = Integer.parseInt(temList.get(0));
+            int index2 = Integer.parseInt(temList.get(1));
+            gnCnt[index1][index2]++;
+            if (index1 != index2) ht++;
+        }
+        nz = genoList.size() - nz;
+        int sum = 0;
+        for (int i = 0; i < acCnt.length; i++) {
+            sum+=acCnt[i];
+        }
+        float maf = (float)((double)acCnt[0]/sum);
+        if (maf>0.5) maf = (float)(1-maf);
+        StringBuilder sb = new StringBuilder();
+        sb.append("DP=").append(dp).append(";NZ=").append(nz).append(";AD=");
+        for (int i = 0; i < adCnt.length; i++) {
+            sb.append(adCnt[i]).append(",");
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(";AC=");
+        for (int i = 1; i < acCnt.length; i++) {
+            sb.append(acCnt[i]).append(",");
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(";GN=");
+        for (int i = 0; i < gnCnt.length; i++) {
+            for (int j = i + 1; j < gnCnt.length; j++) {
+                sb.append(gnCnt[i][j]).append(",");
+            }
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(";HT=").append(ht).append(";MAF=").append(maf);
+        return sb.toString();
     }
     
     public void scanIndiVCF () {
