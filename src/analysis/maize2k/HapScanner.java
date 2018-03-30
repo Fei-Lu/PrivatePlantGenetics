@@ -62,9 +62,9 @@ public class HapScanner {
         String[] taxa = taxaSet.toArray(new String[taxaSet.size()]);
         Arrays.sort(taxa);
         String outfileS = new File(outputDirS, subDirS[2]).getAbsolutePath();
-        outfileS = new File(outfileS, "chr"+PStringUtils.getNDigitNumber(3, chr)+".vcf").getAbsolutePath();
+        outfileS = new File(outfileS, "chr"+PStringUtils.getNDigitNumber(3, chr)+".vcf.gz").getAbsolutePath();
         try {
-            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            BufferedWriter bw = IOUtils.getTextGzipWriter(outfileS);
             bw.write("##fileformat=VCFv4.1\n");
             bw.write("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">\n");
             bw.write("##FORMAT=<ID=AD,Number=.,Type=Integer,Description=\"Allelic depths for the reference and alternate alleles in the order listed\">\n");
@@ -407,6 +407,7 @@ public class HapScanner {
         chr = Integer.valueOf(pLineList.get(4));
         samtoolsPath = pLineList.get(5);
         outputDirS = pLineList.get(6);
+        new File(outputDirS).mkdir();
         RowTable<String> t = new RowTable<>(taxaBamFileS);
         Set<String> taxaSet = new HashSet<>();
         for (int i = 0; i < t.getRowNumber(); i++) {
