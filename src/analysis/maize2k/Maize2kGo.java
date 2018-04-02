@@ -18,6 +18,7 @@ public class Maize2kGo {
     
     public Maize2kGo () {
         //this.processReference();
+        //this.processAnnotation();
         //this.seqQualityTestPipe();
         this.setHapScannerPipe();
         //this.test();
@@ -25,28 +26,9 @@ public class Maize2kGo {
     
     private void setHapScannerPipe () {
         //new HapMap3Processor();
-        String parameterFileS = "/Users/feilu/Documents/analysisL/pipelineTest/HapScanner/parameters_hapScanner.txt";
-        new HapScanner(parameterFileS);
-    }
-    
-    public void test () {
-        String infileS = "/Users/feilu/Documents/analysisL/pipelineTest/HapScanner/hapMap3_AGPV4/hmp321_agpv4_chr10.vcf.gz";
-        String outfileS = "/Users/feilu/Documents/analysisL/pipelineTest/HapScanner/test.vcf";
-        int length = 10000;
-        try {
-            BufferedReader br = IOUtils.getTextGzipReader(infileS);
-            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
-            for (int i = 0; i < length; i++) {
-                bw.write(br.readLine());
-                bw.newLine();
-            }
-            bw.flush();
-            bw.close();
-            br.close();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        new HapMapTaxaProcessor();
+//        String parameterFileS = "/Users/feilu/Documents/analysisL/pipelineTest/HapScanner/parameters_hapScanner.txt";
+//        new HapScanner(parameterFileS);
     }
     
     private void seqQualityTestPipe () {
@@ -55,6 +37,10 @@ public class Maize2kGo {
     
     private void processReference () {
         new ReferenceProcessor();
+    }
+    
+    private void processAnnotation () {
+        new AnnotationProcessor();
     }
     
     public static void main (String[] args) {
