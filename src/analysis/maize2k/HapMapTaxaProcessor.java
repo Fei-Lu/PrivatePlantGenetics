@@ -7,8 +7,10 @@ package analysis.maize2k;
 
 import format.table.RowTable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import utils.FArrayUtils;
 import utils.IOFileFormat;
 
 /**
@@ -23,6 +25,25 @@ public class HapMapTaxaProcessor {
         String infileS2 = "/Users/feilu/Desktop/t.txt";
         String outfileS = "/Users/feilu/Desktop/taxaBam.txt";
         updateTaxaBamMap(infileS1, infileS2, outfileS);
+        this.testTaxaDuplicates();
+    }
+    
+    private void testTaxaDuplicates () {
+        String infileS = "/Users/feilu/Desktop/taxaBam.txt";
+        RowTable<String> t = new RowTable<>(infileS);
+        List<String> taxaList = t.getColumn(0);
+        String[] taxaArray = taxaList.toArray(new String[taxaList.size()]);
+        String[] uTaxaArray = FArrayUtils.getUniqueStringArray(taxaArray);
+        Arrays.sort(uTaxaArray);
+        int[] cnts = new int[uTaxaArray.length];
+        for (int i = 0; i < taxaArray.length; i++) {
+            int index = Arrays.binarySearch(uTaxaArray, taxaArray[i]);
+            cnts[index]++;
+        }
+        for (int i = 0; i < cnts.length; i++) {
+            if (cnts[i] < 2) continue;
+            System.out.println(uTaxaArray[i]);
+        }
     }
     
     private void mkSampleTaxaMap () {

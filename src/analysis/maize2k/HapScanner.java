@@ -12,6 +12,7 @@ import format.table.RowTable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -89,11 +90,12 @@ public class HapScanner {
             String indiVCFFolderS = new File(outputDirS, subDirS[1]).getAbsolutePath();
             for (int i = 0; i < brs.length; i++) {
                 String indiVCFFileS = new File (indiVCFFolderS, taxa[i]+".indi.vcf").getAbsolutePath();
-                brs[i] = IOUtils.getTextReader(indiVCFFileS);
+                brs[i] = new BufferedReader (new FileReader(indiVCFFileS));
             }
             BufferedReader br = IOUtils.getTextGzipReader(posAlleleFileS);
             String temp = br.readLine();
             List<String> temList = null;
+            int cnt = 0;
             while ((temp = br.readLine()) != null) {
                 sb = new StringBuilder();
                 temList = PStringUtils.fastSplit(temp);
@@ -109,6 +111,8 @@ public class HapScanner {
                 }
                 bw.write(sb.toString());
                 bw.newLine();
+                cnt++;
+                if (cnt%1000000 == 0) System.out.println(String.valueOf(cnt)+"SNPs output to " + outfileS);
             }
             bw.flush();
             bw.close();
