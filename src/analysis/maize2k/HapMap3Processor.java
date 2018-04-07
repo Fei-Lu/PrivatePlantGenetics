@@ -10,8 +10,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import utils.IOUtils;
 import utils.PStringUtils;
-import zhouyao.analysis.wheatHapMap.IOUtils;
+
 
 /**
  *

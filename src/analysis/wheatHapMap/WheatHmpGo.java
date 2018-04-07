@@ -5,6 +5,8 @@
  */
 package analysis.wheatHapMap;
 
+import com.koloboke.collect.map.hash.HashByteByteMap;
+import format.dna.BaseEncoder;
 import format.table.ColumnTable;
 import format.table.RowTable;
 import format.table.TableInterface;
@@ -24,7 +26,7 @@ class WheatHmpGo {
     
     public void test () {
         
-    }
+        }
     
     public void referenceGenome () {
         new WheatReferenceGenome();
