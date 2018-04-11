@@ -63,9 +63,9 @@ public class HapScanner {
         String[] taxa = taxaSet.toArray(new String[taxaSet.size()]);
         Arrays.sort(taxa);
         String outfileS = new File(outputDirS, subDirS[2]).getAbsolutePath();
-        outfileS = new File(outfileS, "chr"+PStringUtils.getNDigitNumber(3, chr)+".vcf.gz").getAbsolutePath();
+        outfileS = new File(outfileS, "chr"+PStringUtils.getNDigitNumber(3, chr)+".vcf").getAbsolutePath();
         try {
-            BufferedWriter bw = IOUtils.getTextGzipWriter(outfileS);
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
             bw.write("##fileformat=VCFv4.1\n");
             bw.write("##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">\n");
             bw.write("##FORMAT=<ID=AD,Number=.,Type=Integer,Description=\"Allelic depths for the reference and alternate alleles in the order listed\">\n");
@@ -96,24 +96,24 @@ public class HapScanner {
             String temp = br.readLine();
             List<String> temList = null;
             int cnt = 0;
-            List<String> genoList = null;
+            String[] genoArray = new String[brs.length];
             while ((temp = br.readLine()) != null) {
-                sb = new StringBuilder();
+                //sb = new StringBuilder();
+                sb.setLength(0);
                 temList = PStringUtils.fastSplit(temp);
                 sb.append(temList.get(0)).append("\t").append(temList.get(1)).append("\t").append(temList.get(0)).append("-").append(temList.get(1)).append("\t");
                 sb.append(temList.get(2)).append("\t").append(temList.get(3)).append("\t.\t.\t");
-                genoList = new ArrayList<>();
                 for (int i = 0; i < brs.length; i++) {
-                    genoList.add(brs[i].readLine());
+                    genoArray[i]= brs[i].readLine();
                 }
-                sb.append(this.getInfo(genoList, temList.get(3))).append("\tGT:AD:GL");
-                for (int i = 0; i < genoList.size(); i++) {
-                    sb.append("\t").append(genoList.get(i));
+                sb.append(this.getInfo(genoArray, temList.get(3))).append("\tGT:AD:GL");
+                for (int i = 0; i < genoArray.length; i++) {
+                    sb.append("\t").append(genoArray[i]);
                 }
                 bw.write(sb.toString());
                 bw.newLine();
                 cnt++;
-                if (cnt%1000000 == 0) System.out.println(String.valueOf(cnt)+"SNPs output to " + outfileS);
+                if (cnt%1000000 == 0) System.out.println(String.valueOf(cnt)+" SNPs output to " + outfileS);
             }
             bw.flush();
             bw.close();
@@ -127,7 +127,7 @@ public class HapScanner {
         }
     }
     
-    private String getInfo (List<String> genoList, String altList) {
+    private String getInfo (String[] genoArray, String altList) {
         int dp = 0;
         int nz = 0;
         int nAlt = PStringUtils.fastSplit(altList, ",").size();
@@ -137,12 +137,12 @@ public class HapScanner {
         int ht = 0;
         List<String> tempList = null;
         List<String> temList = null;
-        for (int i = 0; i < genoList.size(); i++) {
-            if (genoList.get(i).startsWith(".")) {
+        for (int i = 0; i < genoArray.length; i++) {
+            if (genoArray[i].startsWith(".")) {
                 nz++;
                 continue;
             }
-            tempList = PStringUtils.fastSplit(genoList.get(i), ":");
+            tempList = PStringUtils.fastSplit(genoArray[i], ":");
             temList = PStringUtils.fastSplit(tempList.get(1), ",");
             for (int j = 0; j < temList.size(); j++) {
                 int c = Integer.parseInt(temList.get(j));
@@ -159,7 +159,7 @@ public class HapScanner {
             gnCnt[index1][index2]++;
             if (index1 != index2) ht++;
         }
-        nz = genoList.size() - nz;
+        nz = genoArray.length - nz;
         int sum = 0;
         for (int i = 0; i < acCnt.length; i++) {
             sum+=acCnt[i];
