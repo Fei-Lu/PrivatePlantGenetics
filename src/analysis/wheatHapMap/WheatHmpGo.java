@@ -26,7 +26,7 @@ class WheatHmpGo {
     
     public void test () {
         
-        }
+    }
     
     public void referenceGenome () {
         new WheatReferenceGenome();
