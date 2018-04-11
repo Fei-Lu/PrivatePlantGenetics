@@ -26,9 +26,10 @@ public class Maize2kGo {
     
     private void setHapScannerPipe () {
         //new HapMap3Processor();
-        new HapMapTaxaProcessor();
+        //new HapMapTaxaProcessor();
 //        String parameterFileS = "/Users/feilu/Documents/analysisL/pipelineTest/HapScanner/parameters_hapScanner.txt";
-//        new HapScanner(parameterFileS);
+        String parameterFileS = "/Users/feilu/Documents/analysisL/production/parameters_hapScanner.txt";
+        new HapScanner(parameterFileS);
     }
     
     private void seqQualityTestPipe () {

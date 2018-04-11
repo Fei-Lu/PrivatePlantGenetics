@@ -54,7 +54,7 @@ public class HapScanner {
     public HapScanner (String infileS) {
         this.parseParameters(infileS);
         this.mkDir();
-        this.scanIndiVCF();
+        //this.scanIndiVCF();
         this.mkFinalVCF();
     }
     
@@ -90,18 +90,19 @@ public class HapScanner {
             String indiVCFFolderS = new File(outputDirS, subDirS[1]).getAbsolutePath();
             for (int i = 0; i < brs.length; i++) {
                 String indiVCFFileS = new File (indiVCFFolderS, taxa[i]+".indi.vcf").getAbsolutePath();
-                brs[i] = new BufferedReader (new FileReader(indiVCFFileS));
+                brs[i] = IOUtils.getTextReader(indiVCFFileS);
             }
             BufferedReader br = IOUtils.getTextGzipReader(posAlleleFileS);
             String temp = br.readLine();
             List<String> temList = null;
             int cnt = 0;
+            List<String> genoList = null;
             while ((temp = br.readLine()) != null) {
                 sb = new StringBuilder();
                 temList = PStringUtils.fastSplit(temp);
                 sb.append(temList.get(0)).append("\t").append(temList.get(1)).append("\t").append(temList.get(0)).append("-").append(temList.get(1)).append("\t");
                 sb.append(temList.get(2)).append("\t").append(temList.get(3)).append("\t.\t.\t");
-                List<String> genoList = new ArrayList<>();
+                genoList = new ArrayList<>();
                 for (int i = 0; i < brs.length; i++) {
                     genoList.add(brs[i].readLine());
                 }
