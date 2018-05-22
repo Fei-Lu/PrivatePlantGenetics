@@ -26,7 +26,7 @@ class WheatReferenceGenome {
     public WheatReferenceGenome () {
         //this.checkIUPAC();
         //this.splitGenomeByChr();
-        this.splitGenome();
+        //this.splitGenome();
     }
     
     public void splitGenome () {
@@ -59,7 +59,9 @@ class WheatReferenceGenome {
         FastaBit afb = new FastaBit (faArray);
         //afb.sortByName();
         afb.writeFasta(abdFileS, IOFileFormat.TextGzip);
+        
         boolean[] ifOut = new boolean[afb.getSeqNumber()];
+        
         for (int i = 0; i < afb.getSeqNumber(); i++) {
             String ori = currentOriMap.get(afb.getName(i));
             if (ori.split("_")[0].endsWith("A")) ifOut[i] = true;
@@ -68,6 +70,7 @@ class WheatReferenceGenome {
             if (ori.contains("Un")) ifOut[i] = true;
         }
         afb.writeFasta(aFileS, ifOut, IOFileFormat.TextGzip);
+        
         ifOut = new boolean[afb.getSeqNumber()];
         for (int i = 0; i < afb.getSeqNumber(); i++) {
             String ori = currentOriMap.get(afb.getName(i));
@@ -77,6 +80,7 @@ class WheatReferenceGenome {
             if (ori.contains("Un")) ifOut[i] = true;
         }
         afb.writeFasta(abFileS, ifOut, IOFileFormat.TextGzip);
+
         ifOut = new boolean[afb.getSeqNumber()];
         for (int i = 0; i < afb.getSeqNumber(); i++) {
             String ori = currentOriMap.get(afb.getName(i));
@@ -86,6 +90,7 @@ class WheatReferenceGenome {
             if (ori.contains("Un")) ifOut[i] = true;
         }
         afb.writeFasta(dFileS, ifOut, IOFileFormat.TextGzip);
+        
         ifOut = new boolean[afb.getSeqNumber()];
         for (int i = 0; i < afb.getSeqNumber(); i++) {
             String ori = currentOriMap.get(afb.getName(i));

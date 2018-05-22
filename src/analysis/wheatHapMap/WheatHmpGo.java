@@ -20,8 +20,8 @@ import java.util.List;
 class WheatHmpGo {
     
     public WheatHmpGo () {
-        //this.referenceGenome();
-        this.test();
+        this.referenceGenome();
+        //this.test();
     }
     
     public void test () {

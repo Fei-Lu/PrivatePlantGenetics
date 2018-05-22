@@ -54,9 +54,9 @@ public class HapScanner {
     public HapScanner (String infileS) {
         this.parseParameters(infileS);
         this.mkDir();
-        //this.scanIndiVCF();
-        //this.mkFinalVCF();
-        this.mkFinalVCF2();
+        this.scanIndiVCF();
+        this.mkFinalVCF();
+        //this.mkFinalVCF2(); //multi threaded, but slow
     }
     
     public void mkFinalVCF2 () {

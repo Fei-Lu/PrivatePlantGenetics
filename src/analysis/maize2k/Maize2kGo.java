@@ -5,9 +5,9 @@
  */
 package analysis.maize2k;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import utils.IOUtils;
+import com.koloboke.collect.map.hash.HashIntIntMap;
+import com.koloboke.collect.map.hash.HashIntIntMaps;
+import format.tree.Newick;
 
 
 /**
@@ -20,8 +20,13 @@ public class Maize2kGo {
         //this.processReference();
         //this.processAnnotation();
         //this.seqQualityTestPipe();
-        this.setHapScannerPipe();
-        //this.test();
+        //this.setHapScannerPipe();
+        this.test();
+    }
+    
+    public void test () {
+        String nwkS = "(B:6.0,(A:5.0,C:3.0,E:4.0):5.0,D:11.0);";
+        Newick nwk = new Newick(nwkS);
     }
     
     private void setHapScannerPipe () {
