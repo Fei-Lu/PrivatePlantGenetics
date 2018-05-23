@@ -26,13 +26,58 @@ public class TaxaDiversity {
     public TaxaDiversity () {
         //this.selectedTaxaFromDistanceMatrix();
         //this.selectedTaxaFromDistanceMatrix2();
-        //this.selectedTaxaFromNewickTree();
+        this.selectedTaxaFromNewickTree();
         this.mdsOnSelectedTaxa();
+        this.colorSelectedTaxaOnTree();
+    }
+    
+    public void colorSelectedTaxaOnTree () {
+        String infileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/source/Tree_chr10000sites_432taxa.xml";
+        String outfileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/Tree_chr10000sites_432taxa_colorSel.xml";
+        String taxaFileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/selectedTaxa.txt";
+        String addS = "<property ref=\"style:font_color\" datatype=\"xsd:token\" applies_to=\"node\">#ff0000</property>";
+        RowTable<String> t = new RowTable(taxaFileS);
+        List<String> taxaList = t.getColumn(0);
+        Collections.sort(taxaList);
+        try {
+            BufferedReader br = IOUtils.getTextReader(infileS);
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            String temp = null;
+            while ((temp = br.readLine()) != null) {
+                if (temp.contains("<name>")) {
+                    String currentName = temp.split(">")[1];
+                    currentName = currentName.split("<")[0];
+                    bw.write(temp);
+                    bw.newLine();
+                    bw.write(br.readLine());
+                    bw.newLine();
+                    if (Collections.binarySearch(taxaList, currentName) < 0) {
+                        
+                    }
+                    else {
+                        bw.write(addS);
+                        bw.newLine();
+                    } 
+                }
+                else {
+                    bw.write(temp);
+                    bw.newLine();
+                }
+            }
+            br.close();
+            bw.flush();
+            bw.close();
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            
+        }
     }
     
     public void mdsOnSelectedTaxa () {
         String infileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/selectedTaxa.txt";
-        String mdsInfileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/851oriMds.txt";
+        String mdsInfileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/source/851oriMds.txt";
         String outfileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/300oriMds.txt";
         RowTable<String> t = new RowTable<>(infileS);
         List<String> taxaList = t.getColumn(0);
@@ -59,15 +104,23 @@ public class TaxaDiversity {
     }
     
     public void selectedTaxaFromNewickTree () {
-        String infileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/Tree_chr10000sites_432taxa.txt";
+        String infileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/source/Tree_chr10000sites_432taxa.txt";
         String outfileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/selectedTaxa.txt";
+        String[] vip = {"Jing2416", "mPH6WC", "Huangzaosi", "B73", "Mo17Ht"};     
         int n = 300;
         try {
             BufferedReader br = IOUtils.getTextReader(infileS);
             String temp = br.readLine();
             br.close();
+            //temp = "((raccoon:19.19959,bear:6.80041):0.84600,((sea_lion:11.99700, seal:12.00300):7.52973,((monkey:100.85930,cat:47.14069):20.59201, weasel:18.87953):2.09460):3.87382,dog:25.46154)";
             Newick nwk = new Newick (temp);
             List<String> taxaList = nwk.selectTaxaWithMaxDiversity(n);
+            Set<String> taxaSet = new HashSet(taxaList);
+            for (int i = 0; i < vip.length; i++) {
+                taxaSet.add(vip[i]);
+            }
+            taxaList = new ArrayList(taxaSet);
+            Collections.sort(taxaList);
             BufferedWriter bw = IOUtils.getTextWriter(outfileS);
             bw.write("Taxa");
             bw.newLine();
@@ -84,7 +137,7 @@ public class TaxaDiversity {
     }
     
     public void selectedTaxaFromDistanceMatrix2 () {
-        String infileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/Matrix_chr10000sites_432taxa.txt";
+        String infileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/source/Matrix_chr10000sites_432taxa.txt";
         String outfileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/selectedTaxa.txt";
         int selectedNum = 100;
         double[] dis = null;
@@ -150,7 +203,7 @@ public class TaxaDiversity {
     
     //Doesn't work
     public void selectedTaxaFromDistanceMatrix () {
-        String infileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/Matrix_chr10000sites_432taxa.txt";
+        String infileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/source/Matrix_chr10000sites_432taxa.txt";
         String outfileS = "/Users/feilu/Documents/analysisL/production/maizeRNA/sampleSelection/selectedTaxa.txt";
         int selectedNum = 100;
         double[][] dis = null;
