@@ -74,15 +74,15 @@ public class WheatGBSGo {
     }
     
     public void cutsiteEstimate () {
-        String genomeDirS = "/Users/feilu/Documents/database/wheat/reference/v1.0/test/";
+        String genomeDirS = "/Users/feilu/Documents/database/wheat/reference/v1.0/byChr/";
         String outputFileS = "/Users/feilu/Documents/analysisL/pipelineTest/GBS/testResult/cutsiteEstimate.txt";
         String bamH1Cut = "GGATCC";
         String msp1Cut = "CCGG";
         File[] files = new File(genomeDirS).listFiles();
         files = IOUtils.listFilesEndsWith(files, ".gz");
         List<File> fList = Arrays.asList(files);
-        int minLength = 100;
-        int maxLength = 600;
+        int minLength = 200;
+        int maxLength = 500;
         ConcurrentHashMap<String, Integer> chromSiteMap = new ConcurrentHashMap();
         ConcurrentHashMap<String, Integer> chromBamH1SiteMap = new ConcurrentHashMap();
         ConcurrentHashMap<String, Integer> chromMsp1SiteMap = new ConcurrentHashMap();
@@ -114,18 +114,21 @@ public class WheatGBSGo {
             for (int i = 0; i < bamH1Array.length; i++) {
                 index = Arrays.binarySearch(msp1Array, bamH1Array[i]);
                 index = -index-1;
-                if (index > -1 || index < msp1Array.length) {
+                if (index > -1 && index < msp1Array.length) {
                     distance = msp1Array[index] - bamH1Array[i];
                     if (distance > minLength && distance < maxLength) {
-                        
-                        cutCnt++;
+                        if (i != (bamH1Array.length - 1) && bamH1Array[i+1] > msp1Array[index]) {
+                            cutCnt++;
+                        }
                     }
                 }
                 index--;
-                if (index > -1 || index < msp1Array.length) {
+                if (index > -1 && index < msp1Array.length) {
                     distance = bamH1Array[i] - msp1Array[index];
                     if (distance > minLength && distance < maxLength) {
-                        cutCnt++;
+                        if (i != 0 && bamH1Array[i-1] < msp1Array[index]) {
+                            cutCnt++;
+                        }
                     }
                 }
             }
