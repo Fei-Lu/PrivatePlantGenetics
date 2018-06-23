@@ -5,9 +5,15 @@
  */
 package analysis.wheat.GBS;
 
+import format.dna.FastaBit;
+import gnu.trove.list.array.TIntArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import utils.IOUtils;
 
 /**
@@ -17,7 +23,8 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
-        this.testLibraryUniformity();
+        this.cutsiteEstimate();
+        //this.testLibraryUniformity();
     }
     
     public void testLibraryUniformity () {
@@ -66,6 +73,86 @@ public class WheatGBSGo {
         
     }
     
+    public void cutsiteEstimate () {
+        String genomeDirS = "/Users/feilu/Documents/database/wheat/reference/v1.0/test/";
+        String outputFileS = "/Users/feilu/Documents/analysisL/pipelineTest/GBS/testResult/cutsiteEstimate.txt";
+        String bamH1Cut = "GGATCC";
+        String msp1Cut = "CCGG";
+        File[] files = new File(genomeDirS).listFiles();
+        files = IOUtils.listFilesEndsWith(files, ".gz");
+        List<File> fList = Arrays.asList(files);
+        int minLength = 100;
+        int maxLength = 600;
+        ConcurrentHashMap<String, Integer> chromSiteMap = new ConcurrentHashMap();
+        ConcurrentHashMap<String, Integer> chromBamH1SiteMap = new ConcurrentHashMap();
+        ConcurrentHashMap<String, Integer> chromMsp1SiteMap = new ConcurrentHashMap();
+        fList.parallelStream().forEach(f -> {
+            int cutCnt = 0;
+            TIntArrayList bamH1List = new TIntArrayList();
+            TIntArrayList msp1List = new TIntArrayList();
+            FastaBit fa = new FastaBit(f.getAbsolutePath());
+            String s = fa.getSeq(0);
+            int index = -1;
+            int currentIndex = -1;
+            for (int i = 0; i < s.length(); i++) {
+                index = s.indexOf(bamH1Cut, i);
+                if (index == -1) break;
+                currentIndex = index+1;
+                bamH1List.add(currentIndex);
+                i = currentIndex;
+            }
+            for (int i = 0; i < s.length(); i++) {
+                index = s.indexOf(msp1Cut, i);
+                if (index == -1) break;
+                currentIndex = index+1;
+                msp1List.add(currentIndex);
+                i = currentIndex;
+            }
+            int[] bamH1Array = bamH1List.toArray();
+            int[] msp1Array = msp1List.toArray();
+            int distance = 0;
+            for (int i = 0; i < bamH1Array.length; i++) {
+                index = Arrays.binarySearch(msp1Array, bamH1Array[i]);
+                index = -index-1;
+                if (index > -1 || index < msp1Array.length) {
+                    distance = msp1Array[index] - bamH1Array[i];
+                    if (distance > minLength && distance < maxLength) {
+                        
+                        cutCnt++;
+                    }
+                }
+                index--;
+                if (index > -1 || index < msp1Array.length) {
+                    distance = bamH1Array[i] - msp1Array[index];
+                    if (distance > minLength && distance < maxLength) {
+                        cutCnt++;
+                    }
+                }
+            }
+            chromSiteMap.put(f.getName(), cutCnt);
+            chromBamH1SiteMap.put(f.getName(), bamH1Array.length);
+            chromMsp1SiteMap.put(f.getName(), msp1Array.length);
+        });
+        BufferedWriter bw = IOUtils.getTextWriter(outputFileS);
+        try {
+            bw.write("Chromosome\tcutPairNumber\tBamH1Number\tMsp1Number");
+            bw.newLine();
+            for (int i = 0; i < files.length; i++) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(files[i].getName()).append("\t").append(chromSiteMap.get(files[i].getName()));
+                sb.append("\t").append(chromBamH1SiteMap.get(files[i].getName()));
+                sb.append("\t").append(chromMsp1SiteMap.get(files[i].getName()));
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
     
     public static void main (String[] args) {
         new WheatGBSGo ();
