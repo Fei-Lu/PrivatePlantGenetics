@@ -12,8 +12,8 @@ package analysis.maizeRNASeq;
 public class RNASeqGo {
     
     public RNASeqGo () {
-        new TaxaDiversity();
-        
+        //new TaxaDiversity();
+        new RNASeqMiscellaneous();
     }
     
     public static void main (String[] args) {

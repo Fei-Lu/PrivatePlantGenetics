@@ -6,12 +6,14 @@
 package analysis.wheat.GBS;
 
 import format.dna.FastaBit;
+import format.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import utils.IOUtils;
@@ -23,15 +25,50 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
-        this.cutsiteEstimate();
+        //this.cutsiteEstimate();
         //this.testLibraryUniformity();
+//        String[] a = {"ac", "a", "AC", "A"};
+//        Arrays.sort(a);
+//        for (int i = 0; i < a.length; i++) {
+//            System.out.println(a[i]);
+//        }
+//        String query = "AB";
+//        int index = Arrays.binarySearch(a, query);
+//        System.out.println("Searching " + query + " = "+ String.valueOf(index));
+         this.testBarcodeDiff();
+    }
+    
+    public void testBarcodeDiff () {
+        String infileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/source/20180601_GBSLibrarybarcode.txt";
+        RowTable<String> t = new RowTable(infileS);
+        List<String> barList = t.getColumn(3);
+        String[] bars = barList.toArray(new String[barList.size()]);
+        Arrays.sort(bars);
+        List<Integer> diffList = new ArrayList();
+        for (int i = 0; i < bars.length-1; i++) {
+            for (int j = i+1; j < bars.length; j++) {
+                int l1 = bars[i].length();
+                int l2 = bars[j].length();
+                int l = 0;
+                if (l1 < l2) l = l1;
+                else l = l2;
+                int cnt = 0;
+                for (int k = 0; k < l; k++) {
+                    if (bars[i].charAt(k) != bars[j].charAt(k)) cnt++;
+                }
+                if (cnt == 1) System.out.println(bars[i]+"\t"+bars[j]);
+                diffList.add(cnt);
+            }
+        }
+        Collections.sort(diffList);
+        System.out.println(diffList.get(0));
     }
     
     public void testLibraryUniformity () {
-        String barcodeFileS = "/Users/feilu/Documents/document_work/analysis_L/pipelineTest/wheatGBS/source/20180601_GBSLibrarybarcode.txt";
-        String r1FileS = "/Users/feilu/Documents/document_work/analysis_L/pipelineTest/wheatGBS/source/20180601-51-NEB12_TKD180600155_1.clean.fq";
-        String r2FileS = "/Users/feilu/Documents/document_work/analysis_L/pipelineTest/wheatGBS/source/20180601-51-NEB12_TKD180600155_2.clean.fq";
-        String outFileS = "/Users/feilu/Documents/document_work/analysis_L/pipelineTest/wheatGBS/uniformity.txt";
+        String barcodeFileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/source/20180601_GBSLibrarybarcode.txt";
+        String r1FileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/source/sample/20180601-51-NEB12_TKD180600155_1.clean.fq";
+        String r2FileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/source/sample/20180601-51-NEB12_TKD180600155_2.clean.fq";
+        String outFileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/testResult/uniformity.txt";
         
         PEBarcodeParser pbp = new PEBarcodeParser(barcodeFileS);
         String[] taxa = pbp.getTaxa();
