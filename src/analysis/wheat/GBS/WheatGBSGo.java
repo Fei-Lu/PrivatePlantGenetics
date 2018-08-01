@@ -5,6 +5,8 @@
  */
 package analysis.wheat.GBS;
 
+import analysis.pipeline.libgbs.LibGBSGo;
+import analysis.pipeline.libgbs.TagCount;
 import format.dna.FastaBit;
 import format.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
@@ -25,18 +27,29 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
+        //this.testPipe();
+        this.gbsPipe();
+    }
+    
+    public void gbsPipe () {
+        //new DataPreprocess();
+        this.productionPipe();
+    }
+    
+    public void productionPipe () {
+        String parameterFileS = "/Users/feilu/Documents/analysisL/production/wheatGBS/gbs_parameter.txt";
+        //new LibGBSGo(parameterFileS);
+        
+        new QualityCheck();
+    }
+    
+    public void testPipe () {
         //this.cutsiteEstimate();
         //this.testLibraryUniformity();
-//        String[] a = {"ac", "a", "AC", "A"};
-//        Arrays.sort(a);
-//        for (int i = 0; i < a.length; i++) {
-//            System.out.println(a[i]);
-//        }
-//        String query = "AB";
-//        int index = Arrays.binarySearch(a, query);
-//        System.out.println("Searching " + query + " = "+ String.valueOf(index));
-         this.testBarcodeDiff();
+        //this.testBarcodeDiff();
+        
     }
+    
     
     public void testBarcodeDiff () {
         String infileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/source/20180601_GBSLibrarybarcode.txt";
@@ -112,7 +125,7 @@ public class WheatGBSGo {
     
     public void cutsiteEstimate () {
         String genomeDirS = "/Users/feilu/Documents/database/wheat/reference/v1.0/byChr/";
-        String outputFileS = "/Users/feilu/Documents/analysisL/pipelineTest/GBS/testResult/cutsiteEstimate.txt";
+        String outputFileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/testResult/cutsiteEstimate.txt";
         String bamH1Cut = "GGATCC";
         String msp1Cut = "CCGG";
         File[] files = new File(genomeDirS).listFiles();

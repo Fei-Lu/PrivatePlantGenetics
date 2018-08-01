@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import utils.FArrayUtils;
+import utils.PArrayUtils;
 import utils.IOFileFormat;
 
 /**
@@ -33,7 +33,7 @@ public class HapMapTaxaProcessor {
         RowTable<String> t = new RowTable<>(infileS);
         List<String> taxaList = t.getColumn(0);
         String[] taxaArray = taxaList.toArray(new String[taxaList.size()]);
-        String[] uTaxaArray = FArrayUtils.getUniqueStringArray(taxaArray);
+        String[] uTaxaArray = PArrayUtils.getUniqueStringArray(taxaArray);
         Arrays.sort(uTaxaArray);
         int[] cnts = new int[uTaxaArray.length];
         for (int i = 0; i < taxaArray.length; i++) {

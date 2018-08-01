@@ -50,7 +50,7 @@ public class PEBarcodeParser {
         }
         taxa = new String[t.getRowNumber()];
         for (int i = 0; i < t.getRowNumber(); i++) {
-            String taxon = t.getCell(i, 2);
+            String taxon = t.getCell(i, 6);
             taxa[i] = taxon;
             String barcode = t.getCell(i, 3);
             Set<String> tempSet = barcodeTaxonMapR1.get(barcode);
