@@ -22,7 +22,6 @@ import utils.IOUtils;
 public class DataPreprocess {
     
     public DataPreprocess () {
-        //this.parseFastqByIndex();
         this.mkNuoheLibFastqMapFileS();
     }
     
@@ -30,6 +29,10 @@ public class DataPreprocess {
         String fqDirS = "/Users/feilu/Documents/analysisL/production/wheatGBS/source/nuohe";
         String barcodeFileS = "/Users/feilu/Documents/analysisL/production/wheatGBS/source/barcode_wheat_201807_modified.txt";
         String outfileS = "/Users/feilu/Documents/analysisL/production/wheatGBS/source/libraryFastqMap_nuohe.txt";
+        
+//        String barcodeFileS = "/Users/feilu/Documents/analysisL/production/qianhuaGBS/source/barcode_qianhua_20180622.txt";
+//        String outfileS = "/Users/feilu/Documents/analysisL/production/qianhuaGBS/source/libraryFastqMap_nuohe.txt";
+        
         File[] subFiles = IOUtils.listRecursiveFiles(new File(fqDirS));
         File[] fqs = IOUtils.listFilesEndsWith(subFiles, ".gz");
         RowTable<String> t = new RowTable(barcodeFileS);
@@ -64,20 +67,6 @@ public class DataPreprocess {
             }
             bw.flush();
             bw.close();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public void parseFastqByIndex () {
-        String infileS = "/Users/feilu/Documents/analysisL/production/wheatGBS/source/annuo/cleandata/20180705mix1/20180705mix1_R1.fq.gz";
-        try {
-            BufferedReader br = IOUtils.getTextGzipReader(infileS);
-            for (int i = 0; i < 200; i++) {
-                //if (i < 200) continue;
-                System.out.println(br.readLine());
-            }
         }
         catch (Exception e) {
             e.printStackTrace();

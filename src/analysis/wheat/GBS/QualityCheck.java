@@ -25,6 +25,9 @@ class QualityCheck {
         String dirS = "/Users/feilu/Documents/analysisL/production/wheatGBS/pipeOutput/tagsBySample";
         String outfileS = "/Users/feilu/Documents/analysisL/production/wheatGBS/qualityCheck/readNumPerSample.txt";
         String outfilePdf = "/Users/feilu/Documents/analysisL/production/wheatGBS/qualityCheck/readNumPerSample.pdf";
+//        String dirS = "/Users/feilu/Documents/analysisL/production/qianhuaGBS/pipeOutput/tagsBySample";
+//        String outfileS = "/Users/feilu/Documents/analysisL/production/qianhuaGBS/qualityCheck/readNumPerSample.txt";
+//        String outfilePdf = "/Users/feilu/Documents/analysisL/production/qianhuaGBS/qualityCheck/readNumPerSample.pdf";
         File[] fs = new File(dirS).listFiles();
         fs = IOUtils.listFilesEndsWith(fs, ".sbin");
         double[] nums = new double[fs.length];
