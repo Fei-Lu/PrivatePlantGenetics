@@ -18,12 +18,12 @@ public class MaizeLoadGo {
     }
     
     public void analysisPipe () {
-        this.mkHmp3Header();
+        //this.annotateVariants();
         this.processGERP();
     }
     
-    public void mkHmp3Header () {
-        
+    public void annotateVariants () {
+        new VariantsAnnotation ();
     }
     
     public void processGERP () {
