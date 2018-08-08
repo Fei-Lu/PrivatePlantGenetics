@@ -33,7 +33,7 @@ class GERP {
         //this.mkAGPV3BED();
         //this.crossMapConvert();
         //this.makeV3V4Map();
-        this.mkV4Gerp();
+        //this.mkV4Gerp();
     }
     
     public void mkV4Gerp () {

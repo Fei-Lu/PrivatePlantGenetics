@@ -19,7 +19,8 @@ public class MaizeLoadGo {
     
     public void analysisPipe () {
         //this.annotateVariants();
-        this.processGERP();
+        //this.processGERP();
+        this.processSIFT();
     }
     
     public void annotateVariants () {
@@ -28,6 +29,10 @@ public class MaizeLoadGo {
     
     public void processGERP () {
         new GERP();
+    }
+    
+    public void processSIFT () {
+        new SIFT ();
     }
     
     public static void main (String[] args) {
