@@ -32,7 +32,7 @@ class GERP {
     public void convertToV4GerpFile () {
         //this.mkAGPV3BED();
         //this.crossMapConvert();
-        //this.makeV3V4Map();
+        this.makeV3V4Map();
         //this.mkV4Gerp();
     }
     
@@ -134,7 +134,7 @@ class GERP {
                 br = IOUtils.getTextReader(f.getAbsolutePath());
                 BufferedReader br2 = IOUtils.getTextReader(mapFileS);
                 BufferedWriter bw = IOUtils.getTextWriter(outfileS);
-                bw.write("Chr\tPos_V3\tPos_V4");
+                bw.write("Chr_V3\tPos_V3\tChr_V4\tPos_V4");
                 bw.newLine();
                 String temp1 = null;
                 StringBuilder sb = new StringBuilder();
@@ -143,19 +143,20 @@ class GERP {
                     l = PStringUtils.fastSplit(temp);
                     sb = new StringBuilder(l.get(0));
                     int query = Integer.parseInt(l.get(1));
-                    sb.append("\t").append(query).append("\t");
                     int index = Arrays.binarySearch(unPos, query);
+                    int pos = query+1;
+                    sb.append("\t").append(pos).append("\t");
                     if (index < 0)  {
-                        while (cnt < query) {
+                        while (cnt < pos) {
                             cnt++;
                             temp1 = br2.readLine();
                             l = PStringUtils.fastSplit(temp1);
                         }
-                        sb.append(l.get(1));
+                        sb.append(l.get(0)).append("\t").append(Integer.parseInt(l.get(1))+1);
                     
                     }
                     else {
-                        sb.append("NA");
+                        sb.append("NA").append("\t").append("NA");
                         cnt++;
                     }
                     bw.write(sb.toString());
@@ -205,7 +206,7 @@ class GERP {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < chrLength[chr-1]; i++) {
                     sb = new StringBuilder();
-                    sb.append(chr).append("\t").append(i+1).append("\t").append(i+1);
+                    sb.append(chr).append("\t").append(i).append("\t").append(i);
                     bw.write(sb.toString());
                     bw.newLine();
                 }
