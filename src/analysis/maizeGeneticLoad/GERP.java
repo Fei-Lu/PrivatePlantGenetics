@@ -32,7 +32,7 @@ class GERP {
     public void convertToV4GerpFile () {
         //this.mkAGPV3BED();
         //this.crossMapConvert();
-        this.makeV3V4Map();
+        //this.makeV3V4Map();
         //this.mkV4Gerp();
     }
     
@@ -56,11 +56,11 @@ class GERP {
                     cnt++;
                     if (cnt%10000000 == 0) System.out.println(String.valueOf(cnt)+"\t"+f.getName());
                     l = PStringUtils.fastSplit(temp);
-                    if (l.get(2).startsWith("N")) {
+                    if (!l.get(2).equals(l.get(0))) {
                         v3v4Maps[index].put(Integer.parseInt(l.get(1)), -1);
                     }
                     else {
-                        v3v4Maps[index].put(Integer.parseInt(l.get(1)), Integer.parseInt(l.get(2)));
+                        v3v4Maps[index].put(Integer.parseInt(l.get(1)), Integer.parseInt(l.get(3)));
                     }
                 }
                 br.close();

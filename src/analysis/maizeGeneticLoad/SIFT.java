@@ -26,14 +26,14 @@ class SIFT {
     
     public SIFT () {
         //this.testData();
-        this.testGFF();
+        this.addSIFT();
     }
     
-    public void testGFF () {
+    public void addSIFT () {
         String infileS = "/Users/feilu/Documents/database/maize/gene/Zea_mays.AGPv4.38.pgf";
         String siftDirS = "/Users/feilu/Documents/analysisL/production/maizeLoad/sift/source/";
-        String hmpHeaderDirS = "/Users/feilu/Documents/analysisL/production/maizeLoad/hmp/hmp321_header/";
-        String outputDirS = "/Users/feilu/Documents/analysisL/production/maizeLoad/hmp/hmp321_annotation/";
+        String annotationDBDirS = "/Users/feilu/Documents/analysisL/production/maizeLoad/annoDB";
+        String outputDirS = "/Users/feilu/Documents/analysisL/production/maizeLoad/annoDB_new";
         new File (outputDirS).mkdir();
         GeneFeature gf = new GeneFeature(infileS);
         int geneNum = gf.getGeneNumber();
@@ -51,9 +51,9 @@ class SIFT {
 //            String infileSS = "/Users/feilu/Documents/analysisL/production/maizeLoad/sift/source/hmp321_agpv4_chr10_SIFTannotations.xls";
 //            f = new File(infileSS);
 //            chrIndex = 9;
-            
-            String headerFileS = new File (hmpHeaderDirS, "hmp321_agpv4_chr"+String.valueOf(chrIndex+1)+".vcf.header.txt").getAbsolutePath();
-            String outfileS = new File(outputDirS, "hmp321_agpv4_chr"+String.valueOf(chrIndex+1)+".vcf.annotation.txt").getAbsolutePath();
+            //hmp321Info_chr001_AGPv4_AnnoDB.txt
+            String dbFileS = new File (annotationDBDirS, "hmp321Info_chr"+PStringUtils.getNDigitNumber(3, chrIndex+1)+"_AGPv4_AnnoDB.txt").getAbsolutePath();
+            String outfileS = new File(outputDirS,  "hmp321Info_chr"+PStringUtils.getNDigitNumber(3, chrIndex+1)+"_AGPv4_AnnoDB.txt").getAbsolutePath();
             String header = null;
             try {
                 BufferedReader br = IOUtils.getTextReader(f.getAbsolutePath());
@@ -72,8 +72,8 @@ class SIFT {
                 }
                 br.close();
                 Collections.sort(sList);
-                br = IOUtils.getTextReader(headerFileS);
-                header = br.readLine()+"\tVariant_type\tSIFT_score";
+                br = IOUtils.getTextReader(dbFileS);
+                header = br.readLine()+"\tVariant_type\tSIFT_score\tTranscript";
                 BufferedWriter bw = IOUtils.getTextWriter(outfileS);
                 bw.write(header);
                 bw.newLine();
@@ -90,7 +90,7 @@ class SIFT {
                     SIFTRecord query = new SIFTRecord (pos, alt, "", "", "");
                     index = Collections.binarySearch(sList, query);
                     if (index < 0) {
-                        sb.append("NA\tNA");
+                        
                         bw.write(sb.toString());
                         bw.newLine();
                         continue;
@@ -106,7 +106,13 @@ class SIFT {
                     boolean status = false;
                     for (int i = startIndex; i < endIndex+1; i++) {
                         if (Arrays.binarySearch(trans, sList.get(i).transcript) >= 0 && sList.get(i).type.equals("NONSYNONYMOUS") || sList.get(i).type.equals("SYNONYMOUS")) {
-                            sb.append(sList.get(i).type).append("\t").append(sList.get(i).value);
+                            if (Arrays.binarySearch(trans, sList.get(i).transcript) < 0) {
+                                sb.append("NA\tNA\tNA");
+                            }
+                            else {
+                                sb.append(sList.get(i).type).append("\t").append(sList.get(i).value).append("\t").append(sList.get(i).transcript);
+                            }
+                            
                             bw.write(sb.toString());
                             bw.newLine();
                             status = true;
@@ -114,7 +120,7 @@ class SIFT {
                         }
                     }
                     if (status ==false) {
-                        sb.append("NA\tNA");
+                        sb.append("NA\tNA\tNA");
                         bw.write(sb.toString());
                         bw.newLine();
                     }
