@@ -14,8 +14,10 @@ import utils.IOUtils;
 
 public class ReferenceKmerLib {
     int kmerLength = -1;
-    HashIntSet intSet = null;
-    HashLongSet longSet = null;
+    HashIntSet[] intSets = null;
+    HashLongSet[] longSets = null;
+    int barcodeLength = 3;
+    int setSize = (int)(Math.pow(4, barcodeLength));
     
     public ReferenceKmerLib(int kmerLength, String inputGenomeFileS) {
         this.kmerLength = kmerLength;
@@ -32,10 +34,10 @@ public class ReferenceKmerLib {
         System.out.println("KmerLength = "+String.valueOf(kmerLength)+ " bp");
         long start = System.nanoTime();
         if (kmerLength == 16) {
-            this.intSet = this.getIntKmerSet(f, ascIIByteMap);
+            this.intSets = this.getIntKmerSet(f, ascIIByteMap);
         }
         else if (kmerLength == 32) {
-            this.longSet = this.getLongKmerSet(f, ascIIByteMap);
+            this.longSets = this.getLongKmerSets(f, ascIIByteMap);
         }
         System.out.println(Benchmark.getTimeSpanSeconds(start)+" seconds used to build Kmer library");
     }
@@ -45,19 +47,24 @@ public class ReferenceKmerLib {
         try {
             DataOutputStream dos  = IOUtils.getBinaryWriter(libFileS);
             dos.writeInt(kmerLength);
+            dos.writeInt(barcodeLength);
             if (kmerLength == 16) {
-                int[] kmerD = intSet.toIntArray();
-                dos.writeInt(kmerD.length);
-                for (int i = 0; i < kmerD.length; i++) {
-                    dos.writeInt(kmerD[i]);
+                for (int i = 0; i < intSets.length; i++) {
+                    int[] kmerD = intSets[i].toIntArray();
+                    dos.writeInt(kmerD.length);
+                    for (int j = 0; j < kmerD.length; j++) {
+                        dos.writeInt(kmerD[j]);
+                    }
                 }
             }
             else if (kmerLength == 32) {
-                long[] kmerD = longSet.toLongArray();
-                dos.writeInt(kmerD.length);
-                for (int i = 0; i < kmerD.length; i++) {
-                    dos.writeLong(kmerD[i]);
-                }
+                for (int i = 0; i < longSets.length; i++) {
+                    long[] kmerD = longSets[i].toLongArray();
+                    dos.writeInt(kmerD.length);
+                    for (int j = 0; j < kmerD.length; j++) {
+                        dos.writeLong(kmerD[j]);
+                    }
+                }               
             }
             dos.flush();
             dos.close();
@@ -68,47 +75,28 @@ public class ReferenceKmerLib {
         System.out.println("Kmer library is written to " + libFileS);
     }
     
-    private HashLongSet getLongKmerSet (FastaByte f, HashByteByteMap ascIIByteMap) {
-        int genomeSize = (int)f.getTotalSeqLength();
-        HashLongSet kmerSet = HashLongSets.newMutableSet(genomeSize);
-        for (int k = 0; k < f.getSeqNumber(); k++) {
-            String seq = f.getSeq(k);
-            byte[] bArray = seq.getBytes();
-            for (int i = 0; i < bArray.length; i++) {
-                bArray[i] = ascIIByteMap.get(bArray[i]);
+    public static int getBarcodeIndex (byte[] seqByte, int startIndex, int barcodeLength) {
+        int index = 0;
+        for (int i = 0; i < barcodeLength; i++) {
+            int base = 0;
+            if (i == 0) {
+                base = seqByte[i+startIndex];
             }
-            int mark = 0;
-            boolean flag = false;
-            for (int i = 0; i < bArray.length-kmerLength+1; i++) {
-                flag = false;
-                for (int j = mark; j < i+kmerLength; j++) {
-                    if (bArray[j] >3) {
-                        i = j;
-                        flag = true;
-                        break;
-                    }
-                }
-                if (flag) {
-                    mark = i + 1;
-                    continue;
-                }
-                else {
-                    mark = i + kmerLength;
-                }
-                long kmerL = BaseEncoder.getLongSeqFromSubByteArray(bArray, i, i + kmerLength);
-                if (!kmerSet.contains(kmerL)) kmerSet.add(kmerL);
-                int pos = i+1;
-                if (pos%50000000 == 0) {
-                    System.out.println("Chromosome: "+f.getName(k)+". Length = "+String.valueOf(bArray.length)+"bp. Position: "+String.valueOf(pos) + ". Kmer set size: " + String.valueOf(kmerSet.size()));
-                }
+            else {
+                base = (int)(Math.pow(4, i))*seqByte[i+startIndex];
             }
+            index+=base;
         }
-        return kmerSet;
+        return index;
     }
     
-    private HashIntSet getIntKmerSet (FastaByte f, HashByteByteMap ascIIByteMap) {
+    private HashLongSet[] getLongKmerSets (FastaByte f, HashByteByteMap ascIIByteMap) {
         int genomeSize = (int)f.getTotalSeqLength();
-        HashIntSet kmerSet = HashIntSets.newMutableSet(genomeSize);
+        HashLongSet[] kmerSets = new HashLongSet[setSize];
+        for (int i = 0; i < setSize; i++) {
+            kmerSets[i] = HashLongSets.newMutableSet(genomeSize/setSize);
+        }
+        int barcodeIndex = 0;
         for (int k = 0; k < f.getSeqNumber(); k++) {
             String seq = f.getSeq(k);
             byte[] bArray = seq.getBytes();
@@ -133,15 +121,67 @@ public class ReferenceKmerLib {
                 else {
                     mark = i + kmerLength;
                 }
-                int kmerL = BaseEncoder.getIntSeqFromSubByteArray(bArray, i, i + kmerLength);
-                if (!kmerSet.contains(kmerL)) kmerSet.add(kmerL);
+                barcodeIndex = this.getBarcodeIndex(bArray, i, barcodeLength);
+                long kmerL = BaseEncoder.getLongSeqFromSubByteArray(bArray, i, i + kmerLength);
+                if (!kmerSets[barcodeIndex].contains(kmerL)) kmerSets[barcodeIndex].add(kmerL);
                 int pos = i+1;
                 if (pos%50000000 == 0) {
-                    System.out.println("Chromosome: "+f.getName(k)+". Length = "+String.valueOf(bArray.length)+"bp. Position: "+String.valueOf(pos) + ". Kmer set size: " + String.valueOf(kmerSet.size()));
+                    long total = 0;
+                    for (int u = 0; u < kmerSets.length; u++) {
+                        total += (long)kmerSets[u].size();
+                    }
+                    System.out.println("Chromosome: "+f.getName(k)+". Length = "+String.valueOf(bArray.length)+"bp. Position: "+String.valueOf(pos) + ". Kmer set size: " + String.valueOf(total));
                 }
             }
         }
-        return kmerSet;
+        return kmerSets;
+    }
+    
+    private HashIntSet[] getIntKmerSet (FastaByte f, HashByteByteMap ascIIByteMap) {
+        int genomeSize = (int)f.getTotalSeqLength();
+        HashIntSet[] kmerSets = new HashIntSet[setSize];
+        for (int i = 0; i < setSize; i++) {
+            kmerSets[i] = HashIntSets.newMutableSet(genomeSize/setSize);
+        }
+        int barcodeIndex = 0;
+        for (int k = 0; k < f.getSeqNumber(); k++) {
+            String seq = f.getSeq(k);
+            byte[] bArray = seq.getBytes();
+            for (int i = 0; i < bArray.length; i++) {
+                bArray[i] = ascIIByteMap.get(bArray[i]);
+            }
+            int mark = 0;
+            boolean flag = false;
+            for (int i = 0; i < bArray.length-kmerLength+1; i++) {
+                flag = false;
+                for (int j = mark; j < i+kmerLength; j++) {
+                    if (bArray[j] >3) {
+                        i = j;
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) {
+                    mark = i + 1;
+                    continue;
+                }
+                else {
+                    mark = i + kmerLength;
+                }
+                barcodeIndex = this.getBarcodeIndex(bArray, i, barcodeLength);
+                int kmerL = BaseEncoder.getIntSeqFromSubByteArray(bArray, i, i + kmerLength);
+                if (!kmerSets[barcodeIndex].contains(kmerL)) kmerSets[barcodeIndex].add(kmerL);
+                int pos = i+1;
+                if (pos%50000000 == 0) {
+                    long total = 0;
+                    for (int u = 0; u < kmerSets.length; u++) {
+                        total += (long)kmerSets[u].size();
+                    }
+                    System.out.println("Chromosome: "+f.getName(k)+". Length = "+String.valueOf(bArray.length)+"bp. Position: "+String.valueOf(pos) + ". Kmer set size: " + String.valueOf(total));
+                }
+            }
+        }
+        return kmerSets;
     }
 }
 

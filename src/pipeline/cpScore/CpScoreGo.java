@@ -109,7 +109,7 @@ public class CpScoreGo implements CLIInterface {
         options.addOption("m", true, "Analysis mode. Two modes are available, building reference kmer library (b option) and profiling CpScore (p option). e.g. -m b");
         options.addOption("k", true, "Kmer length. Only 32 and 16 are supported. e.g. -k 32");
         options.addOption("r", true, "Reference genome file. e.g -i maizeAGPV4.fa");
-        options.addOption("a", true, "Another genome file from which kmers are counted. e.g -i CML247.fa");
+        options.addOption("a", true, "Another genome file from which kmers are counted. e.g -a CML247.fa");
         options.addOption("l", true, "Kmer library file. e.g -l maize_32mer.lib");
         options.addOption("o", true, "Output directory. e.g -o CML247_Cp");
     }

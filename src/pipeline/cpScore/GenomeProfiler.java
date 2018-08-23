@@ -30,9 +30,9 @@ import utils.IOUtils;
  */
 public class GenomeProfiler {
     int kmerLength = -1;
-    int mapSize = -1;
-    HashLongIntMap longMap = null; 
-    HashIntIntMap intMap = null;
+    int barcodeLength = -1;
+    HashLongIntMap[] longMaps = null; 
+    HashIntIntMap[] intMaps = null;
 
     
     public GenomeProfiler (String libFileS, String referenceGenomeFileS, String anotherGenomeFileS, String outputDirS) {     
@@ -99,13 +99,15 @@ public class GenomeProfiler {
                         }
                         int count = 0;
                         
-                        if (intMap != null) {
+                        if (intMaps != null) {
+                            int barcodeIndex = ReferenceKmerLib.getBarcodeIndex(bArray, j, barcodeLength);
                             int query = BaseEncoder.getIntSeqFromSubByteArray(bArray, j, j + kmerLength);
-                            count = intMap.get(query);
+                            count = intMaps[barcodeIndex].get(query);
                         }
-                        else if (longMap != null) {
+                        else if (longMaps != null) {
+                            int barcodeIndex = ReferenceKmerLib.getBarcodeIndex(bArray, j, barcodeLength);
                             long query = BaseEncoder.getLongSeqFromSubByteArray(bArray, j, j + kmerLength);
-                            count = longMap.get(query);
+                            count = longMaps[barcodeIndex].get(query);
                         }
                         int offSet = bound[i][0]-j;
                         if (offSet > 0) {
@@ -159,7 +161,7 @@ public class GenomeProfiler {
         HashByteByteMap ascIIByteMap = BaseEncoder.getAscIIByteMap();
         System.out.println("Start counting kmers in genome " + inputGenomeFileS);
         long start = System.nanoTime();
-        if (intMap != null) {
+        if (intMaps != null) {
             for (int i = 0; i < f.getSeqNumber(); i++) {
                 byte[] bArray = f.getSeq(i).getBytes();
                 for (int j = 0; j < bArray.length; j++) {
@@ -183,10 +185,11 @@ public class GenomeProfiler {
                     else {
                         mark = j + kmerLength;
                     }
+                    int barcodeIndex = ReferenceKmerLib.getBarcodeIndex(bArray, j, barcodeLength);
                     int kmerV = BaseEncoder.getIntSeqFromSubByteArray(bArray, j, j + kmerLength);
-                    if (intMap.containsKey(kmerV)) intMap.addValue(kmerV, 1);
+                    if (intMaps[barcodeIndex].containsKey(kmerV)) intMaps[barcodeIndex].addValue(kmerV, 1);
                     int rKmerV = BaseEncoder.getIntReverseComplement(kmerV, kmerLength);
-                    if (intMap.containsKey(rKmerV)) intMap.addValue(rKmerV, 1);          
+                    if (intMaps[barcodeIndex].containsKey(rKmerV)) intMaps[barcodeIndex].addValue(rKmerV, 1);          
                     int pos = j+1;
                     if (pos%50000000 == 0) {
                         System.out.println(inputGenomeFileS + ". Chromosome: "+f.getName(i)+". Length = "+String.valueOf(bArray.length)+"bp. Position: "+String.valueOf(pos));
@@ -194,7 +197,7 @@ public class GenomeProfiler {
                 }
             }
         }
-        else if (longMap != null) {
+        else if (longMaps != null) {
             for (int i = 0; i < f.getSeqNumber(); i++) {
                 byte[] bArray = f.getSeq(i).getBytes();
                 for (int j = 0; j < bArray.length; j++) {
@@ -218,10 +221,13 @@ public class GenomeProfiler {
                     else {
                         mark = j + kmerLength;
                     }
+                    int barcodeIndex = ReferenceKmerLib.getBarcodeIndex(bArray, j, barcodeLength);
                     long kmerV = BaseEncoder.getLongSeqFromSubByteArray(bArray, j, j + kmerLength);
-                    if (longMap.containsKey(kmerV)) longMap.addValue(kmerV, 1);
+                    if (longMaps[barcodeIndex].containsKey(kmerV)) {
+                        longMaps[barcodeIndex].addValue(kmerV, 1);
+                    }
                     long rKmerV = BaseEncoder.getLongReverseComplement(kmerV, kmerLength);
-                    if (longMap.containsKey(rKmerV)) longMap.addValue(rKmerV, 1);
+                    if (longMaps[barcodeIndex].containsKey(rKmerV)) longMaps[barcodeIndex].addValue(rKmerV, 1);
                     int pos = j+1;
                     if (pos%50000000 == 0) {
                         System.out.println(inputGenomeFileS + ". Chromosome: "+f.getName(i)+". Length = "+String.valueOf(bArray.length)+"bp. Position: "+String.valueOf(pos));
@@ -241,21 +247,33 @@ public class GenomeProfiler {
         try {
             DataInputStream dis = IOUtils.getBinaryReader(libFileS);
             kmerLength = dis.readInt();
-            mapSize = dis.readInt();
-            int[] values = new int[mapSize];
+            barcodeLength = dis.readInt();
+            int setSize = (int)(Math.pow(4, barcodeLength));
             if (kmerLength == 32) {
-                long[] keys = new long[mapSize];
-                for (int i = 0; i < mapSize; i++) {
-                    keys[i] = dis.readLong();
-                }
-                longMap = HashLongIntMaps.newMutableMap(keys, values);
+                longMaps = new HashLongIntMap[setSize];
             }
             else if (kmerLength == 16) {
-                int[] keys = new int[mapSize];
-                for (int i = 0; i < mapSize; i++) {
-                    keys[i] = dis.readInt();
+                intMaps = new HashIntIntMap[setSize];
+            }
+            int mapSize = -1;
+            for (int i = 0; i < setSize; i++) {
+                mapSize = dis.readInt();
+                System.out.println("Map size of index "+ String.valueOf(i)+ ": "+mapSize);
+                int[] values = new int[mapSize];
+                if (kmerLength == 32) {
+                    long[] keys = new long[mapSize];
+                    for (int j = 0; j < mapSize; j++) {
+                        keys[j] = dis.readLong();
+                    }
+                    longMaps[i] = HashLongIntMaps.newMutableMap(keys, values);
                 }
-                intMap = HashIntIntMaps.newMutableMap(keys, values);
+                else if (kmerLength == 16) {
+                    int[] keys = new int[mapSize];
+                    for (int j = 0; j < mapSize; j++) {
+                        keys[j] = dis.readInt();
+                    }
+                    intMaps[i] = HashIntIntMaps.newMutableMap(keys, values);
+                }
             }
             dis.close();
         }
