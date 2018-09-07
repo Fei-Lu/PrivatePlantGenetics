@@ -18,10 +18,10 @@ public class Maize2kGo {
     
     public Maize2kGo () {
         //this.processReference();
-        //this.processAnnotation();
+        this.processAnnotation();
         //this.seqQualityTestPipe();
         //this.setHapScannerPipe();
-        this.test();
+        //this.test();
     }
     
     public void test () {

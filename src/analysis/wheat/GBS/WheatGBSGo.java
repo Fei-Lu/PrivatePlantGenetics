@@ -27,13 +27,13 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
-        //this.testPipe();
-        this.gbsPipe();
+        this.testPipe();
+        //this.gbsPipe();
     }
     
     public void gbsPipe () {
-        //new DataPreprocess();
-        this.productionPipe();
+        new DataPreprocess();
+        //this.productionPipe();
     }
     
     public void productionPipe () {
@@ -44,9 +44,12 @@ public class WheatGBSGo {
     }
     
     public void testPipe () {
-        //this.cutsiteEstimate();
-        //this.testLibraryUniformity();
-        //this.testBarcodeDiff();
+        //this.cutsiteEstimate();//How many cut sites(BamH1-Msp1) are in the wheat genome?
+        //this.testLibraryUniformity();// Test the library quality, if the all the samples were uniformly made.
+        //this.testBarcodeDiff(); //Test the minimum substitution number between each barcode.
+        
+        String parameterFileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/gbs_parameter.txt";
+        new LibGBSGo(parameterFileS);
         
     }
     
