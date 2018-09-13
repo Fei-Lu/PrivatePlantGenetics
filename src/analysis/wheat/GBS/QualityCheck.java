@@ -6,6 +6,7 @@
 package analysis.wheat.GBS;
 
 import analysis.pipeline.libgbs.TagCount;
+import analysis.pipeline.libgbs.TagCounts;
 import graphcis.r.DensityPlot;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,8 +37,8 @@ class QualityCheck {
             bw.write("Sample\tReadNum");
             bw.newLine();
             for (int i = 0; i < fs.length; i++) {
-                TagCount tc = new TagCount(fs[i].getAbsolutePath());
-                nums[i] = tc.getTotalReadNum();
+                TagCounts tc = new TagCounts(fs[i].getAbsolutePath());
+                nums[i] = tc.getTotalReadNumber();
                 bw.write(fs[i].getName()+"\t"+String.valueOf(nums[i]));
                 bw.newLine();
             }
