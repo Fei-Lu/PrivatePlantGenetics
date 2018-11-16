@@ -6,7 +6,6 @@
 package analysis.wheat.GBS;
 
 import analysis.pipeline.libgbs.LibGBSGo;
-import analysis.pipeline.libgbs.TagCount;
 import format.dna.FastaBit;
 import format.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
