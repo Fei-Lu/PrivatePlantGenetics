@@ -37,7 +37,7 @@ public class AnnotationProcessor {
         GeneFeature gf = new GeneFeature();
         gf.readFromMaizeGFF(inputGFF3);
         gf.writeFile(outputPGF);
-                }
+    }
     
     private void testField () {
         String inputGFF3 = "/Users/feilu/Documents/database/maize/gene/Zea_mays.AGPv4.38.modified.gff3";
