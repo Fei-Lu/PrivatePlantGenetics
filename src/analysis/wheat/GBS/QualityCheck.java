@@ -5,7 +5,7 @@
  */
 package analysis.wheat.GBS;
 
-import analysis.pipeline.libgbs.TagAnnotations;
+import analysis.pipeline.grt.TagAnnotations;
 import graphcis.r.DensityPlot;
 import java.io.BufferedWriter;
 import java.io.File;

@@ -5,7 +5,8 @@
  */
 package analysis.wheat.GBS;
 
-import analysis.pipeline.libgbs.LibGBSGo;
+import analysis.pipeline.grt.GRTGo;
+import analysis.pipeline.grt.LibGBSGo;
 import format.dna.FastaBit;
 import format.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
@@ -48,10 +49,80 @@ public class WheatGBSGo {
         //this.testBarcodeDiff(); //Test the minimum substitution number between each barcode.
         
         String parameterFileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/gbs_parameter.txt";
-        new LibGBSGo(parameterFileS);
+        //new LibGBSGo(parameterFileS);
         
+        //*************************
+
+        //this.parsingFastq();
+        //this.mergingTag();
+        //this.aligningTag();
+        //this.callingSNP();
+        this.callingAllele();
+        //this.callingGenotype();
+        //*************************
     }
     
+    public void callingGenotype () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        StringBuilder sb = new StringBuilder();
+        sb.append("-m ").append("cg ").append("-w ").append(workingDirS);
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
+    
+    public void callingAllele () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        StringBuilder sb = new StringBuilder();
+        sb.append("-m ").append("ca ").append("-w ").append(workingDirS);
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
+    
+    public void callingSNP () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        StringBuilder sb = new StringBuilder();
+        sb.append("-m ").append("cs ").append("-w ").append(workingDirS).append(" -md 5");
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
+    
+    public void aligningTag () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        StringBuilder sb = new StringBuilder();
+        String referenceFileS = "/Users/feilu/Documents/database/wheat/reference/v1.0/ABD/bwaLib/abd_iwgscV1.fa.gz";
+        String bwaPath = "/Users/feilu/Software/bwa-0.7.15/bwa";
+        sb.append("-m ").append("at ").append("-w ").append(workingDirS).append(" -g ").append(referenceFileS).append(" -bwa ").append(bwaPath);
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
+    
+    public void mergingTag () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        StringBuilder sb = new StringBuilder();
+        sb.append("-m ").append("mt ").append("-w ").append(workingDirS).append(" -mc 3");
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
+    
+    public void parsingFastq () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        String barcodeFileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/source/20180601_GBSLibrarybarcode.txt";
+        String libraryFqMapFileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/source/LibraryFastqMap.txt";
+        String cutterF = "GGATCC";
+        String cutterR = "CCGG";
+        StringBuilder sb = new StringBuilder();
+        sb.append("-m ").append("pf ");
+        sb.append("-w ").append(workingDirS).append(" -b ").append(barcodeFileS).append(" -f ").append(libraryFqMapFileS).append(" -ef ")
+                .append(cutterF).append(" -er ").append(cutterR);
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
     
     public void testBarcodeDiff () {
         String infileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/source/20180601_GBSLibrarybarcode.txt";
