@@ -27,7 +27,8 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
-        this.testPipe();
+        //this.testPipe();
+        this.commandLineTest();
         //this.gbsPipe();
     }
     
@@ -49,23 +50,26 @@ public class WheatGBSGo {
         //this.testBarcodeDiff(); //Test the minimum substitution number between each barcode.
         
         String parameterFileS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/gbs_parameter.txt";
-        //new LibGBSGo(parameterFileS);
-        
+        new LibGBSGo(parameterFileS);
+    }
+    
+    public void commandLineTest () {
         //*************************
 
         //this.parsingFastq();
         //this.mergingTag();
         //this.aligningTag();
         //this.callingSNP();
-        this.callingAllele();
+        //this.callingAllele();
         //this.callingGenotype();
         //*************************
     }
     
+    
     public void callingGenotype () {
         String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
         StringBuilder sb = new StringBuilder();
-        sb.append("-m ").append("cg ").append("-w ").append(workingDirS);
+        sb.append("-m ").append("cg ").append("-w ").append(workingDirS).append(" -t 8 -it 1");
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
@@ -74,7 +78,7 @@ public class WheatGBSGo {
     public void callingAllele () {
         String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
         StringBuilder sb = new StringBuilder();
-        sb.append("-m ").append("ca ").append("-w ").append(workingDirS);
+        sb.append("-m ").append("ca ").append("-w ").append(workingDirS).append(" -mq 30 -ml 1000");
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
@@ -83,7 +87,7 @@ public class WheatGBSGo {
     public void callingSNP () {
         String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
         StringBuilder sb = new StringBuilder();
-        sb.append("-m ").append("cs ").append("-w ").append(workingDirS).append(" -md 5");
+        sb.append("-m ").append("cs ").append("-w ").append(workingDirS).append(" -md 5 -mq 30 -ml 1000");
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
@@ -94,7 +98,7 @@ public class WheatGBSGo {
         StringBuilder sb = new StringBuilder();
         String referenceFileS = "/Users/feilu/Documents/database/wheat/reference/v1.0/ABD/bwaLib/abd_iwgscV1.fa.gz";
         String bwaPath = "/Users/feilu/Software/bwa-0.7.15/bwa";
-        sb.append("-m ").append("at ").append("-w ").append(workingDirS).append(" -g ").append(referenceFileS).append(" -bwa ").append(bwaPath);
+        sb.append("-m ").append("at ").append("-w ").append(workingDirS).append(" -g ").append(referenceFileS).append(" -bwa ").append(bwaPath).append(" -t 8");
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
@@ -118,7 +122,7 @@ public class WheatGBSGo {
         StringBuilder sb = new StringBuilder();
         sb.append("-m ").append("pf ");
         sb.append("-w ").append(workingDirS).append(" -b ").append(barcodeFileS).append(" -f ").append(libraryFqMapFileS).append(" -ef ")
-                .append(cutterF).append(" -er ").append(cutterR);
+                .append(cutterF).append(" -er ").append(cutterR).append(" -t 8");
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
