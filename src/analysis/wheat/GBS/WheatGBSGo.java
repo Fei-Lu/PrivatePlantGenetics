@@ -62,9 +62,18 @@ public class WheatGBSGo {
         //this.callingSNP();
         //this.callingAllele();
         //this.callingGenotype();
+        this.updateDatabase();
         //*************************
     }
     
+    public void updateDatabase () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        StringBuilder sb = new StringBuilder();
+        sb.append("-m ").append("ud ").append("-w ").append(workingDirS);
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
     
     public void callingGenotype () {
         String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
