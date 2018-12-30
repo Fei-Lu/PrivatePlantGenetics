@@ -27,8 +27,8 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
-        //this.testPipe();
-        this.commandLineTest();
+        this.testPipe();
+        //this.commandLineTest();
         //this.gbsPipe();
     }
     
@@ -60,9 +60,9 @@ public class WheatGBSGo {
         //this.mergingTag();
         //this.aligningTag();
         //this.callingSNP();
-        //this.callingAllele();
+        this.callingAllele();
         //this.callingGenotype();
-        this.updateDatabase();
+        //this.updateDatabase();
         //*************************
     }
     
