@@ -27,8 +27,8 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
-        this.testPipe();
-        //this.commandLineTest();
+        //this.testPipe();
+        this.commandLineTest();
         //this.gbsPipe();
     }
     
@@ -56,20 +56,30 @@ public class WheatGBSGo {
     public void commandLineTest () {
         //*************************
 
-        //this.parsingFastq();
-        //this.mergingTag();
-        //this.aligningTag();
-        //this.callingSNP();
-        this.callingAllele();
-        //this.callingGenotype();
-        //this.updateDatabase();
+//        this.parsingFastq();
+//        this.mergingTag();
+//        this.aligningTag();
+//        this.callingSNP();
+//        this.callingAllele();
+//        this.callingGenotype();
+//        this.filterDatabase();
+//        this.retrieveGenotype();
         //*************************
     }
     
-    public void updateDatabase () {
+    public void retrieveGenotype () {
         String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
         StringBuilder sb = new StringBuilder();
-        sb.append("-m ").append("ud ").append("-w ").append(workingDirS);
+        sb.append("-m ").append("rg ").append("-w ").append(workingDirS);
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
+    
+    public void filterDatabase () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        StringBuilder sb = new StringBuilder();
+        sb.append("-m ").append("fd ").append("-w ").append(workingDirS);
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
@@ -78,7 +88,7 @@ public class WheatGBSGo {
     public void callingGenotype () {
         String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
         StringBuilder sb = new StringBuilder();
-        sb.append("-m ").append("cg ").append("-w ").append(workingDirS).append(" -t 8 -it 1");
+        sb.append("-m ").append("cg ").append("-w ").append(workingDirS).append(" -t 8 -it 3");
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
