@@ -13,11 +13,17 @@ import gnu.trove.list.array.TIntArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import utils.IOUtils;
 
 /**
@@ -27,24 +33,16 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
-        //this.testPipe();
-        this.commandLineTest();
-        //this.gbsPipe();
+        this.iMacTest();
+        //this.commandLineTest();
+        //this.nioTest();
     }
     
-    public void gbsPipe () {
-        new DataPreprocess();
-        //this.productionPipe();
+    public void nioTest () {
+        new NIOTest();
     }
     
-    public void productionPipe () {
-        String parameterFileS = "/Users/feilu/Documents/analysisL/production/wheatGBS/gbs_parameter.txt";
-        //new LibGBSGo(parameterFileS);
-        
-        new QualityCheck();
-    }
-    
-    public void testPipe () {
+    public void iMacTest () {
         //this.cutsiteEstimate();//How many cut sites(BamH1-Msp1) are in the wheat genome?
         //this.testLibraryUniformity();// Test the library quality, if the all the samples were uniformly made.
         //this.testBarcodeDiff(); //Test the minimum substitution number between each barcode.
@@ -57,10 +55,10 @@ public class WheatGBSGo {
         //*************************
 
 //        this.parsingFastq();
-//        this.mergingTag();
+        this.mergingTag();
 //        this.aligningTag();
 //        this.callingSNP();
-//        this.callingAllele();
+        this.callingAllele();
 //        this.callingGenotype();
 //        this.filterDatabase();
 //        this.retrieveGenotype();
