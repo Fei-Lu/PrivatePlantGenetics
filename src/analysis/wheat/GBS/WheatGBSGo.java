@@ -33,8 +33,8 @@ import utils.IOUtils;
 public class WheatGBSGo {
     
     public WheatGBSGo () {
-        this.iMacTest();
-        //this.commandLineTest();
+        //this.iMacTest();
+        this.commandLineTest();
         //this.nioTest();
     }
     
@@ -55,10 +55,11 @@ public class WheatGBSGo {
         //*************************
 
 //        this.parsingFastq();
-        this.mergingTag();
+//        this.mergingTag();
 //        this.aligningTag();
 //        this.callingSNP();
-        this.callingAllele();
+//        this.removeLowCountSNP();
+//        this.callingAllele();
 //        this.callingGenotype();
 //        this.filterDatabase();
 //        this.retrieveGenotype();
@@ -96,6 +97,15 @@ public class WheatGBSGo {
         String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
         StringBuilder sb = new StringBuilder();
         sb.append("-m ").append("ca ").append("-w ").append(workingDirS).append(" -mq 30 -ml 1000");
+        String commandLine = sb.toString();
+        String[] args = commandLine.split(" ");
+        new GRTGo(args);
+    }
+    
+    public void removeLowCountSNP () {
+        String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
+        StringBuilder sb = new StringBuilder();
+        sb.append("-m ").append("rs ").append("-w ").append(workingDirS).append(" -mt 2");
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
