@@ -13,18 +13,13 @@ import gnu.trove.list.array.TIntArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import utils.IOUtils;
+import utils.PStringUtils;
 
 /**
  *
@@ -36,6 +31,7 @@ public class WheatGBSGo {
         //this.iMacTest();
         this.commandLineTest();
         //this.nioTest();
+        //this.test();
     }
     
     public void nioTest () {
@@ -58,7 +54,7 @@ public class WheatGBSGo {
 //        this.mergingTag();
 //        this.aligningTag();
 //        this.callingSNP();
-//        this.removeLowCountSNP();
+//        this.removeLowCountAltAllele();
 //        this.callingAllele();
 //        this.callingGenotype();
 //        this.filterDatabase();
@@ -102,10 +98,10 @@ public class WheatGBSGo {
         new GRTGo(args);
     }
     
-    public void removeLowCountSNP () {
+    public void removeLowCountAltAllele () {
         String workingDirS = "/Users/feilu/Documents/analysisL/pipelineTest/Lib_GBS/pipeOutput/";
         StringBuilder sb = new StringBuilder();
-        sb.append("-m ").append("rs ").append("-w ").append(workingDirS).append(" -mt 2");
+        sb.append("-m ").append("rs ").append("-w ").append(workingDirS).append(" -mca 10");
         String commandLine = sb.toString();
         String[] args = commandLine.split(" ");
         new GRTGo(args);
