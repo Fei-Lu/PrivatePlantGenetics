@@ -18,6 +18,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import org.biojava.nbio.alignment.Alignments;
+import org.biojava.nbio.alignment.SimpleGapPenalty;
+import org.biojava.nbio.core.alignment.matrices.SubstitutionMatrixHelper;
+import org.biojava.nbio.core.alignment.template.SequencePair;
+import org.biojava.nbio.core.alignment.template.SubstitutionMatrix;
+import org.biojava.nbio.core.sequence.DNASequence;
+import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
 import utils.IOUtils;
 import utils.PStringUtils;
 
@@ -29,9 +36,8 @@ public class WheatGBSGo {
     
     public WheatGBSGo () {
         //this.iMacTest();
-        this.commandLineTest();
+        //this.commandLineTest();
         //this.nioTest();
-        //this.test();
     }
     
     public void nioTest () {
