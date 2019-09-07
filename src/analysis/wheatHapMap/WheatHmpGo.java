@@ -20,12 +20,12 @@ import java.util.List;
 class WheatHmpGo {
     
     public WheatHmpGo () {
-        this.referenceGenome();
-        //this.test();
+        //this.referenceGenome();
+        this.VMapII();
     }
     
-    public void test () {
-        
+    public void VMapII () {
+        new VMapII();
     }
     
     public void referenceGenome () {
