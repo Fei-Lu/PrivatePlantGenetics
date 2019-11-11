@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package analysis.wheatHapMap;
+package analysis.publicData;
 
 import format.dna.FastaBit;
 import format.table.RowTable;

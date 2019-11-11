@@ -28,10 +28,6 @@ class WheatHmpGo {
         new VMapII();
     }
     
-    public void referenceGenome () {
-        new WheatReferenceGenome();
-    }
-    
     public static void main (String[] args) {
         new WheatHmpGo();
     }

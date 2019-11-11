@@ -16,8 +16,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import utils.IOFileFormat;
 import utils.IOUtils;
 import utils.PArrayUtils;
+import utils.PStringUtils;
 
 /**
  *
@@ -29,7 +31,8 @@ public class VMapII {
         //this.mergePosList();
         this.mergeVCFandFilter();
     }
-
+    
+    //not done yet
     public void mergeVCFandFilter() {
         double mafThresh = 0.01;
         double missingThresh = 0.2;
@@ -47,15 +50,17 @@ public class VMapII {
         int[][] columnIndices = new int[vcfFileNumber][];
         List<String> allTaxaList = new ArrayList();
         for (int i = 0; i < vcfFileNumber; i++) {
+            ts[i].sortAsText(0);
             taxaLists[i] = ts[i].getColumn(0);
             taxaListOlds[i] = ts[i].getColumn(1);
             allTaxaList.addAll(taxaLists[i]);
             columnIndices[i] = new int[taxaLists[i].size()];
         }
+//        ts[0].writeTextTable(taxaFile1, IOFileFormat.Text);
+//        ts[1].writeTextTable(taxaFile2, IOFileFormat.Text);
         Collections.sort(allTaxaList);
         int[] tableIndex = new int[allTaxaList.size()];
         int[] columnIndex = new int[allTaxaList.size()];
-
         for (int i = 0; i < tableIndex.length; i++) {
             int index = Collections.binarySearch(taxaLists[0], allTaxaList.get(i));
             if (index < 0) {
@@ -71,7 +76,7 @@ public class VMapII {
             for (int i = 0; i < vcfFileNumber; i++) {
                 while ((temps[i] = brs[i].readLine()).startsWith("##")) {
                 }
-                tems[i] = temps[0].split("\t");
+                tems[i] = temps[i].split("\t");
                 for (int j = 0; j < tems[i].length; j++) {
                     int index = Collections.binarySearch(taxaListOlds[i], tems[i][j]);
                     if (index < 0) {
@@ -84,6 +89,7 @@ public class VMapII {
             for (int i = 0; i < allTaxaList.size(); i++) {
                 int tIndex = columnIndices[tableIndex[i]][cnts[tableIndex[i]]];
                 columnIndex[i] = tIndex;
+                cnts[tableIndex[i]]++;
             }
             BufferedWriter bw = IOUtils.getTextWriter(outfileS);
             bw.write(this.getVCFHeaderABD_AB(allTaxaList));
@@ -110,16 +116,22 @@ public class VMapII {
                 String[] genoArray = allGenoList.toArray(new String[allGenoList.size()]);
                 String[] hexaGenoArray = abdGenoList.toArray(new String[abdGenoList.size()]);
                 String[] tetraGenoArray = abGenoList.toArray(new String[abGenoList.size()]);
-                
-                
-                
-                
+                sb = new StringBuilder();
+                for (int i = 0; i < 6; i++) {
+                    sb.append(tems[0][i]).append("\t");
+                }
+                String info = this.getInfo(genoArray, tems[0][4]);
+                sb.append(info);
+                bw.write(sb.toString());
+                bw.newLine();
                 
                 
                 
                 
                 
             }
+            
+            
             for (int i = 0; i < vcfFileNumber; i++) {
                 brs[i].close();
             }
@@ -130,7 +142,71 @@ public class VMapII {
         }
 
     }
-
+    
+    private String getInfo (String[] genoArray, String altList) {
+        int dp = 0;
+        int nz = 0;
+        int nAlt = PStringUtils.fastSplit(altList, ",").size();
+        int[] adCnt = new int[1+nAlt];
+        int[] acCnt = new int[1+nAlt];
+        int[][] gnCnt = new int[1+nAlt][1+nAlt];
+        int ht = 0;
+        List<String> tempList = null;
+        List<String> temList = null;
+        for (int i = 0; i < genoArray.length; i++) {
+            if (genoArray[i].startsWith(".")) {
+                nz++;
+                continue;
+            }
+            tempList = PStringUtils.fastSplit(genoArray[i], ":");
+            temList = PStringUtils.fastSplit(tempList.get(1), ",");
+            for (int j = 0; j < temList.size(); j++) {
+                int c = Integer.parseInt(temList.get(j));
+                dp+=c;
+                adCnt[j] += c;
+            }
+            temList = PStringUtils.fastSplit(tempList.get(0), "/");
+            for (int j = 0; j < temList.size(); j++) {
+                int c = Integer.parseInt(temList.get(j));
+                acCnt[c]++;
+            }
+            int index1 = Integer.parseInt(temList.get(0));
+            int index2 = Integer.parseInt(temList.get(1));
+            gnCnt[index1][index2]++;
+            if (index1 != index2) ht++;
+        }
+        nz = genoArray.length - nz;
+        int sum = 0;
+        for (int i = 0; i < acCnt.length; i++) {
+            sum+=acCnt[i];
+        }
+        double maf = ((double) acCnt[0] / sum);
+        if (maf >= 0.5) {
+            maf = ((double) acCnt[1] / sum);
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("DP=").append(dp).append(";NZ=").append(nz).append(";AD=");
+        for (int i = 0; i < adCnt.length; i++) {
+            sb.append(adCnt[i]).append(",");
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(";AC=");
+        for (int i = 1; i < acCnt.length; i++) {
+            sb.append(acCnt[i]).append(",");
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(";GN=");
+        for (int i = 0; i < gnCnt.length; i++) {
+            for (int j = i + 1; j < gnCnt.length; j++) {
+                sb.append(gnCnt[i][j]).append(",");
+            }
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(";HT=").append(ht).append(";MAF=").append(maf);
+        return sb.toString();
+    }
+    
+    
     public String getVCFHeaderABD_AB(List<String> taxaList) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
         Date dt = new Date();
@@ -155,7 +231,7 @@ public class VMapII {
                 + "##ALT=<ID=I,Description=\"Insertion\">\n"
                 + "##Species=Wheat\n"
                 + "##ReferenceGenome=iwgsc_refseqv1.0\n"
-                + "##VariantsMapVersion=vmap2\n");
+                + "##VariationMapVersion=vmap2\n");
         sb.append("#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT");
         for (int i = 0; i < taxaList.size(); i++) {
             sb.append("\t").append(taxaList.get(i));
