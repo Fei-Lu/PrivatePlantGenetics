@@ -178,12 +178,5 @@ public class KmerCount {
         }
     };
     
-    public static void main (String[] args) {
-        String inputFileS = "/Users/feilu/Desktop/a.txt";
-        String outFileS = "/Users/feilu/Desktop/b.txt";
-        String taxon = "A";
-        KmerCount kc = new KmerCount(inputFileS, taxon);
-        kc.writeBinaryFile(outFileS);
-    }
 }
 
