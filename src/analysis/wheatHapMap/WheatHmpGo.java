@@ -21,7 +21,12 @@ class WheatHmpGo {
     
     public WheatHmpGo () {
         //this.referenceGenome();
-        this.VMapII();
+        //this.VMapII();
+        this.deleteriousDB();
+    }
+    
+    public void deleteriousDB () {
+        new DeleteriousDB ();
     }
     
     public void VMapII () {

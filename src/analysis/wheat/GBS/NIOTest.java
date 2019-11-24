@@ -9,7 +9,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import utils.IOUtils;
-import utils.Tuple;
+import utils.Dyad;
 
 /**
  *
@@ -30,7 +30,7 @@ class NIOTest {
         double d = 0.138d;
         String outfileS = "/Users/feilu/Documents/analysisL/production/nio/nio-data-b.txt";
         try {
-            Tuple<FileChannel, ByteBuffer> iot = IOUtils.getNIOChannelBufferWriter(outfileS, 64);
+            Dyad<FileChannel, ByteBuffer> iot = IOUtils.getNIOChannelBufferWriter(outfileS, 64);
             FileChannel fc = iot.getFirstElement();
             ByteBuffer bb = iot.getSecondElement();
             System.out.print(bb.position()+"\t");
@@ -57,7 +57,7 @@ class NIOTest {
             bb.clear();
             fc.close();
             
-            Tuple<FileChannel, ByteBuffer> ioti = IOUtils.getNIOChannelBufferReader(outfileS, 128);
+            Dyad<FileChannel, ByteBuffer> ioti = IOUtils.getNIOChannelBufferReader(outfileS, 128);
             FileChannel fci = ioti.getFirstElement();
             bb = ioti.getSecondElement();
             fci.read(bb);

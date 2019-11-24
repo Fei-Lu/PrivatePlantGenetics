@@ -7,7 +7,6 @@ package analysis.maizeGeneticLoad;
 
 import format.table.RowTable;
 import java.util.List;
-import utils.CrossMapUtils;
 
 /**
  *
