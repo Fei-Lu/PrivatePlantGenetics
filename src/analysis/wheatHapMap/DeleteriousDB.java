@@ -5,15 +5,15 @@
  */
 package analysis.wheatHapMap;
 
-import format.table.RowTable;
-import gnu.trove.list.array.TDoubleArrayList;
-import graphcis.r.DensityPlot;
-import graphcis.r.ScatterPlot;
+import format.genomeAnnotation.GeneFeature;
 import graphcis.tablesaw.TablesawUtils;
-import static org.apache.commons.math3.stat.inference.TestUtils.t;
+import java.io.File;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReadOptions;
-
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.api.Histogram;
+import tech.tablesaw.plotly.api.ScatterPlot;
+import tech.tablesaw.plotly.components.Figure;
 /**
  *
  * @author feilu
@@ -21,39 +21,10 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 public class DeleteriousDB {
     
     public DeleteriousDB () {
-        this.selectHCGenes();
+       this.extractInfoFromVMap2();
     }
     
-    public void selectHCGenes () {
-        String infileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/geneExpression.txt";
-        double tpmThresh = 0.1;
-        
-        try {
-            Table t = TablesawUtils.readTsv(infileS);
-            int a = 3;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        
-//        TDoubleArrayList meanList = new TDoubleArrayList();
-//        TDoubleArrayList sdList = new TDoubleArrayList();
-//        RowTable<String> t = new RowTable(infileS);
-//        for (int i = 0; i < t.getRowNumber(); i++) {
-//            double mean = t.getCellAsDouble(i, 5);
-//            if (mean < tpmThresh) continue;
-//            meanList.add(mean);
-//            sdList.add(t.getCellAsDouble(i, 6));
-//        }
-//        System.out.println(meanList.size());
-//        double[] means = meanList.toArray();
-//        double[] sds = sdList.toArray();
-//        
-//        ScatterPlot s = new ScatterPlot(means, sds);
-//        //s.showGraph();
-//        DensityPlot d = new DensityPlot(means);
-//        d.showGraph();
+    public void extractInfoFromVMap2 () {
         
     }
 }
