@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import utils.IOUtils;
 import utils.PStringUtils;
@@ -26,7 +27,96 @@ import utils.PStringUtils;
 public class DeleteriousDB {
     
     public DeleteriousDB () {
-       this.extractInfoFromVMap2();
+       //this.extractInfoFromVMap2();
+       this.mkGenicAnnotation();
+       this.addSift();
+    }
+    
+    public void addSift () {
+        String siftDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/sift/output/";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
+        File[] fs = new File(siftDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".xls");
+        List<File> fList = Arrays.asList(fs);
+        fList.parallelStream().forEach(f -> {
+            //f = new File("/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/sift/output/chr001.subgenome.maf0.01byPop.SNP_SIFTannotations.xls");
+            String dbFileS = f.getName().split("\\.")[0]+"_SNP_anno.txt";
+            dbFileS = new File (dirS, dbFileS).getAbsolutePath();
+            Table td = TablesawUtils.readTsv(dbFileS);
+            Table ts = TablesawUtils.readTsv(f.getAbsolutePath());
+            ts.sortAscendingOn("POS");
+            String[] region = new String[td.rowCount()];
+            String[] type = new String[td.rowCount()];
+            String[] sift = new String[td.rowCount()];
+            int pos = 0;
+            String trans = null;
+            String alt = null;
+            int cnt = 0;
+            for (int i = 0; i < td.rowCount(); i++) {
+                pos = td.intColumn("Pos").getInt(i);
+                trans = td.getString(i, "Transcript");
+                alt = td.getString(i, "Alt");
+                Table result = ts.where(ts.intColumn("POS").isEqualTo(pos).and(ts.stringColumn("TRANSCRIPT_ID").isEqualTo(trans)));
+                if (result.isEmpty()) {
+                    region[i] = "NA";
+                    type[i] = "NONCODING";
+                    sift[i] = "NA";
+                }
+                else {
+                    Table result2 = result.where(result.stringColumn("ALT_ALLELE").isEqualTo(alt));
+                    if (result2.isEmpty()) {
+                        
+                    }
+                    else {
+                        region[i] = result2.getString(0, "REGION");
+                        type[i] = result2.getString(0, "VARIANT_TYPE");
+                        sift[i] = result2.getString(0, "SIFT_SCORE");
+                        if (sift[i].isEmpty()) sift[i] = "NA";
+                    }
+                }
+                cnt++;
+                if (cnt%10000 == 0) System.out.println(cnt+"\t"+dbFileS);
+            }
+            StringColumn regionC = StringColumn.create("Region", region);
+            StringColumn typeC = StringColumn.create("Variant_type", type);
+            StringColumn siftC = StringColumn.create("SIFT_score", sift);
+            int columnIndex = td.columnCount();
+            td.insertColumn(columnIndex, regionC);
+            td.insertColumn(++columnIndex, typeC);
+            td.insertColumn(++columnIndex, siftC);
+            td = td.where(td.stringColumn("Region").isNotEqualTo("NA"));
+            TablesawUtils.writeTsv(td, dbFileS);
+            System.out.println(f.getAbsolutePath()+ " completed");
+        });
+        
+    }
+    
+    public void mkGenicAnnotation () {
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPByChr/";
+        String outDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
+        File[] fs = new File(inDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".gz");
+        List<File> fList = Arrays.asList(fs);
+        fList.parallelStream().forEach(f -> {
+            String outfileS = f.getName().split("_")[0]+"_SNP_anno.txt";
+            outfileS = new File (outDirS, outfileS).getAbsolutePath();
+            try {
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+                String temp = null;
+                while ((temp = br.readLine()) != null) {
+                    bw.write(temp);
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+                br.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        
     }
     
     public void extractInfoFromVMap2 () {
