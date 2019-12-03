@@ -5,15 +5,15 @@
  */
 package analysis.wheatHapMap;
 
-import gnu.trove.set.TCharSet;
-import gnu.trove.set.hash.TCharHashSet;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import utils.IOUtils;
 import utils.PStringUtils;
+import utils.wheat.RefV1Utils;
 
 /**
  *
@@ -22,21 +22,123 @@ import utils.PStringUtils;
 public class AncestralDB {
     
     public AncestralDB () {
-        this.splitMaf();
+        //this.splitMafBySubgenome();
+        //this.splitMafByChr();
     }
     
-    public void splitMaf () {
+    public void splitMafByChr () {
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/003_ancestral/bySubgenome/";
+        String outDirS = "/Users/feilu/Documents/analysisH/vmap2/003_ancestral/byChr";
+        File[] fs = new File(inDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".aln.gz");
+        List<File> fList = Arrays.asList(fs);
+        String header = "Chr\tPos\tAncestral\tRef\tUrartu\tBarley";
+        String[] bases = {"A","G","T","C"};
+        Arrays.sort(bases);
+        fList.parallelStream().forEach(f -> {
+            BufferedWriter[] bws = new BufferedWriter[14];
+            String[] fileNames = new String[14];
+            int[] chrIDs = new int[14];
+            char subGenome = '-';
+            if (f.getName().startsWith("A")) {
+                subGenome = 'A';
+                int cnt = 0;
+                for (int i = 0; i < 7; i++) {
+                    String fileName1 = "chr"+PStringUtils.getNDigitNumber(3, i*6+1)+"_ancestral.txt.gz";
+                    fileName1 = new File(outDirS, fileName1).getAbsolutePath();
+                    String fileName2 = "chr"+PStringUtils.getNDigitNumber(3, i*6+2)+"_ancestral.txt.gz";
+                    fileName2 = new File(outDirS, fileName2).getAbsolutePath();
+                    fileNames[cnt] = fileName1; 
+                    chrIDs[cnt] = i*6+1;
+                    cnt++;
+                    fileNames[cnt] = fileName2; 
+                    chrIDs[cnt] = i*6+2;
+                    cnt++;
+                }
+            }
+            else if (f.getName().startsWith("B")) {
+                subGenome = 'B';
+                int cnt = 0;
+                for (int i = 0; i < 7; i++) {
+                    String fileName1 = "chr"+PStringUtils.getNDigitNumber(3, i*6+3)+"_ancestral.txt.gz";
+                    fileName1 = new File(outDirS, fileName1).getAbsolutePath();
+                    String fileName2 = "chr"+PStringUtils.getNDigitNumber(3, i*6+4)+"_ancestral.txt.gz";
+                    fileName2 = new File(outDirS, fileName2).getAbsolutePath();
+                    fileNames[cnt] = fileName1; 
+                    chrIDs[cnt] = i*6+3;
+                    cnt++;
+                    fileNames[cnt] = fileName2; 
+                    chrIDs[cnt] = i*6+4;
+                    cnt++;
+                }
+            }
+            else if (f.getName().startsWith("D")) {
+                subGenome = 'D';
+                int cnt = 0;
+                for (int i = 0; i < 7; i++) {
+                    String fileName1 = "chr"+PStringUtils.getNDigitNumber(3, i*6+5)+"_ancestral.txt.gz";
+                    fileName1 = new File(outDirS, fileName1).getAbsolutePath();
+                    String fileName2 = "chr"+PStringUtils.getNDigitNumber(3, i*6+6)+"_ancestral.txt.gz";
+                    fileName2 = new File(outDirS, fileName2).getAbsolutePath();
+                    fileNames[cnt] = fileName1; 
+                    chrIDs[cnt] = i*6+5;
+                    cnt++;
+                    fileNames[cnt] = fileName2; 
+                    chrIDs[cnt] = i*6+6;
+                    cnt++;
+                }
+            }
+            try {
+                for (int i = 0; i < bws.length; i++) {
+                    bws[i] = IOUtils.getTextGzipWriter(fileNames[i]);
+                    bws[i].write(header);
+                    bws[i].newLine();
+                }
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                String temp = br.readLine();
+                StringBuilder sb = new StringBuilder();
+                List<String> l = new ArrayList();
+                int index = -1;
+                while ((temp = br.readLine()) != null) {
+                    sb.setLength(0);
+                    l = PStringUtils.fastSplit(temp);
+                    String chromosome = l.get(0).replaceFirst("chr", "")+subGenome;
+                    int chrID = RefV1Utils.getChrID(chromosome, Integer.parseInt(l.get(1)));
+                    int pos = RefV1Utils.getPosOnChrID(chromosome, Integer.parseInt(l.get(1)));
+                    index = Arrays.binarySearch(chrIDs, chrID);
+                    sb.append(chrID).append("\t").append(pos).append("\t");
+                    if (l.get(3).equals(l.get(4)) && Arrays.binarySearch(bases, l.get(3)) > -1) {
+                        sb.append(l.get(3)).append("\t");
+                    }
+                    else sb.append("NA").append("\t");
+                    sb.append(l.get(2)).append("\t").append(l.get(3)).append("\t").append(l.get(4));
+                    bws[index].write(sb.toString());
+                    bws[index].newLine();
+                }
+                for (int i = 0; i < bws.length; i++) {
+                    bws[i].flush();
+                    bws[i].close();
+                }
+                br.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    public void splitMafBySubgenome () {
         String inDirS = "/Volumes/Fei_HDD_Mac/Gerp/asAlle/";
         String outDirS = "/Users/feilu/Documents/analysisH/vmap2/003_ancestral/bySubgenome/";
         File[] fs = new File(inDirS).listFiles();
         fs = IOUtils.listFilesEndsWith(fs, ".maf");
         List<File> fList = Arrays.asList(fs);
         fList.parallelStream().forEach(f -> {
-            String outfileS = f.getName().replaceFirst(".maf", ".aln");
+            String outfileS = f.getName().replaceFirst(".maf", ".aln.gz");
             outfileS = new File(outDirS, outfileS).getAbsolutePath();
             try {
                 BufferedReader br = IOUtils.getTextReader(f.getAbsolutePath());
-                BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+                BufferedWriter bw = IOUtils.getTextGzipWriter(outfileS);
                 String temp = null;
                 String header = "Chr\tPos\tRef\tUrartu\tBarley";
                 bw.write(header);
