@@ -5,6 +5,7 @@
  */
 package analysis.wheatHapMap;
 
+import format.table.RowTable;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import graphcis.tablesaw.TablesawUtils;
@@ -28,10 +29,259 @@ public class DeleteriousDB {
     
     public DeleteriousDB () {
        //this.extractInfoFromVMap2();
-       this.mkGenicAnnotation();
-       this.addSift();
+       //this.mkGenicAnnotation();
+       //this.addSift2();
+       //this.addAncestral();
+       //this.addDAF();
     }
     
+    public void addDAF () {
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation/";
+        File[] fs = new File (dirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".txt");
+        List<File> fList = Arrays.asList(fs);
+        fList.parallelStream().forEach(f -> {
+            String header = null;
+            List<String> recordList = new ArrayList();
+            String tem = null;
+            try {
+                BufferedReader br = IOUtils.getTextReader(f.getAbsolutePath());
+                header = br.readLine();
+                List<String> l = PStringUtils.fastSplit(header);
+                StringBuilder sb = new StringBuilder(header);
+                sb.append("\tDAF\tDAF_ABD\t").append(l.get(9).replaceFirst("AAF", "DAF"));
+                header = sb.toString();
+                String temp = null;
+                while ((temp = br.readLine()) != null) {
+                    recordList.add(temp);
+                }
+                br.close();
+                f = new File("/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/out", f.getName());
+                BufferedWriter bw = IOUtils.getTextWriter(f.getAbsolutePath());
+                bw.write(header);
+                bw.newLine();
+                float daf = -1;
+                float dafABD = -1;
+                float dafOther = -1;
+                String subMajor = null;
+                String subMinor = null;
+                double subMaf = -1;
+                for (int i = 0; i < recordList.size(); i++) {
+                    sb.setLength(0);
+                    sb.append(recordList.get(i)).append("\t");
+                    l = PStringUtils.fastSplit(recordList.get(i));
+                    if (l.get(5).equals(l.get(14))) {
+                        sb.append((float)Double.parseDouble(l.get(7))).append("\t");
+                    }
+                    else if (l.get(6).equals(l.get(14))) {
+                        sb.append((float)(1- Double.parseDouble(l.get(7)))).append("\t");
+                    }
+                    else sb.append("NA\t");
+                    if (Double.parseDouble(l.get(8)) < 0.5) {
+                        subMajor = l.get(3);
+                        subMinor = l.get(4);
+                        subMaf = Double.parseDouble(l.get(8));
+                    }
+                    else {
+                        subMajor = l.get(4);
+                        subMinor = l.get(3);
+                        subMaf = 1 - Double.parseDouble(l.get(8));
+                    }
+                    if (l.get(14).equals(subMajor)) {
+                        sb.append((float)subMaf).append("\t");
+                    }
+                    else if (l.get(14).equals(subMinor)) {
+                        sb.append((float)(1-subMaf)).append("\t");
+                    }
+                    else sb.append("NA\t");
+                    
+                    tem = recordList.get(i);
+                    if (Double.parseDouble(l.get(9)) < 0.5) {
+                        subMajor = l.get(3);
+                        subMinor = l.get(4);
+                        subMaf = Double.parseDouble(l.get(9));
+                    }
+                    else {
+                        subMajor = l.get(4);
+                        subMinor = l.get(3);
+                        subMaf = 1 - Double.parseDouble(l.get(9));
+                    }
+                    if (l.get(14).equals(subMajor)) {
+                        sb.append((float)subMaf);
+                    }
+                    else if (l.get(14).equals(subMinor)) {
+                        sb.append((float)(1-subMaf));
+                    }
+                    else sb.append("NA");
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+            }
+            catch (Exception e) {
+                System.out.println(tem);
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    public void addAncestral () {
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/003_ancestral/byChr/";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation/";
+        File[] fs = new File (inDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".gz");
+        List<File> fList = Arrays.asList(fs);
+        fList.parallelStream().forEach(f -> {
+            String annoFileS = f.getName().split("_")[0]+"_SNP_anno.txt";
+            annoFileS = new File(dirS, annoFileS).getAbsolutePath();
+            String header = null;
+            List<String> recordList = new ArrayList();
+            TIntArrayList posList = new TIntArrayList();
+            String[] ancestral = null;
+            try {
+                BufferedReader br = IOUtils.getTextReader(annoFileS);
+                header = br.readLine();
+                String temp = null;
+                List<String> l = null;
+                while ((temp = br.readLine()) != null) {
+                    recordList.add(temp);
+                    l = PStringUtils.fastSplit(temp);
+                    posList.add(Integer.parseInt(l.get(2)));
+                }
+                ancestral = new String[posList.size()];
+                for (int i = 0; i < ancestral.length; i++) ancestral[i] = "NA";
+                br.close();
+                br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                temp = br.readLine();
+                while ((temp = br.readLine()) != null) {
+                    l = PStringUtils.fastSplit(temp);
+                    int pos = Integer.parseInt(l.get(1));
+                    int index = posList.binarySearch(pos);
+                    if (index<0) continue;
+                    ancestral[index] = l.get(2);
+                }
+                br.close();
+                BufferedWriter bw = IOUtils.getTextWriter(annoFileS);
+                StringBuilder sb = new StringBuilder(header);
+                sb.append("\tAncestral");
+                bw.write(sb.toString());
+                bw.newLine();
+                for (int i = 0; i < recordList.size(); i++) {
+                    sb.setLength(0);
+                    sb.append(recordList.get(i)).append("\t").append(ancestral[i]);
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+        });
+    }
+    
+    public void addSift2 () {
+        String siftDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/sift/output/";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
+        File[] fs = new File(siftDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".xls");
+        List<File> fList = Arrays.asList(fs);
+        fList.parallelStream().forEach(f -> {
+            //f = new File("/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/sift/output/chr001.subgenome.maf0.01byPop.SNP_SIFTannotations.xls");
+            String dbFileS = f.getName().split("\\.")[0]+"_SNP_anno.txt";
+            dbFileS = new File (dirS, dbFileS).getAbsolutePath();
+            RowTable<String> t = new RowTable (f.getAbsolutePath());
+            SIFTRecord[] records = new SIFTRecord[t.getRowNumber()];
+            for (int i = 0; i < records.length; i++) {
+                SIFTRecord s = new SIFTRecord(Integer.parseInt(t.getCell(i, 1)), t.getCell(i, 3), t.getCell(i, 4), t.getCell(i, 7), t.getCell(i, 8), t.getCell(i, 12)); 
+                records[i] = s;
+            }
+            Arrays.sort(records);
+            try {
+                List<String> dbList = new ArrayList();
+                String temp = null;
+                BufferedReader br = IOUtils.getTextReader(dbFileS);
+                String header = br.readLine();
+                while ((temp = br.readLine()) != null) {
+                    dbList.add(temp);
+                }
+                br.close();
+                BufferedWriter bw = IOUtils.getTextWriter(dbFileS);
+                StringBuilder sb = new StringBuilder(header);
+                sb.append("\tRegion\tVariant_type\tSIFT_score");
+                bw.write(sb.toString());
+                bw.newLine();
+                List<String> l = null;
+                for (int i = 0; i < dbList.size(); i++) {
+                    l = PStringUtils.fastSplit(dbList.get(i));
+                    SIFTRecord query = new SIFTRecord(Integer.parseInt(l.get(2)), l.get(4), l.get(10));
+                    int index = Arrays.binarySearch(records, query);
+                    if (index < 0) continue;
+                    sb.setLength(0);
+                    sb.append(dbList.get(i)).append("\t");
+                    sb.append(records[index].region).append("\t");
+                    sb.append(records[index].type).append("\t");
+                    sb.append(records[index].value);
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        
+    }
+    
+    class SIFTRecord implements Comparable<SIFTRecord> {
+
+        public int pos;
+        public String alt;
+        public String transcript;
+        public String region;
+        public String type;
+        public String value;
+
+        
+        public SIFTRecord(int pos, String alt, String transcript) {
+            this.pos = pos;
+            this.alt = alt;
+            this.transcript = transcript;
+        }
+        
+        public SIFTRecord(int pos, String alt, String transcript, String region, String type, String value) {
+            this.pos = pos;
+            this.alt = alt;
+            this.transcript = transcript;
+            this.region = region;
+            this.type = type;
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(SIFTRecord o) { //
+            if (this.pos < o.pos) { 
+                return -1;
+                } else if (this.pos == o.pos) {
+                    int index = this.alt.compareTo(o.alt);
+                    if (index < 0) {
+                        return -1;
+                    }
+                    else if (index > 0) {
+                        return 1;
+                    }
+                    else return transcript.compareTo(o.transcript);
+                } else {
+                    return 1;
+            }
+        }
+}
+    /**
+     * @deprecated 
+     */
     public void addSift () {
         String siftDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/sift/output/";
         String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
@@ -148,7 +398,7 @@ public class DeleteriousDB {
         }
         vmapList.parallelStream().forEach(f -> {
             int chrIndex = Integer.parseInt(f.getName().substring(3, 6))-1;
-            String outfileS = new File (outDirS, f.getName().replaceFirst(".vcf.gz", "genicSNP.txt.gz")).getAbsolutePath();
+            String outfileS = new File (outDirS, f.getName().replaceFirst(".vcf.gz", "_genicSNP.txt.gz")).getAbsolutePath();
             int[] dc = {5, 6, 11, 12, 17, 18, 23, 24, 29, 30, 35, 36, 41, 42};
             Arrays.sort(dc);
             StringBuilder sb = new StringBuilder();

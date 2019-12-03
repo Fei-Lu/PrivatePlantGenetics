@@ -23,8 +23,8 @@ class WheatHmpGo {
         //this.referenceGenome();
         //this.VMapII();
         //this.geneDB();
-        //this.deleteriousDB();
-        this.ancestralDB();
+        this.deleteriousDB();
+        //this.ancestralDB();
     }
     
     public void ancestralDB () {
