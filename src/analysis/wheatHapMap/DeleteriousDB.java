@@ -32,7 +32,7 @@ public class DeleteriousDB {
        //this.mkGenicAnnotation();
        //this.addSift2();
        //this.addAncestral();
-       //this.addDAF();
+       this.addDAF();
     }
     
     public void addDAF () {
@@ -56,7 +56,6 @@ public class DeleteriousDB {
                     recordList.add(temp);
                 }
                 br.close();
-                f = new File("/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/out", f.getName());
                 BufferedWriter bw = IOUtils.getTextWriter(f.getAbsolutePath());
                 bw.write(header);
                 bw.newLine();
