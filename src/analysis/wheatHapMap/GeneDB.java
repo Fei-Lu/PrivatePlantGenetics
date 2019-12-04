@@ -22,10 +22,11 @@ import tech.tablesaw.plotly.components.Figure;
 public class GeneDB {
     
     public GeneDB () {
-        this.selectHCGenes();
+        this.selectHCGenes1();
+        //this.selectHCGenes2();
     }
-    
-    public void selectHCGenes () {
+
+    public void selectHCGenes1 () {
         String infileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/geneExpression.txt";
         String geneFeatureFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";
         String outfileS = "/Users/feilu/Documents/analysisH/vmap2/001_geneHC/geneHC.txt";
@@ -37,7 +38,7 @@ public class GeneDB {
             Table t = TablesawUtils.readTsv(infileS);
             System.out.println(t.structure());
             System.out.println(t.rowCount());
-            t = t.where(t.intColumn("Is_Unique_gene(1,0)").isEqualTo(1).and(t.doubleColumn(5).isGreaterThan(tpmThresh)));
+            t = t.where(t.intColumn("Is_Unique_gene(1,0)").isEqualTo(1).and(t.doubleColumn(8).isGreaterThan(tpmThresh)));
             t.removeColumns("Is_Overlapped_gene(1,0)", "Number_Overlapped_gene", "Is_Unique_gene(1,0)");
             gf.sortGeneByName();
             int[] chr = new int[t.rowCount()];

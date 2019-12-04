@@ -32,7 +32,15 @@ public class DeleteriousDB {
        //this.mkGenicAnnotation();
        //this.addSift2();
        //this.addAncestral();
-       this.addDAF();
+       //this.addDAF();
+       this.addGerp();
+    }
+    
+    public void addGerp () {
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation/";
+        File[] fs = new File (dirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".txt");
+        List<File> fList = Arrays.asList(fs);
     }
     
     public void addDAF () {
@@ -115,6 +123,8 @@ public class DeleteriousDB {
                     bw.write(sb.toString());
                     bw.newLine();
                 }
+                bw.flush();
+                bw.close();
             }
             catch (Exception e) {
                 System.out.println(tem);
@@ -124,7 +134,7 @@ public class DeleteriousDB {
     }
     
     public void addAncestral () {
-        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/003_ancestral/byChr/";
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/002_ancestral/byChr";
         String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation/";
         File[] fs = new File (inDirS).listFiles();
         fs = IOUtils.listFilesEndsWith(fs, ".gz");
@@ -181,7 +191,7 @@ public class DeleteriousDB {
     }
     
     public void addSift2 () {
-        String siftDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/sift/output/";
+        String siftDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/001_sift/output";
         String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
         File[] fs = new File(siftDirS).listFiles();
         fs = IOUtils.listFilesEndsWith(fs, ".xls");

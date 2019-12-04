@@ -19,9 +19,9 @@ import utils.wheat.RefV1Utils;
  *
  * @author feilu
  */
-public class AncestralDB {
+public class AncestralAnno {
     
-    public AncestralDB () {
+    public AncestralAnno () {
         //this.splitMafBySubgenome();
         //this.splitMafByChr();
     }

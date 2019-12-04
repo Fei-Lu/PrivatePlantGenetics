@@ -36,7 +36,7 @@ public class WheatReferenceGene {
         String pgfFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";
         String infileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/expressionByTissueSummary.txt";
         String outfileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/geneExpression.txt";
-        String header = "Gene\tIs_Overlapped_gene(1,0)\tNumber_Overlapped_gene\tIs_Unique_gene(1,0)\tLongest_transcript\tTPM_mean\tTPM_sd\tTPM_rsd";
+        String header = "Gene\tIs_Overlapped_gene(1,0)\tNumber_Overlapped_gene\tIs_Unique_gene(1,0)\tLongest_transcript\tTPM_mean\tTPM_sd\tTPM_rsd\tTPM_max\tTPM_min";
         RowTable<String> t = new RowTable(infileS);
         t.sortAsText(0);
         List<String> tList = t.getColumn(0);
@@ -79,7 +79,8 @@ public class WheatReferenceGene {
                 String tName = gf.getTranscriptName(i, gf.getLongestTranscriptIndex(i));
                 sb.append(tName).append("\t");
                 int index = Collections.binarySearch(tList, tName);
-                sb.append(t.getCell(index, 1)).append("\t").append(t.getCell(index, 2)).append("\t").append(t.getCell(index, 3));
+                sb.append(t.getCell(index, 1)).append("\t").append(t.getCell(index, 2)).append("\t").append(t.getCell(index, 3)).append("\t");
+                sb.append(t.getCell(index, 4)).append("\t").append(t.getCell(index, 5));
                 bw.write(sb.toString());
                 bw.newLine();
             }
@@ -95,7 +96,7 @@ public class WheatReferenceGene {
         String infileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/expressionByTissue.txt";
         String outfileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/expressionByTissueSummary.txt";
         RowTable<String> t = new RowTable(infileS);
-        String header = "Transcripts\tTPM_mean\tTPM_sd\tTPM_rsd";
+        String header = "Transcripts\tTPM_mean\tTPM_sd\tTPM_rsd\tTPM_max\tTPM_min";
         try {
             BufferedWriter bw = IOUtils.getTextWriter(outfileS);
             bw.write(header);
@@ -113,7 +114,10 @@ public class WheatReferenceGene {
                 double mean = ds.getMean();
                 double sd = ds.getStandardDeviation();
                 double rsd = sd/mean;
+                double max = ds.getMax();
+                double min = ds.getMin();
                 sb.append("\t").append((float)mean).append("\t").append((float)sd).append("\t").append((float)rsd);
+                sb.append("\t").append((float)max).append("\t").append(min);
                 bw.write(sb.toString());
                 bw.newLine();
             }
