@@ -23,14 +23,14 @@ class WheatHmpGo {
         //this.referenceGenome();
         //this.VMapII();
         //this.geneDB();
-        //this.deleteriousDB();
-        this.annotation();
+        this.deleteriousDB();
+        //this.annotation();
     }
     
     public void annotation () {
         //this.ancestralAnno();
         //this.gerpAnno();
-        this.phyloPAnno();
+        //this.phyloPAnno();
     }
     
     public void phyloPAnno () {

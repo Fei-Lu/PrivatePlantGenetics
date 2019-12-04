@@ -5,6 +5,7 @@
  */
 package analysis.wheatHapMap;
 
+import format.table.ColumnTable;
 import format.table.RowTable;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
@@ -16,9 +17,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.api.Histogram;
+import tech.tablesaw.plotly.api.ScatterPlot;
+import tech.tablesaw.plotly.components.Figure;
 import utils.IOUtils;
 import utils.PStringUtils;
 /**
@@ -33,14 +39,127 @@ public class DeleteriousDB {
        //this.addSift2();
        //this.addAncestral();
        //this.addDAF();
-       this.addGerp();
+       //this.addGerp();
+       //this.addPhyloP();
+
+    }
+    
+    public void addPhyloP () {
+        String phyloPDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/004_phylop/byChr";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation/";
+        File[] fs = new File (dirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".txt.gz");
+        List<File> fList = Arrays.asList(fs);
+        fList.parallelStream().forEach(f -> {
+            String phyloPFileS = f.getName().split("_")[0]+"_phyloP.txt.gz";
+            phyloPFileS = new File (phyloPDirS, phyloPFileS).getAbsolutePath();
+            String header = null;
+            List<String> recordList = new ArrayList();
+            try {
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                header = br.readLine();
+                StringBuilder sb = new StringBuilder(header);
+                sb.append("\tPhyloP");
+                header = sb.toString();
+                String temp = null;
+                TIntArrayList posList = new TIntArrayList();
+                List<String> l = new ArrayList();
+                while ((temp = br.readLine()) != null) {
+                    recordList.add(temp);
+                    l = PStringUtils.fastSplit(temp);
+                    posList.add(Integer.parseInt(l.get(2)));
+                }
+                br.close();
+                br = IOUtils.getTextGzipReader(phyloPFileS);
+                br.readLine();
+                int pos = -1;
+                int index = -1;
+                String[] phyloP = new String[posList.size()];
+                for (int i = 0; i < phyloP.length; i++) phyloP[i] = "NA";
+                while ((temp = br.readLine()) != null) {
+                    l = PStringUtils.fastSplit(temp);
+                    pos = Integer.parseInt(l.get(1));
+                    index = posList.binarySearch(pos);
+                    if (index < 0) continue;
+                    phyloP[index] = l.get(2);
+                }
+                br.close();
+                BufferedWriter bw = IOUtils.getTextGzipWriter(f.getAbsolutePath());
+                bw.write(header);
+                bw.newLine();
+                for (int i = 0; i < posList.size(); i++) {
+                    sb.setLength(0);
+                    sb.append(recordList.get(i)).append("\t").append(phyloP[i]);
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println(f.getAbsolutePath());
+        });
     }
     
     public void addGerp () {
+        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
         String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation/";
         File[] fs = new File (dirS).listFiles();
-        fs = IOUtils.listFilesEndsWith(fs, ".txt");
+        fs = IOUtils.listFilesEndsWith(fs, ".txt.gz");
         List<File> fList = Arrays.asList(fs);
+        fList.parallelStream().forEach(f -> {
+            String gerpFileS = f.getName().split("_")[0]+"_gerp.txt.gz";
+            gerpFileS = new File (gerpDirS, gerpFileS).getAbsolutePath();
+            String header = null;
+            List<String> recordList = new ArrayList();
+            try {
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                header = br.readLine();
+                StringBuilder sb = new StringBuilder(header);
+                sb.append("\tGerp");
+                header = sb.toString();
+                String temp = null;
+                TIntArrayList posList = new TIntArrayList();
+                List<String> l = new ArrayList();
+                while ((temp = br.readLine()) != null) {
+                    recordList.add(temp);
+                    l = PStringUtils.fastSplit(temp);
+                    posList.add(Integer.parseInt(l.get(2)));
+                }
+                br.close();
+                br = IOUtils.getTextGzipReader(gerpFileS);
+                br.readLine();
+                int pos = -1;
+                int index = -1;
+                String[] gerp = new String[posList.size()];
+                for (int i = 0; i < gerp.length; i++) gerp[i] = "NA";
+                while ((temp = br.readLine()) != null) {
+                    l = PStringUtils.fastSplit(temp);
+                    pos = Integer.parseInt(l.get(1));
+                    index = posList.binarySearch(pos);
+                    if (index < 0) continue;
+                    gerp[index] = l.get(2);
+                }
+                br.close();
+                BufferedWriter bw = IOUtils.getTextGzipWriter(f.getAbsolutePath());
+                bw.write(header);
+                bw.newLine();
+                for (int i = 0; i < posList.size(); i++) {
+                    sb.setLength(0);
+                    sb.append(recordList.get(i)).append("\t").append(gerp[i]);
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println(f.getAbsolutePath());
+        });
     }
     
     public void addDAF () {
