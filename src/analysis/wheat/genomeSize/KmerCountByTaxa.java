@@ -36,7 +36,7 @@ public class KmerCountByTaxa {
             kmerSet.addAll(HashLongSets.newImmutableSet(kcs[i].kmers));
         }
         kmers = kmerSet.toLongArray();
-        count = new int[kcs.length][kmers.length];
+        count = new int[kmers.length][kcs.length];
         int index = 0;
         for (int i = 0; i < kmers.length; i++) {
             for (int j = 0; j < kcs.length; j++) {
@@ -60,7 +60,7 @@ public class KmerCountByTaxa {
             for (int i = 0; i < count.length; i++) {
                 sb.setLength(0);
                 sb.append(BaseEncoder.getSequenceFromLong(kmers[i]).substring(0, this.kmerLength));
-                for (int j = 0; j < count.length; j++) {
+                for (int j = 0; j < count[0].length; j++) {
                     sb.append("\t").append(count[i][j]);
                 }
                 bw.write(sb.toString());
