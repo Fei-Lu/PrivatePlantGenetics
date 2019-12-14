@@ -5,15 +5,29 @@
  */
 package analysis.wheatHapMap;
 
+import com.mysql.cj.xdevapi.Column;
 import format.genomeAnnotation.GeneFeature;
+import format.range.Range;
+import format.table.ColumnTable;
+import format.table.RowTable;
 import graphcis.tablesaw.TablesawUtils;
+
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.ScatterPlot;
 import tech.tablesaw.plotly.components.Figure;
+import utils.Dyad;
+import utils.IOUtils;
+import utils.PStringUtils;
 
 /**
  *
@@ -22,10 +36,66 @@ import tech.tablesaw.plotly.components.Figure;
 public class GeneDB {
     
     public GeneDB () {
-        this.selectHCGenes1();
-        //this.selectHCGenes2();
+        //this.selectHCGenes1();
+        //this.addGFFInfo();
+        this.addSiftInfo();
     }
 
+    public void addSiftInfo () {
+        String dbFileS = "/Users/feilu/Documents/analysisH/vmap2/001_geneHC/geneHC.txt";
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
+        Dyad<String, List<String>> two = VMapDBUtils.getDBInfo(dbFileS);
+        String header = two.getFirstElement();
+        List<String> recordList = two.getSecondElement();
+        List<File> fList = IOUtils.getFileListInDirEndsWith(inDirS, ".gz");
+        HashMap<String, String>[] infoMap = new HashMap[fList.size()];
+        AtomicInteger aCnt = new AtomicInteger();
+        fList.parallelStream().forEach(f -> {
+            int chrIndex = Integer.parseInt(f.getName().split("_")[0].replaceFirst("chr", ""))-1;
+            infoMap[chrIndex] = new HashMap<>();
+            ColumnTable<String> t = new ColumnTable<>(f.getAbsolutePath());
+            int columnIndex = t.getColumnIndex("Transcript");
+            HashSet<String> tSet = new HashSet<>(t.getColumn(columnIndex));
+            aCnt.addAndGet(tSet.size());
+
+        });
+        System.out.println(aCnt.intValue());
+    }
+
+    public void addGFFInfo () {
+        String infileS = "/Users/feilu/Documents/analysisH/vmap2/001_geneHC/geneHC.txt";
+        String geneFeatureFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";
+        GeneFeature gf = new GeneFeature (geneFeatureFileS);
+        gf.sortGeneByName();
+        Dyad<String, List<String>> two = VMapDBUtils.getDBInfo(infileS);
+        String header = two.getFirstElement();
+        List<String> recordList = two.getSecondElement();
+        String query = null;
+        List<String> l = null;
+        int index = -1;
+        int tn = 0;
+        for (int i = 0; i < recordList.size(); i++) {
+            l = PStringUtils.fastSplit(recordList.get(i));
+            query = l.get(0);
+            index = gf.getGeneIndex(query);
+            tn = gf.getTranscriptNumber(index);
+            StringBuilder sb =  new StringBuilder();
+            for (int j = 0; j < tn; j++) {
+                if (l.get(1).equals(gf.getTranscriptName(index, j))) {
+                    int len = 0;
+                    sb.setLength(0);
+                    List<Range> cds = gf.getCDSList(index, j);
+                    for (int k = 0; k < cds.size(); k++) {
+                        len+=cds.get(k).getRangeSize();
+                    }
+                    sb.append(recordList.get(i)).append("\t").append(cds.size()).append("\t").append(len);
+                    recordList.set(i, sb.toString());
+                }
+            }
+        }
+        VMapDBUtils.writeDB(header+"\tCDSExonNumber\tCDSLength", recordList, infileS);
+    }
+    
     public void selectHCGenes1 () {
         String infileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/geneExpression.txt";
         String geneFeatureFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";

@@ -24,7 +24,7 @@ class WheatHmpGo {
         //this.VMapII();
         //this.geneDB();
         //this.deleteriousDB();
-        //this.annotation();
+        this.annotation();
         //this.deleteriousBiology();
     }
     
@@ -34,8 +34,8 @@ class WheatHmpGo {
     
     public void annotation () {
         //this.ancestralAnno();
-        this.siftAnno();
-        //this.gerpAnno();
+        //this.siftAnno();
+        this.gerpAnno();
         //this.phyloPAnno();
     }
     

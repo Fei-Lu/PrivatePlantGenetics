@@ -21,9 +21,71 @@ import utils.wheat.RefV1Utils;
 public class GerpAnno {
     
     public GerpAnno () {
-        this.splitByChrID();
+        //this.splitByChrID();
+        this.gerpStats();
     }
-    
+
+    public void gerpStats () {
+        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
+        List<File> fList = IOUtils.getFileListInDirEndsWith(gerpDirS, ".gz");
+        String gerpStats = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpStats.txt";
+        String header = "ChrID\tSites\tSites(>0)\tAlignRatio\tAlignRatio(>0)";
+        int[] siteCounts = new int[fList.size()];
+        int[] siteL0Counts = new int[fList.size()];
+        int[] siteL1Counts = new int[fList.size()];
+        fList.parallelStream().forEach(f -> {
+            int chrIndex = Integer.parseInt(f.getName().split("_")[0].replaceFirst("chr", ""))-1;
+            int siteCount = 0;
+            int siteL0Count = 0;
+            int siteL1Count = 0;
+            try {
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                String temp = br.readLine();
+                List<String> l = null;
+                double value = 0;
+                while ((temp = br.readLine()) != null) {
+                    l = PStringUtils.fastSplit(temp);
+                    siteCount++;
+                    value = Double.parseDouble(l.get(2));
+                    if (value > 0) siteL0Count++;
+                    if (value > 1) siteL1Count++;
+                }
+                br.close();
+                siteCounts[chrIndex] = siteCount;
+                siteL0Counts[chrIndex] = siteL0Count;
+                siteL1Counts[chrIndex] = siteL0Count;
+                System.out.println(f.getAbsolutePath());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(gerpStats);
+            bw.write(header);
+            bw.newLine();
+            StringBuilder sb = new StringBuilder ();
+            double value = 0;
+            for (int i = 0; i < siteCounts.length; i++) {
+                sb.setLength(0);
+                sb.append(i+1).append("\t").append(siteCounts[i]).append("\t").append(siteL0Counts[i]).append("\t").append(siteL1Counts[i]).append("\t");
+                value = (double)siteCounts[i]/RefV1Utils.getChrIDLength(i+1);
+                sb.append((float)value).append("\t");
+                value = (double)siteL0Counts[i]/RefV1Utils.getChrIDLength(i+1);
+                sb.append(value).append("\t");
+                value = (double)siteL1Counts[i]/RefV1Utils.getChrIDLength(i+1);
+                sb.append(value);
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void splitByChrID () {
         String wigDirS = "/Volumes/Fei_HDD_Mac/Gerp/asAlle";
         String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
