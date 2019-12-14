@@ -23,12 +23,18 @@ class WheatHmpGo {
         //this.referenceGenome();
         //this.VMapII();
         //this.geneDB();
-        this.deleteriousDB();
+        //this.deleteriousDB();
         //this.annotation();
+        //this.deleteriousBiology();
+    }
+    
+    public void deleteriousBiology () {
+        //new DeleteriousBiology ();
     }
     
     public void annotation () {
         //this.ancestralAnno();
+        this.siftAnno();
         //this.gerpAnno();
         //this.phyloPAnno();
     }
@@ -39,6 +45,10 @@ class WheatHmpGo {
     
     public void gerpAnno () {
         new GerpAnno ();
+    }
+    
+    public void siftAnno () {
+        new SiftAnno ();
     }
     
     public void ancestralAnno () {
