@@ -29,7 +29,7 @@ public class GerpAnno {
         String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
         List<File> fList = IOUtils.getFileListInDirEndsWith(gerpDirS, ".gz");
         String gerpStats = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpStats.txt";
-        String header = "ChrID\tSites\tSites(>0)\tAlignRatio\tAlignRatio(>0)";
+        String header = "ChrID\tSites\tSites(>0)\tSites(>1)\tAlignRatio\tAlignRatio(>0)tAlignRatio(>1)";
         int[] siteCounts = new int[fList.size()];
         int[] siteL0Counts = new int[fList.size()];
         int[] siteL1Counts = new int[fList.size()];
@@ -53,7 +53,7 @@ public class GerpAnno {
                 br.close();
                 siteCounts[chrIndex] = siteCount;
                 siteL0Counts[chrIndex] = siteL0Count;
-                siteL1Counts[chrIndex] = siteL0Count;
+                siteL1Counts[chrIndex] = siteL1Count;
                 System.out.println(f.getAbsolutePath());
             }
             catch (Exception e) {
