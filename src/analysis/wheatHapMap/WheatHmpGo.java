@@ -24,18 +24,18 @@ class WheatHmpGo {
         //this.VMapII();
         //this.geneDB();
         //this.deleteriousDB();
-        this.annotation();
-        //this.deleteriousBiology();
+        //this.annotation();
+        this.deleteriousBiology();
     }
     
     public void deleteriousBiology () {
-        //new DeleteriousBiology ();
+        new DeleteriousBiology ();
     }
     
     public void annotation () {
         //this.ancestralAnno();
         //this.siftAnno();
-        this.gerpAnno();
+        //this.gerpAnno();
         //this.phyloPAnno();
     }
     

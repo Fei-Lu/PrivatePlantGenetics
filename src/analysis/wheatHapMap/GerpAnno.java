@@ -10,7 +10,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+
+import format.table.ColumnTable;
+import gnu.trove.list.array.TFloatArrayList;
+import gnu.trove.list.array.TIntArrayList;
+import graphcis.r.Histogram;
 import utils.IOUtils;
+import utils.PArrayUtils;
 import utils.PStringUtils;
 import utils.wheat.RefV1Utils;
 
@@ -22,14 +29,86 @@ public class GerpAnno {
     
     public GerpAnno () {
         //this.splitByChrID();
-        this.gerpStats();
+        //this.gerpStats();
+        //this.gerpDistribution();
+        //this.mkGerpDistributionGraph();
+    }
+
+    public void mkGerpDistributionGraph () {
+        String infileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpSample.txt";
+        String outfileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpSample.pdf";
+        ColumnTable<String> t = new ColumnTable<>(infileS);
+        double[] values = t.getColumnAsDoubleArray(0);
+        values = PArrayUtils.getNonredundantRandomSubset(values, 20000);
+        Histogram h = new Histogram (values);
+        h.setTitle("Gerp value distribution of wheat by aligning 29 species");
+        h.setXLab("Gerp value");
+        h.setYLab("Proportion");
+        h.saveGraph(outfileS);
+    }
+
+    public void gerpDistribution () {
+        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
+        List<File> fList = IOUtils.getFileListInDirEndsWith(gerpDirS, ".gz");
+        String outfileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpSample.txt";
+        TIntArrayList[] siteLists = new TIntArrayList[fList.size()];
+        TFloatArrayList[] gerpLists = new TFloatArrayList[fList.size()];
+        double thresh = 0.00001;
+        int step = 20000;
+        fList.parallelStream().forEach(f -> {
+            int chrIndex = Integer.parseInt(f.getName().split("_")[0].replaceFirst("chr", ""))-1;
+            siteLists[chrIndex] = new TIntArrayList();
+            gerpLists[chrIndex] = new TFloatArrayList();
+            try {
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                String temp = br.readLine();
+                List<String> l = null;
+                float value = 0;
+                int cnt = 0;
+                while ((temp = br.readLine()) != null) {
+                    //if (Math.random() > thresh) continue;
+                    cnt++;
+                    if (cnt%step != 0) continue;
+                    l = PStringUtils.fastSplit(temp);
+                    value = Float.parseFloat(l.get(2));
+                    siteLists[chrIndex].add(Integer.parseInt(l.get(1)));
+                    gerpLists[chrIndex].add(value);
+                }
+                br.close();
+                System.out.println(f.getAbsolutePath());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        try {
+            String header = "Gerp";
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write(header);
+            bw.newLine();
+            StringBuilder sb = new StringBuilder ();
+            for (int i = 0; i < siteLists.length; i++) {
+                for (int j = 0; j < siteLists[i].size(); j++) {
+                    sb.setLength(0);
+                    //sb.append(i+1).append("\t").append(siteLists[i].get(j)).append("\t").append(gerpLists[i].get(j));
+                    sb.append(gerpLists[i].get(j));
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void gerpStats () {
         String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
         List<File> fList = IOUtils.getFileListInDirEndsWith(gerpDirS, ".gz");
         String gerpStats = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpStats.txt";
-        String header = "ChrID\tSites\tSites(>0)\tSites(>1)\tAlignRatio\tAlignRatio(>0)tAlignRatio(>1)";
+        String header = "ChrID\tSites\tSites(>0)\tSites(>1)\tAlignRatio\tAlignRatio(>0)\tAlignRatio(>1)";
         int[] siteCounts = new int[fList.size()];
         int[] siteL0Counts = new int[fList.size()];
         int[] siteL1Counts = new int[fList.size()];
@@ -72,9 +151,9 @@ public class GerpAnno {
                 value = (double)siteCounts[i]/RefV1Utils.getChrIDLength(i+1);
                 sb.append((float)value).append("\t");
                 value = (double)siteL0Counts[i]/RefV1Utils.getChrIDLength(i+1);
-                sb.append(value).append("\t");
+                sb.append((float)value).append("\t");
                 value = (double)siteL1Counts[i]/RefV1Utils.getChrIDLength(i+1);
-                sb.append(value);
+                sb.append((float)value);
                 bw.write(sb.toString());
                 bw.newLine();
             }
