@@ -5,6 +5,7 @@
  */
 package analysis.wheatHapMap;
 
+import format.table.ColumnTable;
 import format.table.RowTable;
 import utils.Dyad;
 import utils.IOUtils;
@@ -13,7 +14,10 @@ import utils.PStringUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
@@ -25,11 +29,61 @@ public class DeleteriousBiology {
     public DeleteriousBiology () {
         //this.countDeleteriousAndSyn();
         //this.identifyDeleteriousAndSyn();
-        this.mkVCFofDeleteriousAndSyn();
+        //this.mkVCFofDeleteriousAndSyn();
     }
 
     public void mkVCFofDeleteriousAndSyn () {
-
+        String vmapDirS = "/Volumes/Fei_HDD_Mac/VMap2.1";
+        String delInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/snp/del";
+        String synInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/snp/syn";
+        String delVcfDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/vcf/del";
+        String synVcfDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/vcf/syn";
+        List<File> fList = IOUtils.getFileListInDirEndsWith(vmapDirS, ".gz");
+        fList.parallelStream().forEach(f -> {
+            String chrS = f.getName().split("_")[0];
+            String delInfoFileS = new File (delInfoDirS, chrS+"_SNP_anno.txt.gz").getAbsolutePath();
+            String synInfoFileS = new File (synInfoDirS, chrS+"_SNP_anno.txt.gz").getAbsolutePath();
+            String delVcfFileS = new File (delVcfDirS, chrS+"_del_vmap2.1.vcf.gz").getAbsolutePath();
+            String synVcfFileS = new File (synVcfDirS, chrS+"_syn_vmap2.1.vcf.gz").getAbsolutePath();
+            try {
+                ColumnTable<String> t = new ColumnTable<>(delInfoFileS);
+                int[] delsites = t.getColumnAsIntArray(2);
+                Arrays.sort(delsites);
+                t = new ColumnTable<>(synInfoFileS);
+                int[] synsites = t.getColumnAsIntArray(2);
+                Arrays.sort(synsites);
+                BufferedWriter bwd = IOUtils.getTextGzipWriter(delVcfFileS);
+                BufferedWriter bws = IOUtils.getTextGzipWriter(synVcfFileS);
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                String temp = null;
+                while ((temp = br.readLine()).startsWith("##")) {
+                    bwd.write(temp); bwd.newLine();
+                    bws.write(temp); bws.newLine();
+                }
+                bwd.write(temp); bwd.newLine();
+                bws.write(temp); bws.newLine();
+                List<String> l = new ArrayList<>();
+                int index = -1;
+                int pos = -1;
+                while ((temp = br.readLine()) != null) {
+                    l = PStringUtils.fastSplit(temp.substring(0, 60));
+                    pos = Integer.parseInt(l.get(1));
+                    if (Arrays.binarySearch(delsites, pos) >= 0) {
+                        bwd.write(temp);bwd.newLine();
+                    }
+                    else if (Arrays.binarySearch(synsites, pos) >= 0) {
+                        bws.write(temp);bws.newLine();
+                    }
+                }
+                bwd.flush();bwd.close();
+                bws.flush();bws.close();
+                br.close();
+                System.out.println(f.getName());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void identifyDeleteriousAndSyn () {
