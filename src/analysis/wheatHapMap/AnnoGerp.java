@@ -25,9 +25,9 @@ import utils.wheat.RefV1Utils;
  *
  * @author feilu
  */
-public class GerpAnno {
+public class AnnoGerp {
     
-    public GerpAnno () {
+    public AnnoGerp() {
         //this.splitByChrID();
         //this.gerpStats();
         //this.gerpDistribution();

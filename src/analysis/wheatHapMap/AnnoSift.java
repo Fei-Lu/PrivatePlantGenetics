@@ -18,9 +18,9 @@ import utils.IOUtils;
  *
  * @author feilu
  */
-public class SiftAnno {
+public class AnnoSift {
     
-    public SiftAnno () {
+    public AnnoSift() {
         this.genicStats();
     }
     

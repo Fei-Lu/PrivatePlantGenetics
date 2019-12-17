@@ -18,9 +18,9 @@ import utils.wheat.RefV1Utils;
  *
  * @author feilu
  */
-public class PhyloPAnno {
+public class AnnoPhyloP {
     
-    public PhyloPAnno () {
+    public AnnoPhyloP() {
         this.splitByChrID();
     }
     

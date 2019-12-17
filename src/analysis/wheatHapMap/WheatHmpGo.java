@@ -5,14 +5,6 @@
  */
 package analysis.wheatHapMap;
 
-import com.koloboke.collect.map.hash.HashByteByteMap;
-import format.dna.BaseEncoder;
-import format.table.ColumnTable;
-import format.table.RowTable;
-import format.table.TableInterface;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  *
  * @author feilu
@@ -23,9 +15,9 @@ class WheatHmpGo {
         //this.referenceGenome();
         //this.VMapII();
         //this.geneDB();
-        //this.deleteriousDB();
+        this.deleteriousDB();
         //this.annotation();
-        this.deleteriousBiology();
+        //this.deleteriousBiology();
     }
     
     public void deleteriousBiology () {
@@ -33,26 +25,31 @@ class WheatHmpGo {
     }
     
     public void annotation () {
-        //this.ancestralAnno();
-        //this.siftAnno();
-        //this.gerpAnno();
-        //this.phyloPAnno();
+//        this.annoAncestral();
+//        this.annoSift();
+//        this.annoGerp();
+//        this.annoPhyloP();
+        //this.annoCrossover();
+    }
+
+    public void annoCrossover () {
+        new AnnoCrossover();
+    }
+
+    public void annoPhyloP() {
+        new AnnoPhyloP();
     }
     
-    public void phyloPAnno () {
-        new PhyloPAnno();
+    public void annoGerp () {
+        new AnnoGerp();
     }
     
-    public void gerpAnno () {
-        new GerpAnno ();
+    public void annoSift() {
+        new AnnoSift();
     }
     
-    public void siftAnno () {
-        new SiftAnno ();
-    }
-    
-    public void ancestralAnno () {
-        new AncestralAnno();
+    public void annoAncestral() {
+        new AnnoAncestral();
     }
     
     public void deleteriousDB () {

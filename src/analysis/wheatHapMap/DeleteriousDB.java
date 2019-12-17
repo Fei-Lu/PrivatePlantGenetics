@@ -8,15 +8,15 @@ package analysis.wheatHapMap;
 import format.table.ColumnTable;
 import format.table.RowTable;
 import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import graphcis.tablesaw.TablesawUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+import htsjdk.samtools.util.IOUtil;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
@@ -25,6 +25,7 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.ScatterPlot;
 import tech.tablesaw.plotly.components.Figure;
+import utils.Dyad;
 import utils.IOUtils;
 import utils.PStringUtils;
 /**
@@ -41,9 +42,79 @@ public class DeleteriousDB {
        //this.addDAF();
        //this.addGerp();
        //this.addPhyloP();
+//        this.addCrossover();
 
     }
-    
+
+    public void addCrossover () {
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
+        String outDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/test";
+        String crossoverFileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/005_crossover/iwgsc_refseqv1.0_crossover_rate_chrID.txt";
+        ColumnTable<String> t = new ColumnTable<>(crossoverFileS);
+        int chrNum = Integer.parseInt(t.getCell(t.getRowNumber()-1, 0));
+        TIntArrayList[] startLists = new TIntArrayList[chrNum];
+        TIntArrayList[] endLists = new TIntArrayList[chrNum];
+        TFloatArrayList[] crossLists = new TFloatArrayList[chrNum];
+        for (int i = 0; i < startLists.length; i++) {
+            startLists[i] = new TIntArrayList();
+            endLists[i] = new TIntArrayList();
+            crossLists[i] = new TFloatArrayList();
+        }
+        int index = -1;
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            index = Integer.parseInt(t.getCell(i, 0))-1;
+            startLists[index].add(Integer.parseInt(t.getCell(i, 1)));
+            endLists[index].add(Integer.parseInt(t.getCell(i, 2)));
+            crossLists[index].add(Float.parseFloat(t.getCell(i, 3)));
+        }
+        List<File> fList = IOUtils.getFileListInDirEndsWith(dirS, ".gz");
+        fList.parallelStream().forEach(f -> {
+            //String outfileS = new File (outDirS, f.getName()).getAbsolutePath();
+            Dyad<String, List<String>> two = VMapDBUtils.getDBInfo(f.getAbsolutePath());
+            String header = two.getFirstElement();
+            List<String> recordList = two.getSecondElement();
+            String[] tem = header.split("\t");
+            try {
+                BufferedWriter bw = IOUtils.getTextGzipWriter(f.getAbsolutePath());
+                StringBuilder sb = new StringBuilder(header);
+                sb.append("\t").append("Crossover");
+                bw.write(sb.toString());
+                bw.newLine();
+                int chrIndex = -1;
+                int posIndex = -1;
+                int currentPos = -1;
+                List<String> l  = null;
+                for (int i = 0; i < recordList.size(); i++) {
+                    sb.setLength(0);
+                    l = PStringUtils.fastSplit(recordList.get(i));
+                    chrIndex = Integer.parseInt(l.get(1))-1;
+                    currentPos = Integer.parseInt(l.get(2));
+                    posIndex = startLists[chrIndex].binarySearch(currentPos);
+                    if (posIndex < 0) posIndex = -posIndex-2;
+                    if (posIndex < 0) {
+                        sb.append(recordList.get(i)).append("\t").append("NA");
+                        bw.write(sb.toString());
+                        bw.newLine();
+                        continue;
+                    }
+                    if (currentPos < endLists[chrIndex].get(posIndex)) {
+                        sb.append(recordList.get(i)).append("\t").append(crossLists[chrIndex].get(posIndex));
+                    }
+                    else {
+                        sb.append(recordList.get(i)).append("\t").append("NA");
+                    }
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void addPhyloP () {
         String phyloPDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/004_phylop/byChr";
         String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation/";
