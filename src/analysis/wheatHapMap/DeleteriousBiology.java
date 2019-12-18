@@ -7,9 +7,12 @@ package analysis.wheatHapMap;
 
 import format.table.ColumnTable;
 import format.table.RowTable;
+import format.window.SimpleWindow;
+import gnu.trove.list.array.TIntArrayList;
 import utils.Dyad;
 import utils.IOUtils;
 import utils.PStringUtils;
+import utils.wheat.RefV1Utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -30,14 +33,84 @@ public class DeleteriousBiology {
         //this.countDeleteriousAndSyn();
         //this.identifyDeleteriousAndSyn();
         //this.mkVCFofDeleteriousAndSyn();
+        this.chromosomeDistribution();
+    }
+
+    public void chromosomeDistribution () {
+        int windowSize = 20000000;
+        int windowStep = 5000000;
+        String delInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/del";
+        String synInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/syn";
+        String outfileS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/003_chrDis/delSynOnChr.txt";
+        String header = "Chromosome\tWindowStart\tWindowEnd\tDelCount\tSynCount\tDelSynRatio";
+        List<String> chromList = RefV1Utils.getChromosomeList();
+        StringBuilder sb = new StringBuilder();
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write(header);
+            bw.newLine();
+            List<String> l = new ArrayList<>();
+            for (int i = 0; i < chromList.size(); i++) {
+                int chrLength = RefV1Utils.getChromosomeLength(chromList.get(i));
+                TIntArrayList delList = new TIntArrayList();
+                TIntArrayList synList = new TIntArrayList();
+                int chrID = RefV1Utils.getChrID(chromList.get(i), 1);
+                for (int j = 0; j < 2; j++) {
+                    chrID+=j;
+                    String delFileS = new File (delInfoDirS, "chr"+PStringUtils.getNDigitNumber(3, chrID)+"_SNP_anno.txt.gz").getAbsolutePath();
+                    String synFileS = new File (synInfoDirS, "chr"+PStringUtils.getNDigitNumber(3, chrID)+"_SNP_anno.txt.gz").getAbsolutePath();
+                    BufferedReader br = IOUtils.getTextGzipReader(delFileS);
+                    String temp = br.readLine();
+                    int pos = -1;
+                    while ((temp = br.readLine()) != null) {
+                        l = PStringUtils.fastSplit(temp.substring(0, 50));
+                        pos = Integer.parseInt(l.get(2));
+                        if (j == 1) pos = RefV1Utils.getPosOnChromosome(chrID, pos);
+                        delList.add(pos);
+                    }
+                    br.close();
+                    br = IOUtils.getTextGzipReader(synFileS);
+                    temp = br.readLine();
+                    pos = -1;
+                    while ((temp = br.readLine()) != null) {
+                        l = PStringUtils.fastSplit(temp.substring(0, 50));
+                        pos = Integer.parseInt(l.get(2));
+                        if (j == 1) pos = RefV1Utils.getPosOnChromosome(chrID, pos);
+                        synList.add(pos);
+                    }
+                }
+                SimpleWindow sw = new SimpleWindow(chrLength, windowSize, windowStep);
+                sw.addCount(delList.toArray());
+                int[] delWindowCount = sw.getWindowValuesInt();
+                sw.clearWindowValues();
+                sw.addCount(synList.toArray());
+                int[] synWindowCount = sw.getWindowValuesInt();
+                int[] windowStarts = sw.getWindowStarts();
+                int[] windowEnds = sw.getWindowEnds();
+                for (int j = 0; j < windowStarts.length; j++) {
+                    sb.setLength(0);
+                    sb.append(chromList.get(i)).append("\t").append(windowStarts[j]).append("\t").append(windowEnds[j]).append("\t");
+                    sb.append(delWindowCount[j]).append("\t").append(synWindowCount[j]).append("\t").append((float)((double)delWindowCount[j]/synWindowCount[j]));
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+                System.out.println(chromList.get(i));
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void mkVCFofDeleteriousAndSyn () {
         String vmapDirS = "/Volumes/Fei_HDD_Mac/VMap2.1";
-        String delInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/snp/del";
-        String synInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/snp/syn";
-        String delVcfDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/vcf/del";
-        String synVcfDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/vcf/syn";
+        String delInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/del";
+        String synInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/syn";
+        String delVcfDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/002_vcf/del";
+        String synVcfDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/002_vcf/syn";
         List<File> fList = IOUtils.getFileListInDirEndsWith(vmapDirS, ".gz");
         fList.parallelStream().forEach(f -> {
             String chrS = f.getName().split("_")[0];
@@ -88,8 +161,8 @@ public class DeleteriousBiology {
 
     public void identifyDeleteriousAndSyn () {
         String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
-        String delDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/snp/del";
-        String synDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/snp/syn";
+        String delDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/del";
+        String synDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/syn";
         double siftThresh = 0.05;
         double gerpThresh = 1;
         List<File> fList = IOUtils.getFileListInDirEndsWith(inDirS, ".gz");

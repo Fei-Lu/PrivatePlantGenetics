@@ -5,6 +5,8 @@
  */
 package analysis.wheatHapMap;
 
+import utils.wheat.RefV1Utils;
+
 /**
  *
  * @author feilu
@@ -15,9 +17,9 @@ class WheatHmpGo {
         //this.referenceGenome();
         //this.VMapII();
         //this.geneDB();
-        this.deleteriousDB();
+        //this.deleteriousDB();
         //this.annotation();
-        //this.deleteriousBiology();
+        this.deleteriousBiology();
     }
     
     public void deleteriousBiology () {
@@ -30,6 +32,7 @@ class WheatHmpGo {
 //        this.annoGerp();
 //        this.annoPhyloP();
         //this.annoCrossover();
+
     }
 
     public void annoCrossover () {
