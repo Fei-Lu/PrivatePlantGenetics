@@ -32,9 +32,9 @@ import utils.PStringUtils;
  *
  * @author feilu
  */
-public class DeleteriousDB {
+public class DBDeleterious {
     
-    public DeleteriousDB () {
+    public DBDeleterious() {
        //this.extractInfoFromVMap2();
        //this.mkGenicAnnotation();
        //this.addSift2();

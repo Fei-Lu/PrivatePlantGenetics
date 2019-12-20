@@ -5,8 +5,6 @@
  */
 package analysis.wheatHapMap;
 
-import utils.wheat.RefV1Utils;
-
 /**
  *
  * @author feilu
@@ -56,11 +54,11 @@ class WheatHmpGo {
     }
     
     public void deleteriousDB () {
-        new DeleteriousDB();
+        new DBDeleterious();
     }
     
     public void geneDB () {
-        new GeneDB ();
+        new DBGene();
     }
     
     public void VMapII () {

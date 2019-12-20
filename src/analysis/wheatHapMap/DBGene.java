@@ -33,9 +33,9 @@ import utils.PStringUtils;
  *
  * @author feilu
  */
-public class GeneDB {
+public class DBGene {
     
-    public GeneDB () {
+    public DBGene() {
         //this.selectHCGenes1();
         //this.addGFFInfo();
         this.addSiftInfo();

@@ -37,8 +37,8 @@ public class DeleteriousBiology {
     }
 
     public void chromosomeDistribution () {
-        int windowSize = 20000000;
-        int windowStep = 5000000;
+        int windowSize = 2000000;
+        int windowStep = 1000000;
         String delInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/del";
         String synInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/syn";
         String outfileS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/003_chrDis/delSynOnChr.txt";
