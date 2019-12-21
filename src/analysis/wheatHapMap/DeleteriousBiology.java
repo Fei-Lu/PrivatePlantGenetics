@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
@@ -80,10 +79,10 @@ public class DeleteriousBiology {
                     }
                 }
                 SimpleWindow sw = new SimpleWindow(chrLength, windowSize, windowStep);
-                sw.addCount(delList.toArray());
+                sw.addPositionCount(delList.toArray());
                 int[] delWindowCount = sw.getWindowValuesInt();
                 sw.clearWindowValues();
-                sw.addCount(synList.toArray());
+                sw.addPositionCount(synList.toArray());
                 int[] synWindowCount = sw.getWindowValuesInt();
                 int[] windowStarts = sw.getWindowStarts();
                 int[] windowEnds = sw.getWindowEnds();

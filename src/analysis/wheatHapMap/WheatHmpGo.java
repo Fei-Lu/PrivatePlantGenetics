@@ -12,12 +12,13 @@ package analysis.wheatHapMap;
 class WheatHmpGo {
     
     public WheatHmpGo () {
-        //this.referenceGenome();
-        //this.VMapII();
-        //this.geneDB();
-        //this.deleteriousDB();
-        //this.annotation();
-        this.deleteriousBiology();
+//        this.VMapII();
+//        this.DBGene();
+//        this.DBDeleterious();
+        this.DBWindow();
+//        this.annotation();
+//        this.deleteriousBiology();
+
     }
     
     public void deleteriousBiology () {
@@ -29,7 +30,7 @@ class WheatHmpGo {
 //        this.annoSift();
 //        this.annoGerp();
 //        this.annoPhyloP();
-        //this.annoCrossover();
+//        this.annoCrossover();
 
     }
 
@@ -52,12 +53,16 @@ class WheatHmpGo {
     public void annoAncestral() {
         new AnnoAncestral();
     }
-    
-    public void deleteriousDB () {
+
+    public void DBWindow () {
+        new DBWindow ();
+    }
+
+    public void DBDeleterious () {
         new DBDeleterious();
     }
     
-    public void geneDB () {
+    public void DBGene() {
         new DBGene();
     }
     

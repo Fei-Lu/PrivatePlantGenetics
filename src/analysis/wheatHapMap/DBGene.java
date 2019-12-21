@@ -41,6 +41,7 @@ public class DBGene {
         this.addSiftInfo();
     }
 
+    //not done
     public void addSiftInfo () {
         String dbFileS = "/Users/feilu/Documents/analysisH/vmap2/001_geneHC/geneHC.txt";
         String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
