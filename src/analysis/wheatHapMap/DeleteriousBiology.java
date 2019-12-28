@@ -32,7 +32,7 @@ public class DeleteriousBiology {
         //this.countDeleteriousAndSyn();
         //this.identifyDeleteriousAndSyn();
         //this.mkVCFofDeleteriousAndSyn();
-        this.chromosomeDistribution();
+        //this.chromosomeDistribution();
     }
 
     public void chromosomeDistribution () {

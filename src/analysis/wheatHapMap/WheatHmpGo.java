@@ -15,9 +15,9 @@ class WheatHmpGo {
 //        this.VMapII();
 //        this.DBGene();
 //        this.DBDeleterious();
-        this.DBWindow();
-//        this.annotation();
-//        this.deleteriousBiology();
+//        this.DBWindow();
+        //this.annotation();
+        //this.deleteriousBiology();
 
     }
     

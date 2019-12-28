@@ -36,7 +36,7 @@ public class AnnoGerp {
 
     public void mkGerpDistributionGraph () {
         String infileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpSample.txt";
-        String outfileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpSample.pdf";
+        String outfileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpSample_26way.pdf";
         ColumnTable<String> t = new ColumnTable<>(infileS);
         double[] values = t.getColumnAsDoubleArray(0);
         values = PArrayUtils.getNonredundantRandomSubset(values, 20000);
@@ -48,7 +48,7 @@ public class AnnoGerp {
     }
 
     public void gerpDistribution () {
-        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
+        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr_26way";
         List<File> fList = IOUtils.getFileListInDirEndsWith(gerpDirS, ".gz");
         String outfileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpSample.txt";
         TIntArrayList[] siteLists = new TIntArrayList[fList.size()];
@@ -105,7 +105,7 @@ public class AnnoGerp {
     }
 
     public void gerpStats () {
-        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
+        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr_26way";
         List<File> fList = IOUtils.getFileListInDirEndsWith(gerpDirS, ".gz");
         String gerpStats = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/gerpStats.txt";
         String header = "ChrID\tSites\tSites(>0)\tSites(>1)\tAlignRatio\tAlignRatio(>0)\tAlignRatio(>1)";
@@ -166,16 +166,16 @@ public class AnnoGerp {
     }
 
     public void splitByChrID () {
-        String wigDirS = "/Volumes/Fei_HDD_Mac/Gerp/asAlle";
-        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr";
+        String wigDirS = "/Volumes/Fei_HDD_Mac/Gerp/26way_GERP/";
+        String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr_26way";
         String header = "Chr\tPos\tGerp";
         File[] fs = new File (wigDirS).listFiles();
-        fs = IOUtils.listFilesEndsWith(fs, ".wig");
+        fs = IOUtils.listFilesEndsWith(fs, ".wig.gz");
         List<File> fList = Arrays.asList(fs);
         fList.parallelStream().forEach(f -> {
             int[] chrID = new int[2];
             BufferedWriter[] bws = new BufferedWriter[2]; 
-            String chromosome = f.getName().replaceFirst(".gerp.wig", "");
+            String chromosome = f.getName().replaceFirst(".wig.gz", "");
             chrID[0] = RefV1Utils.getChrID(chromosome, 1);
             chrID[1] = chrID[0]+1;
             try {
@@ -185,7 +185,7 @@ public class AnnoGerp {
                     bws[i].write(header);
                     bws[i].newLine();
                 }
-                BufferedReader br = IOUtils.getTextReader(f.getAbsolutePath());
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
                 String temp = null;
                 List<String> l = null;
                 int chromPos = -1;
