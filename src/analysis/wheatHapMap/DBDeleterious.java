@@ -5,26 +5,22 @@
  */
 package analysis.wheatHapMap;
 
+import format.genomeAnnotation.GeneFeature;
+import format.range.Range;
 import format.table.ColumnTable;
 import format.table.RowTable;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
+import gnu.trove.set.hash.TIntHashSet;
 import graphcis.tablesaw.TablesawUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.util.*;
 
-import htsjdk.samtools.util.IOUtil;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.Plot;
-import tech.tablesaw.plotly.api.Histogram;
-import tech.tablesaw.plotly.api.ScatterPlot;
-import tech.tablesaw.plotly.components.Figure;
 import utils.Dyad;
 import utils.IOUtils;
 import utils.PStringUtils;
@@ -36,9 +32,9 @@ public class DBDeleterious {
     
     public DBDeleterious() {
 //       this.extractInfoFromVMap2();
-//       this.mkGenicAnnotation();
-//       this.addSift2();
 //       this.mkExonVCF();
+//       this.mkExonAnnotation();
+//       this.addSift();
 //       this.addAncestral();
 //       this.addDAF();
 //       this.addGerp();
@@ -48,7 +44,7 @@ public class DBDeleterious {
     }
 
     public void addRecombination () {
-        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPAnnotation";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPAnnotation";
         String outDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/test";
         String recombinationFileS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/005_recombination/iwgsc_refseqv1.0_recombination_rate_chrID.txt";
         ColumnTable<String> t = new ColumnTable<>(recombinationFileS);
@@ -116,6 +112,9 @@ public class DBDeleterious {
         });
     }
 
+    /**
+     * @deprecated
+     */
     public void addPhyloP () {
         String phyloPDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/004_phylop/byChr";
         String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPAnnotation/";
@@ -177,7 +176,7 @@ public class DBDeleterious {
     
     public void addGerp () {
         String gerpDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/003_gerp/byChr_26way";
-        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPAnnotation/";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPAnnotation/";
         File[] fs = new File (dirS).listFiles();
         fs = IOUtils.listFilesEndsWith(fs, ".txt.gz");
         List<File> fList = Arrays.asList(fs);
@@ -235,7 +234,7 @@ public class DBDeleterious {
     }
     
     public void addDAF () {
-        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPAnnotation/";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPAnnotation/";
         File[] fs = new File (dirS).listFiles();
         fs = IOUtils.listFilesEndsWith(fs, ".txt.gz");
         List<File> fList = Arrays.asList(fs);
@@ -248,7 +247,7 @@ public class DBDeleterious {
                 header = br.readLine();
                 List<String> l = PStringUtils.fastSplit(header);
                 StringBuilder sb = new StringBuilder(header);
-                sb.append("\tDAF\tDAF_ABD\t").append(l.get(9).replaceFirst("AAF", "DAF"));
+                sb.append("\tDerived_SIFT\tDAF\tDAF_ABD\t").append(l.get(9).replaceFirst("AAF", "DAF"));
                 header = sb.toString();
                 String temp = null;
                 while ((temp = br.readLine()) != null) {
@@ -263,15 +262,26 @@ public class DBDeleterious {
                 float dafOther = -1;
                 String subMajor = null;
                 String subMinor = null;
+                String ancestral = null;
+                String derivedSIFT = null;
                 double subMaf = -1;
                 for (int i = 0; i < recordList.size(); i++) {
                     sb.setLength(0);
                     sb.append(recordList.get(i)).append("\t");
                     l = PStringUtils.fastSplit(recordList.get(i));
-                    if (l.get(5).equals(l.get(14))) {
+                    ancestral = l.get(15);
+                    if (ancestral.equals(l.get(3))) {
+                        derivedSIFT = l.get(13);
+                    }
+                    else if (ancestral.equals(l.get(4))) {
+                        derivedSIFT = l.get(14);
+                    }
+                    else derivedSIFT = "NA";
+                    sb.append(derivedSIFT).append("\t");
+                    if (l.get(5).equals(ancestral)) {
                         sb.append((float)Double.parseDouble(l.get(7))).append("\t");
                     }
-                    else if (l.get(6).equals(l.get(14))) {
+                    else if (l.get(6).equals(ancestral)) {
                         sb.append((float)(1- Double.parseDouble(l.get(7)))).append("\t");
                     }
                     else sb.append("NA\t");
@@ -285,10 +295,10 @@ public class DBDeleterious {
                         subMinor = l.get(3);
                         subMaf = 1 - Double.parseDouble(l.get(8));
                     }
-                    if (l.get(14).equals(subMajor)) {
+                    if (ancestral.equals(subMajor)) {
                         sb.append((float)subMaf).append("\t");
                     }
-                    else if (l.get(14).equals(subMinor)) {
+                    else if (ancestral.equals(subMinor)) {
                         sb.append((float)(1-subMaf)).append("\t");
                     }
                     else sb.append("NA\t");
@@ -304,10 +314,10 @@ public class DBDeleterious {
                         subMinor = l.get(3);
                         subMaf = 1 - Double.parseDouble(l.get(9));
                     }
-                    if (l.get(14).equals(subMajor)) {
+                    if (ancestral.equals(subMajor)) {
                         sb.append((float)subMaf);
                     }
-                    else if (l.get(14).equals(subMinor)) {
+                    else if (ancestral.equals(subMinor)) {
                         sb.append((float)(1-subMaf));
                     }
                     else sb.append("NA");
@@ -316,6 +326,7 @@ public class DBDeleterious {
                 }
                 bw.flush();
                 bw.close();
+                System.out.println(f.getName());
             }
             catch (Exception e) {
                 System.out.println(tem);
@@ -326,7 +337,7 @@ public class DBDeleterious {
     
     public void addAncestral () {
         String inDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/002_ancestral/byChr";
-        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPAnnotation/";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPAnnotation/";
         File[] fs = new File (inDirS).listFiles();
         fs = IOUtils.listFilesEndsWith(fs, ".gz");
         List<File> fList = Arrays.asList(fs);
@@ -377,25 +388,27 @@ public class DBDeleterious {
             catch (Exception e) {
                 e.printStackTrace();
             }
-            
         });
     }
 
 
-    public void addSift2 () {
-        String siftDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/001_sift/output";
-        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPAnnotation";
-        File[] fs = new File(siftDirS).listFiles();
-        fs = IOUtils.listFilesEndsWith(fs, ".xls");
+    public void addSift() {
+        String siftAltDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/001_sift/output_alt";
+        String siftRefDirS = "/Users/feilu/Documents/analysisH/vmap2/003_annotation/001_sift/output_ref";
+        String dirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPAnnotation";
+        File[] fs = new File(siftAltDirS).listFiles();
+        fs = IOUtils.listFilesEndsWith(fs, ".xls.gz");
         List<File> fList = Arrays.asList(fs);
         fList.parallelStream().forEach(f -> {
-            //f = new File("/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/sift/output/chr001.subgenome.maf0.01byPop.SNP_SIFTannotations.xls");
-            String dbFileS = f.getName().split("\\.")[0]+"_SNP_anno.txt.gz";
+            String dbFileS = f.getName().split("_")[0]+"_SNP_anno.txt.gz";
             dbFileS = new File (dirS, dbFileS).getAbsolutePath();
-            RowTable<String> t = new RowTable (f.getAbsolutePath());
-            SIFTRecord[] records = new SIFTRecord[t.getRowNumber()];
+            String refFileS = new File (siftRefDirS, f.getName().split("_")[0]+"_exon_vmap2.1_reverseRefAlt_SIFTannotations.xls.gz").getAbsolutePath();
+            RowTable<String> tAlt = new RowTable (f.getAbsolutePath());
+            RowTable<String> tRef = new RowTable (refFileS);
+            SIFTRecord[] records = new SIFTRecord[tAlt.getRowNumber()];
             for (int i = 0; i < records.length; i++) {
-                SIFTRecord s = new SIFTRecord(Integer.parseInt(t.getCell(i, 1)), t.getCell(i, 3), t.getCell(i, 4), t.getCell(i, 7), t.getCell(i, 8), t.getCell(i, 12)); 
+                SIFTRecord s = new SIFTRecord(Integer.parseInt(tAlt.getCell(i, 1)), tAlt.getCell(i, 3), tAlt.getCell(i, 4), tAlt.getCell(i,
+                        7), tAlt.getCell(i, 8), tAlt.getCell(i, 12), tRef.getCell(i, 12));
                 records[i] = s;
             }
             Arrays.sort(records);
@@ -410,7 +423,7 @@ public class DBDeleterious {
                 br.close();
                 BufferedWriter bw = IOUtils.getTextGzipWriter(dbFileS);
                 StringBuilder sb = new StringBuilder(header);
-                sb.append("\tRegion\tVariant_type\tSIFT_score");
+                sb.append("\tRegion\tVariant_type\tAlt_SIFT\tRef_SIFT");
                 bw.write(sb.toString());
                 bw.newLine();
                 List<String> l = null;
@@ -423,7 +436,7 @@ public class DBDeleterious {
                     sb.append(dbList.get(i)).append("\t");
                     sb.append(records[index].region).append("\t");
                     sb.append(records[index].type).append("\t");
-                    sb.append(records[index].value);
+                    sb.append(records[index].altSift).append("\t").append(records[index].refSift);
                     bw.write(sb.toString());
                     bw.newLine();
                 }
@@ -444,7 +457,8 @@ public class DBDeleterious {
         public String transcript;
         public String region;
         public String type;
-        public String value;
+        public String altSift;
+        public String refSift;
 
         
         public SIFTRecord(int pos, String alt, String transcript) {
@@ -453,13 +467,14 @@ public class DBDeleterious {
             this.transcript = transcript;
         }
         
-        public SIFTRecord(int pos, String alt, String transcript, String region, String type, String value) {
+        public SIFTRecord(int pos, String alt, String transcript, String region, String type, String altSift, String refSift) {
             this.pos = pos;
             this.alt = alt;
             this.transcript = transcript;
             this.region = region;
             this.type = type;
-            this.value = value;
+            this.altSift = altSift;
+            this.refSift = refSift;
         }
 
         @Override
@@ -482,20 +497,50 @@ public class DBDeleterious {
     }
 
     public void mkExonVCF () {
-        String annoDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPAnnotation";
         String vmapDirS = "/Volumes/Fei_HDD_Mac/VMap2.1";
-        String outputDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPVCF";
-        List<File> fList = IOUtils.getFileListInDirEndsWith(annoDirS, ".gz");
-        fList.parallelStream().forEach(f -> {
-            String vmapFileS = f.getName().split("_")[0]+"_vmap2.1.vcf.gz";
-            vmapFileS = new File (vmapDirS, vmapFileS).getAbsolutePath();
-            String outfileS = f.getName().split("_")[0]+"_exon_vmap2.1.vcf.gz";
-            outfileS = new File (outputDirS, outfileS).getAbsolutePath();
-            RowTable<String> t = new RowTable<>(f.getAbsolutePath());
-            int[] poses = t.getColumnAsIntArray(2);
+        String geneFeatureFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";
+        String hcGeneFileS = "/Users/feilu/Documents/analysisH/vmap2/001_geneHC/geneHC.txt";
+        String outputDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPVCF";
+        GeneFeature gf = new GeneFeature(geneFeatureFileS);
+        gf.sortGeneByName();
+        RowTable<String> t = new RowTable<>(hcGeneFileS);
+        TIntHashSet chrSet = new TIntHashSet(t.getColumnAsIntArray(2));
+        List<Integer> chrList = new ArrayList<>();
+        for (int i = 0; i < chrSet.size(); i++) {
+            chrList.add(i+1);
+        }
+        chrList.parallelStream().forEach(chrID -> {
+            String inputVCF = new File (vmapDirS, "chr"+PStringUtils.getNDigitNumber(3, chrID)+"_vmap2.1.vcf.gz").getAbsolutePath();
+            String outputVCF = new File (outputDirS, "chr"+PStringUtils.getNDigitNumber(3, chrID)+"_exon_vmap2.1.vcf.gz").getAbsolutePath();
+            List<String> geneList = new ArrayList<>();
+            List<String> tranList = new ArrayList<>();
+            for (int i = 0; i < t.getRowNumber(); i++) {
+                int currentChr = Integer.parseInt(t.getCell(i, 2));
+                if (currentChr < chrID) continue;
+                else if (currentChr > chrID) break;
+                geneList.add(t.getCell(i, 0));
+                tranList.add(t.getCell(i, 1));
+            }
+            int geneIndex = -1;
+            List<Range> allexonList = new ArrayList<>();
+            for (int i = 0; i < geneList.size(); i++) {
+                geneIndex = gf.getGeneIndex(geneList.get(i));
+                for (int j = 0; j < gf.getTranscriptNumber(geneIndex); j++) {
+                    if (!tranList.get(i).equals(gf.getTranscriptName(geneIndex, j))) continue;
+                    List<Range> exonList = gf.getExonList(geneIndex, j);
+                    allexonList.addAll(exonList);
+                }
+            }
+            Collections.sort(allexonList);
+            int[] starts = new int[allexonList.size()];
+            int[] ends = new int[allexonList.size()];
+            for (int i = 0; i < starts.length; i++) {
+                starts[i] = allexonList.get(i).getRangeStart();
+                ends[i] = allexonList.get(i).getRangeEnd();
+            }
             try {
-                BufferedReader br = IOUtils.getTextGzipReader(vmapFileS);
-                BufferedWriter bw = IOUtils.getTextGzipWriter(outfileS);
+                BufferedReader br = IOUtils.getTextGzipReader(inputVCF);
+                BufferedWriter bw = IOUtils.getTextGzipWriter(outputVCF);
                 String temp = null;
                 while ((temp = br.readLine()).startsWith("##")) {
                     bw.write(temp); bw.newLine();
@@ -507,8 +552,12 @@ public class DBDeleterious {
                 while ((temp = br.readLine()) != null) {
                     l = PStringUtils.fastSplit(temp.substring(0, 60));
                     pos = Integer.parseInt(l.get(1));
-                    if (Arrays.binarySearch(poses, pos) < 0) continue;
-                    bw.write(temp);bw.newLine();
+                    index = Arrays.binarySearch(starts, pos);
+                    if (index < 0) index = -index - 2;
+                    if (index < 0) continue;
+                    if (pos < ends[index]) {
+                        bw.write(temp);bw.newLine();
+                    }
                 }
                 bw.flush();
                 bw.close();
@@ -517,13 +566,13 @@ public class DBDeleterious {
             catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(f.getName()+" mkExonVCF");
+            System.out.println(chrID+"  mkExonVCF");
         });
     }
     
     public void mkExonAnnotation() {
         String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/001_genicSNPByChr/";
-        String outDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPAnnotation";
+        String outDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPAnnotation";
         File[] fs = new File(inDirS).listFiles();
         fs = IOUtils.listFilesEndsWith(fs, ".gz");
         List<File> fList = Arrays.asList(fs);

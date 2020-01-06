@@ -17,7 +17,7 @@ class WheatHmpGo {
 //        this.DBDeleterious();
 //        this.DBWindow();
         //this.annotation();
-        //this.deleteriousBiology();
+        this.deleteriousBiology();
 
     }
     

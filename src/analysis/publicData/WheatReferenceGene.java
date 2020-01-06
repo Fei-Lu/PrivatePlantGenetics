@@ -27,9 +27,11 @@ public class WheatReferenceGene {
     
     public WheatReferenceGene () {
         //this.GFFToPGF();
+        //this.mkNonoverlappingGene();
         //this.mkExpressionByTissue();
         //this.mkExpressionSummary();
-        this.mkExpressedGene();
+//       this.mkExpressedGene();
+
     }
     
     public void mkExpressedGene () {
@@ -69,7 +71,7 @@ public class WheatReferenceGene {
                     sb.append(1).append("\t").append(indexList.size()).append("\t");
                     int value = 1;
                     for (int j = 0; j < indexList.size(); j++) {
-                        if (geneRanges[i].getRangeSize() < geneRanges[j].getRangeSize()) {
+                        if (geneRanges[i].getRangeSize() < geneRanges[indexList.get(j)].getRangeSize()) {
                             value = 0;
                             break;
                         }
@@ -91,6 +93,7 @@ public class WheatReferenceGene {
             e.printStackTrace();
         }
     }
+    
     
     public void mkExpressionSummary () {
         String infileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/expressionByTissue.txt";
@@ -176,6 +179,67 @@ public class WheatReferenceGene {
                     e = e/sampleIndex[j].length;
                     sb.append("\t").append((float)e);
                 }
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mkNonoverlappingGff3 () {
+        String infileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_nonoverlap.txt";
+        String gff3FileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.gff3";
+        String outGff3FileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab_nonoverlap.gff3";
+        RowTable<String> t = new RowTable<> (infileS);
+        
+    }
+
+    public void mkNonoverlappingGene () {
+        String pgfFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";
+        String outfileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_nonoverlap.txt";
+        String header = "Gene\tIs_Overlapped_gene(1,0)\tNumber_Overlapped_gene\tIs_Unique_gene(1,0)\tLongest_transcript";
+        GeneFeature gf = new GeneFeature (pgfFileS);
+        Range[] geneRanges = new Range[gf.getGeneNumber()];
+        for (int i = 0; i < gf.getGeneNumber(); i++) {
+            geneRanges[i] = new Range(gf.getGeneChromosome(i), gf.getGeneStart(i), gf.getGeneEnd(i));
+        }
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write(header);
+            bw.newLine();
+            TIntArrayList indexList = new TIntArrayList();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < geneRanges.length; i++) {
+                indexList.clear();
+                sb.setLength(0);
+                sb.append(gf.getGeneName(i)).append("\t");
+                for (int j = 0; j < geneRanges.length; j++) {
+                    if (i == j) continue;
+                    if (geneRanges[i].getRangeChromosome() != geneRanges[j].getRangeChromosome()) continue;
+                    if (geneRanges[i].isOverlap(geneRanges[j])) {
+                        indexList.add(j);
+                    }
+                }
+                if (indexList.size() == 0) {
+                    sb.append(0).append("\t").append(0).append("\t").append(1).append("\t");
+                }
+                else {
+                    sb.append(1).append("\t").append(indexList.size()).append("\t");
+                    int value = 1;
+                    for (int j = 0; j < indexList.size(); j++) {
+                        if (geneRanges[i].getRangeSize() < geneRanges[indexList.get(j)].getRangeSize()) {
+                            value = 0;
+                            break;
+                        }
+                    }
+                    sb.append(value).append("\t");
+                }
+                String tName = gf.getTranscriptName(i, gf.getLongestTranscriptIndex(i));
+                sb.append(tName);
                 bw.write(sb.toString());
                 bw.newLine();
             }

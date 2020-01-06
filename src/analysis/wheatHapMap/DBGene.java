@@ -36,9 +36,9 @@ import utils.PStringUtils;
 public class DBGene {
     
     public DBGene() {
-        //this.selectHCGenes1();
-        //this.addGFFInfo();
-        this.addSiftInfo();
+//        this.selectHCGenes1();
+//        this.addGFFInfo();
+//        this.addSiftInfo();
     }
 
     //not done

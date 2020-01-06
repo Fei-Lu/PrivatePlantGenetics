@@ -35,9 +35,12 @@ public class DeleteriousBiology {
         //this.chromosomeDistribution();
     }
 
+    /**
+     * @deprecated
+     */
     public void chromosomeDistribution () {
-        int windowSize = 2000000;
-        int windowStep = 1000000;
+        int windowSize = 20000000;
+        int windowStep = 5000000;
         String delInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/del";
         String synInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/syn";
         String outfileS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/003_chrDis/delSynOnChr.txt";
@@ -105,7 +108,7 @@ public class DeleteriousBiology {
     }
 
     public void mkVCFofDeleteriousAndSyn () {
-        String vmapDirS = "/Volumes/Fei_HDD_Mac/VMap2.1";
+        String vmapDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/002_exonSNPVCF/";
         String delInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/del";
         String synInfoDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/syn";
         String delVcfDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/002_vcf/del";
@@ -159,7 +162,7 @@ public class DeleteriousBiology {
     }
 
     public void identifyDeleteriousAndSyn () {
-        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPAnnotation";
         String delDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/del";
         String synDirS = "/Users/feilu/Documents/analysisH/vmap2/004_deleteriousBiology/001_snp/syn";
         double siftThresh = 0.05;
@@ -181,7 +184,7 @@ public class DeleteriousBiology {
             String[] temp = header.split("\t");
             for (int i = 0; i < temp.length; i++) {
                 if (temp[i].equals("Variant_type")) typeIndex = i;
-                else if (temp[i].equals("SIFT_score")) siftIndex = i;
+                else if (temp[i].equals("Derived_SIFT")) siftIndex = i;
                 else if (temp[i].equals("Gerp")) gerpIndex = i;
             }
             List<String> l = null;
@@ -228,7 +231,7 @@ public class DeleteriousBiology {
     }
 
     public void countDeleteriousAndSyn() {
-        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/genicSNPAnnotation";
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/003_exonSNPAnnotation";
         double siftThresh = 0.05;
         double gerpThresh = 1;
         List<File> fList = IOUtils.getFileListInDirEndsWith(inDirS, ".gz");
@@ -237,7 +240,7 @@ public class DeleteriousBiology {
         fList.stream().forEach(f -> {
             RowTable<String> t = new RowTable<>(f.getAbsolutePath());
             int typeIndex = t.getColumnIndex("Variant_type");
-            int siftIndex = t.getColumnIndex("SIFT_score");
+            int siftIndex = t.getColumnIndex("Derived_SIFT");
             int gerpIndex = t.getColumnIndex("Gerp");
             int cnt = 0;
             int cntSyn = 0;
