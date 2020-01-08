@@ -74,4 +74,13 @@ public class VMapDBUtils {
             e.printStackTrace();
         }
     }
+
+    public static int getColumnIndexInHeader (String header, String columnName) {
+        String[] temp = header.split("\t");
+        for (int i = 0; i < temp.length; i++) {
+            if (temp[i].equals(columnName)) return i;
+        }
+        return -1;
+    }
+
 }

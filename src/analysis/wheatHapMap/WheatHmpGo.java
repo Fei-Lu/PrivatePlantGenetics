@@ -16,15 +16,25 @@ class WheatHmpGo {
 //        this.DBGene();
 //        this.DBDeleterious();
 //        this.DBWindow();
-        //this.annotation();
-        this.deleteriousBiology();
+//        this.annotation();
+        this.deleteriousSite();
+//        this.populationStructure();
+        //this.deleteriousBiology();
 
     }
     
     public void deleteriousBiology () {
         new DeleteriousBiology ();
     }
-    
+
+    public void deleteriousSite () {
+        new DeleteriousSite ();
+    }
+
+    public void populationStructure () {
+        new PopulationStructure();
+    }
+
     public void annotation () {
 //        this.annoAncestral();
 //        this.annoSift();
