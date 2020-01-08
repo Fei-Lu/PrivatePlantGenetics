@@ -24,7 +24,7 @@ public class DeleteriousSite {
 //        this.mkNonSynSiftRefAltSite();
 //        this.mkNonSynSiftDerivedSite();
         //this.mkGerpSite();
-        this.mkBurdenFiles();
+//        this.mkBurdenFiles();
 //        this.plotBurden();
     }
 

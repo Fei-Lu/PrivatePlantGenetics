@@ -16,8 +16,8 @@ class WheatHmpGo {
 //        this.DBGene();
 //        this.DBDeleterious();
 //        this.DBWindow();
-//        this.annotation();
-        this.deleteriousSite();
+        this.annotation();
+//        this.deleteriousSite();
 //        this.populationStructure();
         //this.deleteriousBiology();
 
@@ -36,7 +36,7 @@ class WheatHmpGo {
     }
 
     public void annotation () {
-//        this.annoAncestral();
+        this.annoAncestral();
 //        this.annoSift();
 //        this.annoGerp();
 //        this.annoPhyloP();
