@@ -5,9 +5,9 @@
  */
 package analysis.maizeRNASeq;
 
-import format.genomeAnnotation.GeneFeature;
-import format.range.Range;
-import format.range.Ranges;
+import pgl.format.genomeAnnotation.GeneFeature;
+import pgl.format.range.Range;
+import pgl.format.range.Ranges;
 import java.util.ArrayList;
 import java.util.List;
 

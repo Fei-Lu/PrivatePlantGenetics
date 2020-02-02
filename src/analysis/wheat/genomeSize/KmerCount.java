@@ -9,7 +9,7 @@ import cern.colt.GenericSorting;
 import cern.colt.Swapper;
 import cern.colt.function.IntComparator;
 import com.koloboke.collect.map.hash.HashByteByteMap;
-import format.dna.BaseEncoder;
+import pgl.format.dna.BaseEncoder;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.list.array.TLongArrayList;
 import java.io.BufferedReader;
@@ -18,8 +18,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Arrays;
 import java.util.List;
-import utils.IOUtils;
-import utils.PStringUtils;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
 
 /**
  *

@@ -5,7 +5,7 @@
  */
 package analysis.wheatHapMap;
 
-import format.table.RowTable;
+import pgl.format.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.set.hash.TIntHashSet;
 import java.io.BufferedReader;
@@ -16,10 +16,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import utils.IOFileFormat;
-import utils.IOUtils;
-import utils.PArrayUtils;
-import utils.PStringUtils;
+import pgl.utils.IOFileFormat;
+import pgl.utils.IOUtils;
+import pgl.utils.PArrayUtils;
+import pgl.utils.PStringUtils;
 
 /**
  *

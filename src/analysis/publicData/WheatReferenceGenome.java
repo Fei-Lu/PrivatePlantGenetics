@@ -5,17 +5,17 @@
  */
 package analysis.publicData;
 
-import format.dna.FastaBit;
-import format.table.RowTable;
+import pgl.format.dna.FastaBit;
+import pgl.format.table.RowTable;
 import java.io.File;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import utils.IOFileFormat;
-import utils.IOUtils;
-import utils.PStringUtils;
+import pgl.utils.IOFileFormat;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
 
 /**
  *

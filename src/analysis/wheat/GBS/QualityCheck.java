@@ -5,11 +5,11 @@
  */
 package analysis.wheat.GBS;
 
-import analysis.pipeline.grt.TagAnnotations;
-import graphcis.r.DensityPlot;
+import pgl.analysis.pipeline.grt.TagAnnotations;
+import pgl.graphcis.r.DensityPlot;
 import java.io.BufferedWriter;
 import java.io.File;
-import utils.IOUtils;
+import pgl.utils.IOUtils;
 
 /**
  *

@@ -5,8 +5,8 @@
  */
 package analysis.maizeRNASeq;
 
-import format.table.RowTable;
-import format.tree.Newick;
+import pgl.format.table.RowTable;
+import pgl.format.tree.Newick;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import utils.IOUtils;
+import pgl.utils.IOUtils;
 
 /**
  *

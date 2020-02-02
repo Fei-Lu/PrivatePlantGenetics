@@ -5,9 +5,9 @@
  */
 package analysis.publicData;
 
-import format.genomeAnnotation.GeneFeature;
-import format.range.Range;
-import format.table.RowTable;
+import pgl.format.genomeAnnotation.GeneFeature;
+import pgl.format.range.Range;
+import pgl.format.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import utils.Benchmark;
-import utils.IOUtils;
+import pgl.utils.Benchmark;
+import pgl.utils.IOUtils;
 
 /**
  *

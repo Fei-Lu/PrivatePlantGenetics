@@ -5,13 +5,13 @@
  */
 package analysis.maize2k;
 
-import format.table.RowTable;
+import pgl.format.table.RowTable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import utils.PArrayUtils;
-import utils.IOFileFormat;
+import pgl.utils.PArrayUtils;
+import pgl.utils.IOFileFormat;
 
 /**
  *

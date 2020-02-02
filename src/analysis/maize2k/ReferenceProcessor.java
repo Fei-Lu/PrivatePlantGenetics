@@ -5,10 +5,10 @@
  */
 package analysis.maize2k;
 
-import format.dna.FastaByte;
+import pgl.format.dna.FastaByte;
 import java.io.File;
 import java.util.ArrayList;
-import utils.IOFileFormat;
+import pgl.utils.IOFileFormat;
 
 /**
  *

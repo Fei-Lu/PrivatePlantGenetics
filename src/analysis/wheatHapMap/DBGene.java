@@ -6,11 +6,11 @@
 package analysis.wheatHapMap;
 
 import com.mysql.cj.xdevapi.Column;
-import format.genomeAnnotation.GeneFeature;
-import format.range.Range;
-import format.table.ColumnTable;
-import format.table.RowTable;
-import graphcis.tablesaw.TablesawUtils;
+import pgl.format.genomeAnnotation.GeneFeature;
+import pgl.format.range.Range;
+import pgl.format.table.ColumnTable;
+import pgl.format.table.RowTable;
+import pgl.graphcis.tablesaw.TablesawUtils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -25,9 +25,9 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.ScatterPlot;
 import tech.tablesaw.plotly.components.Figure;
-import utils.Dyad;
-import utils.IOUtils;
-import utils.PStringUtils;
+import pgl.utils.Dyad;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
 
 /**
  *

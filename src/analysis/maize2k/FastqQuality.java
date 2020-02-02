@@ -5,11 +5,11 @@
  */
 package analysis.maize2k;
 
-import format.alignment.ShortreadPEAlignment;
-import format.dna.Fastq;
-import format.table.RowTable;
-import format.table.TableInterface;
-import graphcis.r.DensityPlot;
+import pgl.format.alignment.ShortreadPEAlignment;
+import pgl.format.dna.Fastq;
+import pgl.format.table.RowTable;
+import pgl.format.table.TableInterface;
+import pgl.graphcis.r.DensityPlot;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import utils.IOUtils;
+import pgl.utils.IOUtils;
 
 /**
  *

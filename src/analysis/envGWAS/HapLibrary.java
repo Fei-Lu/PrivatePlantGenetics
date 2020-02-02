@@ -1,6 +1,6 @@
 package analysis.envGWAS;
 
-import utils.IOUtils;
+import pgl.utils.IOUtils;
 
 import java.io.File;
 import java.util.List;

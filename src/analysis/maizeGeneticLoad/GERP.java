@@ -7,7 +7,7 @@ package analysis.maizeGeneticLoad;
 
 import com.koloboke.collect.map.hash.HashIntIntMap;
 import com.koloboke.collect.map.hash.HashIntIntMaps;
-import format.table.RowTable;
+import pgl.format.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,8 +15,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import utils.IOUtils;
-import utils.PStringUtils;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
 
 /**
  *

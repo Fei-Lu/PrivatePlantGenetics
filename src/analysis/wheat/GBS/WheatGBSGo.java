@@ -5,10 +5,10 @@
  */
 package analysis.wheat.GBS;
 
-import analysis.pipeline.grt.GRTGo;
-import analysis.pipeline.grt.LibGBSGo;
-import format.dna.FastaBit;
-import format.table.RowTable;
+import pgl.analysis.pipeline.grt.GRTGo;
+import pgl.analysis.pipeline.grt.LibGBSGo;
+import pgl.format.dna.FastaBit;
+import pgl.format.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,8 +25,8 @@ import org.biojava.nbio.core.alignment.template.SequencePair;
 import org.biojava.nbio.core.alignment.template.SubstitutionMatrix;
 import org.biojava.nbio.core.sequence.DNASequence;
 import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
-import utils.IOUtils;
-import utils.PStringUtils;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
 
 /**
  *

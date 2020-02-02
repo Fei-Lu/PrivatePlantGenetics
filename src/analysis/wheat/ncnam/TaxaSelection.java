@@ -5,18 +5,18 @@
  */
 package analysis.wheat.ncnam;
 
-import format.table.RowTable;
-import format.tree.Newick;
+import pgl.format.table.RowTable;
+import pgl.format.tree.Newick;
 import gnu.trove.list.array.TDoubleArrayList;
-import graphcis.r.ScatterPlot;
+import pgl.graphcis.r.ScatterPlot;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import utils.IOFileFormat;
-import utils.IOUtils;
+import pgl.utils.IOFileFormat;
+import pgl.utils.IOUtils;
 
 /**
  *

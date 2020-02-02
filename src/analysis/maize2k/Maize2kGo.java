@@ -7,7 +7,7 @@ package analysis.maize2k;
 
 import com.koloboke.collect.map.hash.HashIntIntMap;
 import com.koloboke.collect.map.hash.HashIntIntMaps;
-import format.tree.Newick;
+import pgl.format.tree.Newick;
 
 
 /**

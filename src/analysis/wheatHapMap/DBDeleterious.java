@@ -5,15 +5,15 @@
  */
 package analysis.wheatHapMap;
 
-import format.genomeAnnotation.GeneFeature;
-import format.range.Range;
-import format.table.ColumnTable;
-import format.table.RowTable;
+import pgl.format.genomeAnnotation.GeneFeature;
+import pgl.format.range.Range;
+import pgl.format.table.ColumnTable;
+import pgl.format.table.RowTable;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.set.hash.TIntHashSet;
-import graphcis.tablesaw.TablesawUtils;
+import pgl.graphcis.tablesaw.TablesawUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,9 +21,9 @@ import java.util.*;
 
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
-import utils.Dyad;
-import utils.IOUtils;
-import utils.PStringUtils;
+import pgl.utils.Dyad;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
 /**
  *
  * @author feilu

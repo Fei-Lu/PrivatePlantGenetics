@@ -5,14 +5,14 @@
  */
 package analysis.wheatHapMap;
 
-import format.table.ColumnTable;
-import format.table.RowTable;
-import format.window.SimpleWindow;
+import pgl.format.table.ColumnTable;
+import pgl.format.table.RowTable;
+import pgl.format.window.SimpleWindow;
 import gnu.trove.list.array.TIntArrayList;
-import utils.Dyad;
-import utils.IOUtils;
-import utils.PStringUtils;
-import utils.wheat.RefV1Utils;
+import pgl.utils.Dyad;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
+import pgl.utils.wheat.RefV1Utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

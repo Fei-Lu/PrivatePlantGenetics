@@ -5,7 +5,7 @@
  */
 package analysis.wheat.GBS;
 
-import format.table.RowTable;
+import pgl.format.table.RowTable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

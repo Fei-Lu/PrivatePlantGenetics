@@ -7,9 +7,9 @@ package analysis.wheat.genomeSize;
 
 import com.koloboke.collect.set.hash.HashLongSet;
 import com.koloboke.collect.set.hash.HashLongSets;
-import format.dna.BaseEncoder;
+import pgl.format.dna.BaseEncoder;
 import java.io.BufferedWriter;
-import utils.IOUtils;
+import pgl.utils.IOUtils;
 
 /**
  *

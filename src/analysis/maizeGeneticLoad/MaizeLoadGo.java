@@ -5,7 +5,7 @@
  */
 package analysis.maizeGeneticLoad;
 
-import format.table.RowTable;
+import pgl.format.table.RowTable;
 import java.util.List;
 
 /**

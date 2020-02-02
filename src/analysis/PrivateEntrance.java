@@ -2,7 +2,7 @@ package analysis;
 
 import analysis.envGWAS.EnvGo;
 
-public class AnalysisEntrance {
+public class PrivateEntrance {
 
     public static void main (String[] args) {
         new EnvGo();

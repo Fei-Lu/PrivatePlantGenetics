@@ -1,8 +1,8 @@
 package analysis.wheatHapMap;
 
-import format.table.RowTable;
-import utils.IOFileFormat;
-import utils.IOUtils;
+import pgl.format.table.RowTable;
+import pgl.utils.IOFileFormat;
+import pgl.utils.IOUtils;
 
 import java.io.BufferedReader;
 import java.util.Arrays;

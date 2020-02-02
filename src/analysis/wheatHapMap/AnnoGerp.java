@@ -12,14 +12,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import format.table.ColumnTable;
+import pgl.format.table.ColumnTable;
 import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import graphcis.r.Histogram;
-import utils.IOUtils;
-import utils.PArrayUtils;
-import utils.PStringUtils;
-import utils.wheat.RefV1Utils;
+import pgl.graphcis.r.Histogram;
+import pgl.utils.IOUtils;
+import pgl.utils.PArrayUtils;
+import pgl.utils.PStringUtils;
+import pgl.utils.wheat.RefV1Utils;
 
 /**
  *

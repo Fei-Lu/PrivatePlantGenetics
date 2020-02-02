@@ -9,8 +9,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
-import utils.Dyad;
-import utils.IOUtils;
+import pgl.utils.Dyad;
+import pgl.utils.IOUtils;
 
 /**
  *

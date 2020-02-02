@@ -8,7 +8,7 @@ package analysis.maize2k;
 import static cern.jet.math.Arithmetic.factorial;
 import com.koloboke.collect.map.IntDoubleMap;
 import com.koloboke.collect.map.hash.HashIntDoubleMaps;
-import format.table.RowTable;
+import pgl.format.table.RowTable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
-import utils.IOUtils;
-import utils.PStringUtils;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
 
 /**
  *

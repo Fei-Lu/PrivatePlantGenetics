@@ -1,14 +1,13 @@
 package analysis.wheatHapMap;
 
-import format.table.RowTable;
+import pgl.format.table.RowTable;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import graphcis.r.BoxPlot;
-import sun.nio.ch.IOUtil;
-import utils.Dyad;
-import utils.IOUtils;
-import utils.PStringUtils;
-import utils.wheat.RefV1Utils;
+import pgl.graphcis.r.BoxPlot;
+import pgl.utils.Dyad;
+import pgl.utils.IOUtils;
+import pgl.utils.PStringUtils;
+import pgl.utils.wheat.RefV1Utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
