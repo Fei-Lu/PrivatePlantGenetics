@@ -5,7 +5,7 @@
  */
 package deprecated.analysis.maize2k;
 
-import pgl.format.alignment.ShortreadPEAlignment;
+import pgl.format.alignment.gen2.ShortreadPEAlignment;
 import pgl.format.dna.Fastq;
 import pgl.format.table.RowTable;
 import pgl.format.table.TableInterface;
