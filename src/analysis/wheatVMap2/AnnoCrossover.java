@@ -1,8 +1,8 @@
 package analysis.wheatVMap2;
 
-import pgl.format.table.RowTable;
-import pgl.utils.IOUtils;
-import pgl.utils.wheat.RefV1Utils;
+import pgl.infra.table.RowTable;
+import pgl.infra.utils.IOUtils;
+import pgl.infra.utils.wheat.RefV1Utils;
 
 import java.io.BufferedWriter;
 

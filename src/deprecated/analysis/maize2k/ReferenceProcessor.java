@@ -5,10 +5,10 @@
  */
 package deprecated.analysis.maize2k;
 
-import pgl.format.dna.FastaByte;
+import pgl.infra.dna.FastaByte;
 import java.io.File;
 import java.util.ArrayList;
-import pgl.utils.IOFileFormat;
+import pgl.infra.utils.IOFileFormat;
 
 /**
  *

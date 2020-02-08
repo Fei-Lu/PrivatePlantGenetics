@@ -5,9 +5,9 @@
  */
 package analysis.wheatVMap2;
 
-import pgl.format.genomeAnnotation.GeneFeature;
-import pgl.format.range.Range;
-import pgl.format.table.ColumnTable;
+import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.range.Range;
+import pgl.infra.table.ColumnTable;
 import pgl.graphcis.tablesaw.TablesawUtils;
 
 import java.io.File;
@@ -22,9 +22,9 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.ScatterPlot;
 import tech.tablesaw.plotly.components.Figure;
-import pgl.utils.Dyad;
-import pgl.utils.IOUtils;
-import pgl.utils.PStringUtils;
+import pgl.infra.utils.Dyad;
+import pgl.infra.utils.IOUtils;
+import pgl.infra.utils.PStringUtils;
 
 /**
  *

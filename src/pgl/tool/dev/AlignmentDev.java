@@ -1,15 +1,15 @@
 package pgl.tool.dev;
 
-import pgl.format.alignment.gen2.SAMPEAlignment;
-import pgl.format.alignment.gen2.SAMSEAlignment;
-import pgl.format.alignment.gen2.SEAlignRecord;
+import pgl.infra.alignment.gen2.SAMPEAlignment;
+import pgl.infra.alignment.gen2.SAMSEAlignment;
+import pgl.infra.alignment.gen2.SEAlignRecord;
 
 public class AlignmentDev {
     
     public AlignmentDev () {
         //this.bwaAlignment();
         //this.testSE();
-        this.testPE();
+        //this.testPE();
     }
 
     public void bwaAlignment () {

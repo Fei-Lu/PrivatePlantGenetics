@@ -5,10 +5,10 @@
  */
 package analysis.wheatVMap2;
 
-import pgl.format.genomeAnnotation.GeneFeature;
-import pgl.format.range.Range;
-import pgl.format.table.ColumnTable;
-import pgl.format.table.RowTable;
+import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.range.Range;
+import pgl.infra.table.ColumnTable;
+import pgl.infra.table.RowTable;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
@@ -21,9 +21,9 @@ import java.util.*;
 
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
-import pgl.utils.Dyad;
-import pgl.utils.IOUtils;
-import pgl.utils.PStringUtils;
+import pgl.infra.utils.Dyad;
+import pgl.infra.utils.IOUtils;
+import pgl.infra.utils.PStringUtils;
 /**
  *
  * @author feilu

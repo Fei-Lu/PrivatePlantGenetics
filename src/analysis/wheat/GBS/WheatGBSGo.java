@@ -7,8 +7,8 @@ package analysis.wheat.GBS;
 
 import pgl.analysis.pipeline.grt.GRTGo;
 import pgl.analysis.pipeline.grt.LibGBSGo;
-import pgl.format.dna.FastaBit;
-import pgl.format.table.RowTable;
+import pgl.infra.dna.FastaBit;
+import pgl.infra.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,15 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import org.biojava.nbio.alignment.Alignments;
-import org.biojava.nbio.alignment.SimpleGapPenalty;
-import org.biojava.nbio.core.alignment.matrices.SubstitutionMatrixHelper;
-import org.biojava.nbio.core.alignment.template.SequencePair;
-import org.biojava.nbio.core.alignment.template.SubstitutionMatrix;
-import org.biojava.nbio.core.sequence.DNASequence;
-import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
-import pgl.utils.IOUtils;
-import pgl.utils.PStringUtils;
+
+import pgl.infra.utils.IOUtils;
 
 /**
  *

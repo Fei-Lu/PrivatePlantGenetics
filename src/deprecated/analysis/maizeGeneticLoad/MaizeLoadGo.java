@@ -5,7 +5,7 @@
  */
 package deprecated.analysis.maizeGeneticLoad;
 
-import pgl.format.table.RowTable;
+import pgl.infra.table.RowTable;
 import java.util.List;
 
 /**

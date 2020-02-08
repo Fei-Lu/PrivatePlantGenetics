@@ -5,12 +5,12 @@
  */
 package deprecated.analysis.maize2k;
 
-import pgl.format.genomeAnnotation.GFFUtils;
-import pgl.format.genomeAnnotation.GeneFeature;
+import pgl.infra.genomeAnnotation.GFFUtils;
+import pgl.infra.genomeAnnotation.GeneFeature;
 import java.io.BufferedReader;
 import java.util.HashSet;
 import java.util.Set;
-import pgl.utils.IOUtils;
+import pgl.infra.utils.IOUtils;
 
 /**
  *

@@ -11,14 +11,14 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import pgl.format.table.ColumnTable;
+import pgl.infra.table.ColumnTable;
 import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import pgl.graphcis.r.Histogram;
-import pgl.utils.IOUtils;
-import pgl.utils.PArrayUtils;
-import pgl.utils.PStringUtils;
-import pgl.utils.wheat.RefV1Utils;
+import pgl.infra.utils.IOUtils;
+import pgl.infra.utils.PArrayUtils;
+import pgl.infra.utils.PStringUtils;
+import pgl.infra.utils.wheat.RefV1Utils;
 
 /**
  *

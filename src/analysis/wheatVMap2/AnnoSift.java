@@ -5,14 +5,14 @@
  */
 package analysis.wheatVMap2;
 
-import pgl.format.table.RowTable;
+import pgl.infra.table.RowTable;
 import gnu.trove.list.array.TDoubleArrayList;
 import pgl.graphcis.r.Histogram;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import pgl.utils.IOUtils;
+import pgl.infra.utils.IOUtils;
 
 /**
  *

@@ -9,7 +9,7 @@ import pgl.analysis.pipeline.grt.TagAnnotations;
 import pgl.graphcis.r.DensityPlot;
 import java.io.BufferedWriter;
 import java.io.File;
-import pgl.utils.IOUtils;
+import pgl.infra.utils.IOUtils;
 
 /**
  *

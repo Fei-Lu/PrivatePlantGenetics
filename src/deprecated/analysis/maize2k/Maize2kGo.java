@@ -5,9 +5,7 @@
  */
 package deprecated.analysis.maize2k;
 
-import com.koloboke.collect.map.hash.HashIntIntMap;
-import com.koloboke.collect.map.hash.HashIntIntMaps;
-import pgl.format.tree.Newick;
+import pgl.infra.tree.Newick;
 
 
 /**

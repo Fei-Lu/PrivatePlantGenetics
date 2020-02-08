@@ -5,10 +5,10 @@
  */
 package deprecated.analysis.maize2k;
 
-import pgl.format.alignment.gen2.ShortreadPEAlignment;
-import pgl.format.dna.Fastq;
-import pgl.format.table.RowTable;
-import pgl.format.table.TableInterface;
+import pgl.infra.alignment.gen2.ShortreadPEAlignment;
+import pgl.infra.dna.Fastq;
+import pgl.infra.table.RowTable;
+import pgl.infra.table.TableInterface;
 import pgl.graphcis.r.DensityPlot;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import pgl.utils.IOUtils;
+import pgl.infra.utils.IOUtils;
 
 /**
  *

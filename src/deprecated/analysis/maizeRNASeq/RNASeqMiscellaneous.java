@@ -5,9 +5,9 @@
  */
 package deprecated.analysis.maizeRNASeq;
 
-import pgl.format.genomeAnnotation.GeneFeature;
-import pgl.format.range.Range;
-import pgl.format.range.Ranges;
+import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.range.Range;
+import pgl.infra.range.Ranges;
 import java.util.ArrayList;
 import java.util.List;
 

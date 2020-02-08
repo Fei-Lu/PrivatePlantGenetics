@@ -1,14 +1,14 @@
 package analysis.wheatVMap2;
 
-import pgl.format.genomeAnnotation.GeneFeature;
-import pgl.format.range.Range;
-import pgl.format.table.RowTable;
-import pgl.format.window.SimpleWindow;
+import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.range.Range;
+import pgl.infra.table.RowTable;
+import pgl.infra.window.SimpleWindow;
 import gnu.trove.list.array.TIntArrayList;
-import pgl.utils.Dyad;
-import pgl.utils.IOUtils;
-import pgl.utils.PStringUtils;
-import pgl.utils.wheat.RefV1Utils;
+import pgl.infra.utils.Dyad;
+import pgl.infra.utils.IOUtils;
+import pgl.infra.utils.PStringUtils;
+import pgl.infra.utils.wheat.RefV1Utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,8 +1,8 @@
 package analysis.wheatVMap2;
 
-import pgl.format.table.RowTable;
-import pgl.utils.IOFileFormat;
-import pgl.utils.IOUtils;
+import pgl.infra.table.RowTable;
+import pgl.infra.utils.IOFileFormat;
+import pgl.infra.utils.IOUtils;
 
 import java.io.BufferedReader;
 import java.util.Arrays;

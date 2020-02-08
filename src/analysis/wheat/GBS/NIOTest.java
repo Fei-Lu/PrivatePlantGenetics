@@ -8,8 +8,8 @@ package analysis.wheat.GBS;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import pgl.utils.IOUtils;
-import pgl.utils.Dyad;
+import pgl.infra.utils.IOUtils;
+import pgl.infra.utils.Dyad;
 
 /**
  *
