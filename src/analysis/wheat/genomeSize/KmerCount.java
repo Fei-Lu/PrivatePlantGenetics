@@ -37,7 +37,7 @@ public class KmerCount {
     
     public void readFromText (String inputFileS, String taxon) {
         this.taxon = taxon;
-        HashByteByteMap ascIIByteMap = BaseEncoder.getAscIIByteMap();
+        HashByteByteMap ascIIByteMap = BaseEncoder.getAscIIBaseByteMap();
         
         try {
             TLongArrayList kmerList = new TLongArrayList();
