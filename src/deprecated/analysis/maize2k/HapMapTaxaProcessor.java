@@ -6,10 +6,9 @@
 package deprecated.analysis.maize2k;
 
 import pgl.infra.table.RowTable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
+
 import pgl.infra.utils.PArrayUtils;
 import pgl.infra.utils.IOFileFormat;
 
@@ -33,7 +32,8 @@ public class HapMapTaxaProcessor {
         RowTable<String> t = new RowTable<>(infileS);
         List<String> taxaList = t.getColumn(0);
         String[] taxaArray = taxaList.toArray(new String[taxaList.size()]);
-        String[] uTaxaArray = PArrayUtils.getUniqueStringArray(taxaArray);
+        HashSet<String> s =new HashSet<>(taxaList);
+        String[] uTaxaArray = s.toArray(new String[s.size()]);
         Arrays.sort(uTaxaArray);
         int[] cnts = new int[uTaxaArray.length];
         for (int i = 0; i < taxaArray.length; i++) {
