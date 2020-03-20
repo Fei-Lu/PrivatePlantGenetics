@@ -1,4 +1,4 @@
-package analysis.wheatVMap2;
+package analysis.wheat.VMap2;
 
 import pgl.infra.genomeAnnotation.GeneFeature;
 import pgl.infra.range.Range;

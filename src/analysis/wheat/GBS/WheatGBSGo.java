@@ -5,8 +5,8 @@
  */
 package analysis.wheat.GBS;
 
-import pgl.analysis.pipeline.grt.GRTGo;
-import pgl.analysis.pipeline.grt.LibGBSGo;
+import pgl.app.grt.GRTGo;
+import pgl.app.grt.LibGBSGo;
 import pgl.infra.dna.FastaBit;
 import pgl.infra.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;

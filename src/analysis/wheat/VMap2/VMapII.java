@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package analysis.wheatVMap2;
+package analysis.wheat.VMap2;
 
 import pgl.infra.table.RowTable;
 import gnu.trove.list.array.TIntArrayList;
