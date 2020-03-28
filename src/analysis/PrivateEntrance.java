@@ -9,9 +9,9 @@ import analysis.wheat.VMap2.WheatVMap2Go;
 public class PrivateEntrance {
 
     public PrivateEntrance (String[] args) {
-        this.analysis();
+//        this.analysis();
 //        this.data();
-//        this.tool();
+        this.tool();
     }
     
     private void tool () {
@@ -23,7 +23,7 @@ public class PrivateEntrance {
     }
     
     private void analysis () {
-        this.wheatVMap1Go();
+//        this.wheatVMap1Go();
 //        this.wheatVMap2Go();
 //        this.envGWASGo();
 //        this.labPublicGo();
