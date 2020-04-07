@@ -3,47 +3,79 @@ package pgl.tool.dev;
 import pgl.infra.dna.allele.Allele;
 import pgl.infra.dna.allele.AlleleEncoder;
 import pgl.infra.dna.allele.AlleleType;
-import pgl.infra.dna.genotype.GenoIOFormat;
-import pgl.infra.dna.genotype.GenotypeBit;
-import pgl.infra.dna.genotype.GenotypeExport;
-import pgl.infra.dna.genotype.GenotypeTable;
-import pgl.infra.utils.Benchmark;
-
-import java.nio.ByteBuffer;
-import java.util.BitSet;
+import pgl.infra.dna.genotype.*;
+import pgl.infra.dna.genotype.summary.SumTaxaDivergence;
+import pgl.infra.utils.IOFileFormat;
 
 public class GenotypeDev {
 
     public GenotypeDev () {
-        //this.testAlleles();
-        //this.ioTest();
-        this.dxyTest();
+//        this.testAlleles();
+//        this.ioTestGenotypeBit();
+        this.ioTestGenotypeGrid();
+//        this.dxyTest1();
+//        this.dxyTest2();
     }
 
-    public void dxyTest () {
-        String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/out.bin.gz";
-        GenotypeTable gt  = new GenotypeBit(vcfFileS, GenoIOFormat.Binary_GZ);
-        System.out.println(gt.getTaxaNumber());
-        System.out.println(gt.getSiteNumber());
-        long start = System.nanoTime();
-        double[][] matrix = gt.getDxyMatrixFast10K();
-        System.out.println(Benchmark.getTimeSpanMilliseconds(start));
+    public void dxyTest2 () {
+        String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/source/chr001_exon_vmap2.1.vcf.gz";
+        String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/taxaDivergence.txt";
+        GenotypeTable gt  = new GenotypeGrid(vcfFileS, GenoIOFormat.VCF_GZ);
+        SumTaxaDivergence std = new SumTaxaDivergence(gt);
+        std.writeSummary(outfileS, IOFileFormat.Text);
+        gt.getDxyMatrix();
     }
 
-    public void ioTest () {
-        String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon_vmap2.1.vcf.gz";
-        GenotypeTable gt  = new GenotypeBit(vcfFileS, GenoIOFormat.VCF_GZ);
+    public void dxyTest1 () {
+//        String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.bin.gz";
+//        String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/taxaDivergence.txt";
+//        GenotypeTable gt  = new GenotypeBit(vcfFileS, GenoIOFormat.Binary_GZ);
+//
+//        System.out.println(gt.getTaxaNumber());
+//        System.out.println(gt.getSiteNumber());
+//
+//        SumTaxaDivergence std = new SumTaxaDivergence(gt);
+//        std.writeSummary(outfileS, IOFileFormat.Text);
 
-        String vcfOutGZFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/out.vcf.gz";
-        GenotypeExport.output(gt, vcfOutGZFileS, GenoIOFormat.VCF_GZ);
+    }
 
-        String binOutFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/out.bin.gz";
+    public void ioTestGenotypeGrid() {
+
+        String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/source/chr001_exon_vmap2.1.vcf.gz";
+        GenotypeTable gt  = new GenotypeGrid(vcfFileS, GenoIOFormat.VCF_GZ);
+
+        String vcfOutGZFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.vcf";
+        GenotypeExport.output(gt, vcfOutGZFileS, GenoIOFormat.VCF);
+
+        String binOutFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.bin.gz";
         GenotypeExport.output(gt, binOutFileS, GenoIOFormat.Binary_GZ);
 
-//        String vcfOutFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/out.vcf";
-//        gt  = new GenotypeBit(binOutFileS, GenoIOFormat.Binary_GZ);
-//        GenotypeExport.output(gt, vcfOutFileS, GenoIOFormat.VCF);
+        gt  = new GenotypeGrid(binOutFileS, GenoIOFormat.Binary_GZ);
+        String vcffromBinFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon_fromBin.vcf";
+        GenotypeExport.output(gt, vcffromBinFileS, GenoIOFormat.VCF);
 
+        gt  = new GenotypeGrid(vcfOutGZFileS, GenoIOFormat.VCF);
+        String vcffromVcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon_fromVCF.vcf";
+        GenotypeExport.output(gt, vcffromVcfFileS, GenoIOFormat.VCF);
+    }
+
+    public void ioTestGenotypeBit() {
+//        String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/source/chr001_exon_vmap2.1.vcf.gz";
+//        GenotypeTable gt  = new GenotypeBit(vcfFileS, GenoIOFormat.VCF_GZ);
+//
+//        String vcfOutGZFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.vcf";
+//        GenotypeExport.output(gt, vcfOutGZFileS, GenoIOFormat.VCF);
+//
+//        String binOutFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.bin.gz";
+//        GenotypeExport.output(gt, binOutFileS, GenoIOFormat.Binary_GZ);
+//
+//        gt  = new GenotypeBit(binOutFileS, GenoIOFormat.Binary_GZ);
+//        String vcffromBinFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon_fromBin.vcf";
+//        GenotypeExport.output(gt, vcffromBinFileS, GenoIOFormat.VCF);
+//
+//        gt  = new GenotypeBit(vcfOutGZFileS, GenoIOFormat.VCF);
+//        String vcffromVcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon_fromVCF.vcf";
+//        GenotypeExport.output(gt, vcffromVcfFileS, GenoIOFormat.VCF);
     }
 
     public void testAlleles () {
