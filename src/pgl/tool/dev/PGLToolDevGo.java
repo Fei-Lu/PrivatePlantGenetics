@@ -4,10 +4,15 @@ public class PGLToolDevGo {
 
     public PGLToolDevGo () {
 //        this.alignmentDev();
-        this.genotypeDev();
+//        this.genotypeDev();
 //        this.fastCallDev();
 //        this.hapScannerDev();
 //        this.speedCallDev();
+//        this.popdepDev();
+    }
+
+    public void popdepDev () {
+        new PopDepDev();
     }
 
     public void speedCallDev () {

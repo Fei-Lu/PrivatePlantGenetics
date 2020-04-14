@@ -12,6 +12,7 @@ package analysis.wheat.VMap2;
 public class WheatVMap2Go {
     
     public WheatVMap2Go() {
+        this.VMapIIConstruction();
 //        this.VMapII();
 //        this.DBGene();
 //        this.DBDeleterious();
@@ -77,7 +78,11 @@ public class WheatVMap2Go {
     }
     
     public void VMapII () {
-        new VMapII();
+        //new VMapII();
+    }
+
+    public void VMapIIConstruction () {
+        new VMapIIConstruction();
     }
 
 }

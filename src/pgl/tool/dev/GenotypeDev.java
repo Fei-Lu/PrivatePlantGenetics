@@ -18,9 +18,9 @@ public class GenotypeDev {
     }
 
     public void dxyTest2 () {
-        String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.bin.gz";
+        String inFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.bin.gz";
         String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/taxaDivergence.txt";
-        GenotypeTable gt  = new GenotypeGrid(vcfFileS, GenoIOFormat.Binary_GZ);
+        GenotypeTable gt  = new GenotypeGrid(inFileS, GenoIOFormat.Binary_GZ);
         SumTaxaDivergence std = new SumTaxaDivergence(gt);
         std.writeDxyMatrix(outfileS, IOFileFormat.Text);
         gt.getDxyMatrix();

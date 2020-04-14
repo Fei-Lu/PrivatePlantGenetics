@@ -29,7 +29,7 @@ public class VMapII {
 
     public VMapII() {
         //this.mergePosList();
-        this.mergeVCFandFilter();
+//        this.mergeVCFandFilter();
     }
     
     //not done yet
