@@ -13,9 +13,14 @@ public class LabDataGo {
     
     public LabDataGo() {
         //this.referenceGenome();
-        this.referenceGene();
+//        this.referenceGene();
+        this.bamManagement();
     }
-    
+
+    public void bamManagement () {
+        new BAMManagement();
+    }
+
     public void referenceGene () {
         new WheatReferenceGene();
     }
@@ -23,5 +28,6 @@ public class LabDataGo {
     public void referenceGenome () {
         new WheatReferenceGenome();
     }
+
 
 }

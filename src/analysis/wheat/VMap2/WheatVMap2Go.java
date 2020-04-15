@@ -5,6 +5,8 @@
  */
 package analysis.wheat.VMap2;
 
+import analysis.wheat.VMap2.build.VMapIIBuildGo;
+
 /**
  *
  * @author feilu
@@ -82,7 +84,7 @@ public class WheatVMap2Go {
     }
 
     public void VMapIIConstruction () {
-        new VMapIIConstruction();
+        new VMapIIBuildGo();
     }
 
 }
