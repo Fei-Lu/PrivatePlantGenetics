@@ -14,7 +14,7 @@ public class LabDataGo {
     public LabDataGo() {
         //this.referenceGenome();
 //        this.referenceGene();
-        this.bamManagement();
+//        this.bamManagement();
     }
 
     public void bamManagement () {
