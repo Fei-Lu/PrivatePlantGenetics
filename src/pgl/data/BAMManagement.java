@@ -13,8 +13,8 @@ public class BAMManagement {
 
     public BAMManagement () {
         //this.listAllBams();
-        //this.mkNewpaths();
-        this.mkMVCommand();
+//        this.mkNewpaths();
+//        this.mkMVCommand();
     }
 
     public void mkMVCommand () {
@@ -130,7 +130,7 @@ public class BAMManagement {
                         sb.append(t.getCell(i,0)).append("\t").append(new File(abdDirS, newName).getAbsolutePath());
                     }
                 }
-                else if (parent.endsWith("S25")){//AB genome
+                else if (parent.endsWith("ab_S25")){//AB genome
                     if (oldName.endsWith(".bam")) {
                         newName = "AB_"+ PStringUtils.getNDigitNumber(4, abCountBam)+".bam";
                         abCountBam++;
@@ -141,7 +141,7 @@ public class BAMManagement {
                     }
                     sb.append(t.getCell(i,0)).append("\t").append(new File(abDirS, newName).getAbsolutePath());
                 }
-                else if (parent.endsWith("S5")){//D genome
+                else if (parent.endsWith("d_S5")){//D genome
                     if (oldName.endsWith(".bam")) {
                         newName = "D_"+ PStringUtils.getNDigitNumber(4, dCountBam)+".bam";
                         dCountBam++;

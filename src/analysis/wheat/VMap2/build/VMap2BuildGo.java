@@ -1,8 +1,8 @@
 package analysis.wheat.VMap2.build;
 
-public class VMapIIBuildGo {
+public class VMap2BuildGo {
 
-    public VMapIIBuildGo() {
+    public VMap2BuildGo() {
         this.depthProfile();
     }
 

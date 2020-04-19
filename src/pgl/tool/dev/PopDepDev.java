@@ -13,18 +13,18 @@ import java.util.List;
 public class PopDepDev {
 
     public PopDepDev () {
-        //this.changeTaxaBamFormat();
+//        this.changeTaxaBamFormat();
 //        this.runPopDep1();
         this.runPopDep2();
     }
 
     public void runPopDep2 () {
-        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/parameters_popdep_2.txt";
+        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/inputfile/parameters_popdep_2.txt";
         new PopDep(parameterFileS);
     }
 
     public void runPopDep1 () {
-        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/parameters_popdep_1.txt";
+        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/inputfile/parameters_popdep_1.txt";
         new PopDep(parameterFileS);
     }
 

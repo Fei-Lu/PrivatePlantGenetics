@@ -2,6 +2,7 @@ package analysis;
 
 import analysis.envGWAS.EnvGWASGo;
 import analysis.wheat.VMap1.WheatVMap1Go;
+import analysis.wheat.VMap2.build.VMap2BuildGo;
 import pgl.tool.dev.PGLToolDevGo;
 import pgl.data.LabDataGo;
 import analysis.wheat.VMap2.WheatVMap2Go;
@@ -11,7 +12,7 @@ public class PrivateEntrance {
     public PrivateEntrance (String[] args) {
 //        this.analysis();
 //        this.data();
-//        this.tool();
+        this.tool();
     }
     
     private void tool () {
@@ -24,18 +25,22 @@ public class PrivateEntrance {
     
     private void analysis () {
 //        this.wheatVMap1Go();
+        this.wheatVMap2BuildGo();
 //        this.wheatVMap2Go();
 //        this.envGWASGo();
 //        this.labPublicGo();
-    
     }
     
     public void wheatVMap1Go () {
         new WheatVMap1Go();
     }
-    
+
+    public void wheatVMap2BuildGo () {
+        new VMap2BuildGo();
+    }
+
     public void wheatVMap2Go () {
-        //new WheatVMap2Go();
+        new WheatVMap2Go();
     }
 
     public void labPublicGo () {

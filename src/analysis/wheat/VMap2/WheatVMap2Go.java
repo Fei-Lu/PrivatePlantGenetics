@@ -5,8 +5,6 @@
  */
 package analysis.wheat.VMap2;
 
-import analysis.wheat.VMap2.build.VMapIIBuildGo;
-
 /**
  *
  * @author feilu
@@ -14,7 +12,6 @@ import analysis.wheat.VMap2.build.VMapIIBuildGo;
 public class WheatVMap2Go {
     
     public WheatVMap2Go() {
-        this.VMapIIConstruction();
 //        this.VMapII();
 //        this.DBGene();
 //        this.DBDeleterious();
@@ -82,9 +79,4 @@ public class WheatVMap2Go {
     public void VMapII () {
         //new VMapII();
     }
-
-    public void VMapIIConstruction () {
-        new VMapIIBuildGo();
-    }
-
 }
