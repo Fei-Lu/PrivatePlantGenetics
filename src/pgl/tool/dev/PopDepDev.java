@@ -1,8 +1,12 @@
 package pgl.tool.dev;
 
 import pgl.app.popdep.PopDep;
+import pgl.graphcis.r.DensityPlot;
+import pgl.graphcis.r.Histogram;
+import pgl.graphcis.r.ScatterPlot;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
+import pgl.infra.utils.PArrayUtils;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
@@ -15,7 +19,26 @@ public class PopDepDev {
     public PopDepDev () {
 //        this.changeTaxaBamFormat();
 //        this.runPopDep1();
-        this.runPopDep2();
+//        this.runPopDep2();
+//        this.checkDepth();
+    }
+
+    public void checkDepth () {
+        int size = 1000;
+        String infileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/out/chr001_popdep.txt.gz";
+        RowTable<String> t = new RowTable<>(infileS);
+        int[] indices = PArrayUtils.getNonredundantRandomIntArray(t.getRowNumber(), size);
+        double[] depth = new double[size];
+        double[] sd = new double[size];
+        for (int i = 0; i < indices.length; i++) {
+            depth[i] = Double.parseDouble(t.getCell(i,3));
+            sd[i] = Double.parseDouble(t.getCell(i,4));
+        }
+        Histogram h = new Histogram(depth);
+        h.showGraph();
+        ScatterPlot s = new ScatterPlot(depth, sd);
+        s.showGraph();
+
     }
 
     public void runPopDep2 () {

@@ -5,6 +5,7 @@ public class PGLToolDevGo {
     public PGLToolDevGo () {
 //        this.alignmentDev();
 //        this.genotypeDev();
+//        this.popgenDev();
 //        this.fastCallDev();
 //        this.hapScannerDev();
 //        this.speedCallDev();
@@ -25,6 +26,10 @@ public class PGLToolDevGo {
 
     public void fastCallDev () {
         new FastCallDev();
+    }
+
+    public void popgenDev () {
+        new PopGenDev();
     }
 
     public void alignmentDev () {
