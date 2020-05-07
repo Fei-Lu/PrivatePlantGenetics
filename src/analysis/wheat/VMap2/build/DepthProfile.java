@@ -1,13 +1,15 @@
 package analysis.wheat.VMap2.build;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import it.unimi.dsi.fastutil.Hash;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import pgl.app.popdep.PopDep;
+import pgl.graphcis.r.DensityPlot;
+import pgl.graphcis.r.ScatterPlot;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
 import pgl.infra.utils.wheat.RefV1Utils;
-import sun.util.resources.cldr.zh.CalendarData_zh_Hans_HK;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,11 +19,296 @@ import java.util.*;
 class DepthProfile {
 
     public DepthProfile () {
-        //this.mkTaxaBamFile();
-        //this.mkChrLengthFile();
+//        this.mkTaxaBamFile();
+//        this.mkChrLengthFile();
 //        this.runStep1();
 //        this.mkStep2FileS();
 //        this.runStep2();
+        //this.popdepPlotSample();
+        //this.popdepPlot();
+        //this.vcfPlotSample();
+        this.vcfPlot();
+    }
+
+    public void vcfPlot () {
+        String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abVCF_sample.txt";
+        String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdVCF_sample.txt";
+        String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dVCF_sample.txt";
+
+        String abDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abVCF_depth_density.pdf";
+        String abDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abVCF_depth_scatter.pdf";
+
+        String abdDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdVCF_depth_density.pdf";
+        String abdDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdVCF_depth_scatter.pdf";
+
+        String dDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dVCF_depth_density.pdf";
+        String dDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dVCF_depth_scatter.pdf";
+        this.plotVCF(abSampleFileS, abDepthDesity, abDepthScatter, "AB");
+        this.plotVCF(abdSampleFileS, abdDepthDesity, abdDepthScatter, "ABD");
+        this.plotVCF(dSampleFileS, dDepthDesity, dDepthScatter, "D");
+
+    }
+
+    private void plotVCF (String infileS, String depthDensity, String depthScatter, String genomeType) {
+        RowTable<String> t = new RowTable<>(infileS);
+        double[] depth = t.getColumnAsDoubleArray(1);
+        double[] depthSD = t.getColumnAsDoubleArray(2);
+
+        DensityPlot d = new DensityPlot(depth);
+        d.setTitle(genomeType);
+        d.setXLim(0, 20);
+        d.setXLab("Mean of depth");
+        d.setYLab("Density");
+        d.saveGraph(depthDensity);
+        ScatterPlot s = new ScatterPlot(depth, depthSD);
+        s.setTitle(genomeType);
+        s.setXLim(0, 20);
+        s.setYLim(0, 20);
+        s.setXLab("Mean of depth");
+        s.setYLab("SD of depth");
+        s.setColor(255, 0, 0, 20);
+        s.saveGraph(depthScatter);
+    }
+
+    public void vcfPlotSample () {
+        String abFile1 = "/Volumes/VMap2_Fei/vcf/001_fastcall/ab/chr001.ABgenome.vcf.gz";
+        String abFile2 = "/Volumes/VMap2_Fei/vcf/001_fastcall/ab/chr002.ABgenome.vcf.gz";
+        String abdFile1 = "/Volumes/VMap2_Fei/vcf/001_fastcall/abd/chr001.ABDgenome.vcf.gz";
+        String abdFile2 = "/Volumes/VMap2_Fei/vcf/001_fastcall/abd/chr001.ABDgenome.vcf.gz";
+        String dFile1 = "/Volumes/VMap2_Fei/vcf/001_fastcall/d/chr005.Dgenome.vcf.gz";
+        String dFile2 = "/Volumes/VMap2_Fei/vcf/001_fastcall/d/chr006.Dgenome.vcf.gz";
+        int sampleSize = 10000;
+        String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abVCF_sample.txt";
+        String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdVCF_sample.txt";
+        String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dVCF_sample.txt";
+        this.sampleVCF(abFile1, abFile2, abSampleFileS, sampleSize);
+        this.sampleVCF(abdFile1, abdFile2, abdSampleFileS, sampleSize);
+        this.sampleVCF(dFile1, dFile2, dSampleFileS, sampleSize);
+    }
+
+    public void sampleVCF (String file1, String file2, String outfileS, int sampleSize) {
+        File[] fs = new File[2];
+        fs[0] = new File(file1);
+        fs[1] = new File(file2);
+        int[] chrs = new int[fs.length];
+        int[] chrLengths = new int[fs.length];
+        int[] siteCounts = new int[fs.length];
+        int totalCount = 0;
+        for (int i = 0; i < fs.length; i++) {
+            chrs[i] = Integer.parseInt(fs[i].getName().split("\\.")[0].replaceFirst("chr", ""));
+            chrLengths[i] = RefV1Utils.getChrIDLength(chrs[i]);
+            try {
+                BufferedReader br = IOUtils.getTextGzipReader(fs[i].getAbsolutePath());
+                String temp = null;
+                while ((temp = br.readLine()) != null) {
+                    if (temp.startsWith("##")) continue;
+                    break;
+                }
+                int cnt = 0;
+                while ((temp = br.readLine()) != null) {
+                    cnt++;
+                    if (cnt%1000000 == 0) System.out.println(cnt);
+                }
+                siteCounts[i] = cnt;
+                br.close();
+                totalCount+=cnt;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        int[] sampleCounts = new int[fs.length];
+        for (int i = 0; i < fs.length; i++) {
+            sampleCounts[i] = (int)Math.round((double)siteCounts[i]/totalCount*sampleSize);
+            System.out.println(sampleCounts[i]);
+        }
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write("Position\tDepth_Mean\tDepth_SD");
+            bw.newLine();
+            for (int i = 0; i < fs.length; i++) {
+                int step = siteCounts[i]/sampleCounts[i];
+                BufferedReader br = IOUtils.getTextGzipReader(fs[i].getAbsolutePath());
+                String temp = null;
+                while ((temp = br.readLine()) != null) {
+                    if (temp.startsWith("##")) continue;
+                    break;
+                }
+                int cnt = -1;
+                List<String> l = new ArrayList<>();
+                StringBuilder sb = new StringBuilder();
+                while ((temp = br.readLine()) != null) {
+                    cnt++;
+                    if (cnt%1000000 == 0) System.out.println(cnt);
+                    if (cnt%step == 0) {
+                        TDoubleArrayList dList = new TDoubleArrayList();
+                        l = PStringUtils.fastSplit(temp);
+                        int n = l.size() - 9;
+                        String current;
+                        for (int j = 0; j < n; j++) {
+                            current = l.get(j+9);
+                            if (current.startsWith(".")) {
+                                dList.add(0);
+                            }
+                            else {
+                                String[] tem = current.split(":")[1].split(",");
+                                int dep = 0;
+                                for (int k = 0; k < tem.length; k++) {
+                                    dep+=Integer.parseInt(tem[k]);
+                                }
+                                dList.add(dep);
+                            }
+                        }
+                        sb.setLength(0);
+                        DescriptiveStatistics d = new DescriptiveStatistics(dList.toArray());
+                        sb.append(l.get(1)).append("\t").append((float)d.getMean()).append("\t").append((float)d.getStandardDeviation());
+                        bw.write(sb.toString());
+                        bw.newLine();
+
+                    }
+                }
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("done");
+    }
+
+    public void popdepPlot () {
+        String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_sample.txt";
+        String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
+        String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";
+        String abDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_depth_density.pdf";
+        String abDepthStanDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_depth_stan_density.pdf";
+        String abDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_depth_scatter.pdf";
+        String abDepthStanScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_depth_stan_scatter.pdf";
+
+        String abdDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_depth_density.pdf";
+        String abdDepthStanDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_depth_stan_density.pdf";
+        String abdDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_depth_scatter.pdf";
+        String abdDepthStanScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_depth_stan_scatter.pdf";
+
+        String dDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_depth_density.pdf";
+        String dDepthStanDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_depth_stan_density.pdf";
+        String dDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_depth_scatter.pdf";
+        String dDepthStanScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_depth_stan_scatter.pdf";
+
+        this.plotPopDep(abSampleFileS, abDepthDesity, abDepthStanDesity, abDepthScatter, abDepthStanScatter, "AB");
+        this.plotPopDep(abdSampleFileS, abdDepthDesity, abdDepthStanDesity, abdDepthScatter, abdDepthStanScatter, "ABD");
+        this.plotPopDep(dSampleFileS, dDepthDesity, dDepthStanDesity, dDepthScatter, dDepthStanScatter, "D");
+    }
+
+    private void plotPopDep (String infileS, String depthDensity, String depthStanDensity, String depthScatter, String depthStanScatter, String genomeType) {
+        RowTable<String> t = new RowTable<>(infileS);
+        double[] depth = t.getColumnAsDoubleArray(1);
+        double[] depthSD = t.getColumnAsDoubleArray(2);
+        double[] depthStan = t.getColumnAsDoubleArray(3);
+        double[] depthStanSD = t.getColumnAsDoubleArray(4);
+        DensityPlot d = new DensityPlot(depth);
+        d.setTitle(genomeType);
+        d.setXLim(0, 20);
+        d.setXLab("Mean of depth");
+        d.setYLab("Density");
+        d.saveGraph(depthDensity);
+        d = new DensityPlot(depthStan);
+        d.setXLim(0,3);
+        d.setXLab("Mean of standardized depth");
+        d.setYLab("Density");
+        d.saveGraph(depthStanDensity);
+        ScatterPlot s = new ScatterPlot(depth, depthSD);
+        s.setTitle(genomeType);
+        s.setXLim(0, 20);
+        s.setYLim(0, 20);
+        s.setXLab("Mean of depth");
+        s.setYLab("SD of depth");
+        s.setColor(255, 0, 0, 20);
+        s.saveGraph(depthScatter);
+        s = new ScatterPlot(depthStan, depthSD);
+        s.setXLim(0, 5);
+        s.setYLim(0, 10);
+        s.setXLab("Mean of standardized depth");
+        s.setYLab("SD of standardized depth");
+        s.setColor(255, 0, 0, 20);
+        s.saveGraph(depthStanScatter);
+    }
+
+    public void popdepPlotSample() {
+        String abFile1 = "/Volumes/VMap2_Fei/popdep_vmap2/AB/chr001_AB_popdep_vmap2.txt.gz";
+        String abFile2 = "/Volumes/VMap2_Fei/popdep_vmap2/AB/chr002_AB_popdep_vmap2.txt.gz";
+        String abdFile1 = "/Volumes/VMap2_Fei/popdep_vmap2/ABD/chr001_ABD_popdep_vmap2.txt.gz";
+        String abdFile2 = "/Volumes/VMap2_Fei/popdep_vmap2/ABD/chr002_ABD_popdep_vmap2.txt.gz";
+        String dFile1 = "/Volumes/VMap2_Fei/popdep_vmap2/D/chr005_D_popdep_vmap2.txt.gz";
+        String dFile2 = "/Volumes/VMap2_Fei/popdep_vmap2/D/chr006_D_popdep_vmap2.txt.gz";
+        int sampleSize = 10000;
+        String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_sample.txt";
+        String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
+        String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";
+        this.samplePopDep(abFile1, abFile2, abSampleFileS, sampleSize);
+        this.samplePopDep(abdFile1, abdFile2, abdSampleFileS, sampleSize);
+        this.samplePopDep(dFile1, dFile2, dSampleFileS, sampleSize);
+    }
+
+    private void samplePopDep (String file1, String file2, String outfileS, int sampleSize) {
+        File[] inFiles = new File[2];
+        inFiles[0] = new File(file1);
+        inFiles[1] = new File(file2);
+        int[] chrs = new int[inFiles.length];
+        int[] chrLengths = new int[2];
+        int[] sizes = new int[inFiles.length];
+        int tLength = 0;
+        for (int i = 0; i < chrs.length; i++) {
+            chrs[i] = Integer.parseInt(inFiles[i].getName().split("_")[0].replaceFirst("chr", ""));
+            chrLengths[i] = RefV1Utils.getChrIDLength(chrs[i]);
+            tLength+=chrLengths[i];
+        }
+        String header = null;
+        List<String> cList = new ArrayList<>();
+        for (int i = 0; i < chrs.length; i++) {
+            sizes[i] = (int)Math.round(sampleSize*((double)chrLengths[i]/tLength));
+            int step = chrLengths[i]/sizes[i];
+            try {
+                int cnt = -1;
+                BufferedReader br = IOUtils.getTextGzipReader(inFiles[i].getAbsolutePath());
+                header = br.readLine();
+                String temp = null;
+                while ((temp = br.readLine()) != null) {
+                    cnt++;
+                    if (cnt%step != 0) {
+                        if (cnt%10000000 == 0) {
+                            System.out.println(cnt);
+                        }
+                        continue;
+                    }
+                    cList.add(temp);
+
+                }
+                System.out.println(inFiles[i].getName());
+                br.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write(header);
+            bw.newLine();
+            List<String> l = new ArrayList<>();
+            for (int i = 0; i < cList.size(); i++) {
+                bw.write(cList.get(i));
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+
+        }
+
+
     }
 
     public void runStep2 () {

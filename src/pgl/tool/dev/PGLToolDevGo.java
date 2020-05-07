@@ -6,10 +6,11 @@ public class PGLToolDevGo {
 //        this.alignmentDev();
 //        this.genotypeDev();
 //        this.popgenDev();
+//        this.genomeAnnotationDev();
 //        this.fastCallDev();
 //        this.hapScannerDev();
 //        this.speedCallDev();
-        this.popdepDev();
+//        this.popdepDev();
     }
 
     public void popdepDev () {
@@ -28,6 +29,10 @@ public class PGLToolDevGo {
         new FastCallDev();
     }
 
+    public void genomeAnnotationDev () {
+        new GenomeAnnotationDev();
+    }
+
     public void popgenDev () {
         new PopGenDev();
     }
@@ -39,5 +44,6 @@ public class PGLToolDevGo {
     public void genotypeDev () {
         new GenotypeDev();
     }
+
 
 }
