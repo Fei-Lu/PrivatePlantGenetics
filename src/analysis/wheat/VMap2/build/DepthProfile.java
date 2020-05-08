@@ -27,7 +27,63 @@ class DepthProfile {
         //this.popdepPlotSample();
         //this.popdepPlot();
         //this.vcfPlotSample();
-        this.vcfPlot();
+        //this.vcfPlot();
+        //this.findPopDepMode();
+        this.densityFilter();
+    }
+
+    public void densityFilter () {
+        double abDepthMode = 5.144204;
+        double abdDepthMode = 9.607552;
+        double dDepthMode = 11.91677;
+        double abSDMode = 4.226852;
+        double abdSDMode = 5.162204;
+        double dSDMode = 7.056306;
+        String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_sample.txt";
+        String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
+        String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";
+        double modeThresh = 0.5;
+        double densityThresh = 0.7;
+        this.densityFilterPlot(abDepthMode, abSDMode, modeThresh, densityThresh, abSampleFileS);
+//        this.densityFilterPlot(abdDepthMode, abdSDMode, modeThresh, densityThresh, abdSampleFileS);
+//        this.densityFilterPlot(dDepthMode, dSDMode, modeThresh, densityThresh, dSampleFileS);
+    }
+
+    public void densityFilterPlot (double depthMode, double SDMode, double modeThresh, double densityThresh, String inputFileS) {
+        RowTable<String> t = new RowTable<>(inputFileS);
+        double depthStart = (1-modeThresh)*depthMode;
+        double depthEnd = (1+modeThresh)*depthMode;
+        double SDStart = (1-modeThresh)*SDMode;
+        double SDEnd = (1+modeThresh)*SDMode;
+        int nBin = 100;
+        Grid gr = new Grid(depthStart, depthEnd, SDStart, SDEnd, nBin);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            gr.addXY(t.getCellAsDouble(i,1), t.getCellAsDouble(i,2));
+        }
+        gr.buildHashMap();
+        TDoubleArrayList xList = new TDoubleArrayList();
+        TDoubleArrayList yList = new TDoubleArrayList();
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            double x = t.getCellAsDouble(i, 1);
+            double y = t.getCellAsDouble(i, 2);
+            if (!gr.isHighDensity(x, y , densityThresh)) continue;
+            xList.add(x);
+            yList.add(y);
+        }
+        ScatterPlot s = new ScatterPlot(xList.toArray(), yList.toArray());
+        s.showGraph();
+    }
+
+    /**
+     * By aoyue
+     */
+    public void findPopDepMode () {
+        double abDepthMode = 5.144204;
+        double abdDepthMode = 9.607552;
+        double dDepthMode = 11.91677;
+        double abSDMode = 4.226852;
+        double abdSDMode = 5.162204;
+        double dSDMode = 7.056306;
     }
 
     public void vcfPlot () {
@@ -181,27 +237,31 @@ class DepthProfile {
         String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_sample.txt";
         String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
         String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";
+
         String abDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_depth_density.pdf";
+        String abDepthSDDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_SD_density.pdf";
         String abDepthStanDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_depth_stan_density.pdf";
         String abDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_depth_scatter.pdf";
         String abDepthStanScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_depth_stan_scatter.pdf";
 
         String abdDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_depth_density.pdf";
+        String abdDepthSDDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_SD_density.pdf";
         String abdDepthStanDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_depth_stan_density.pdf";
         String abdDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_depth_scatter.pdf";
         String abdDepthStanScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_depth_stan_scatter.pdf";
 
         String dDepthDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_depth_density.pdf";
+        String dDepthSDDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_SD_density.pdf";
         String dDepthStanDesity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_depth_stan_density.pdf";
         String dDepthScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_depth_scatter.pdf";
         String dDepthStanScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_depth_stan_scatter.pdf";
 
-        this.plotPopDep(abSampleFileS, abDepthDesity, abDepthStanDesity, abDepthScatter, abDepthStanScatter, "AB");
-        this.plotPopDep(abdSampleFileS, abdDepthDesity, abdDepthStanDesity, abdDepthScatter, abdDepthStanScatter, "ABD");
-        this.plotPopDep(dSampleFileS, dDepthDesity, dDepthStanDesity, dDepthScatter, dDepthStanScatter, "D");
+        this.plotPopDep(abSampleFileS, abDepthDesity, abDepthSDDesity, abDepthStanDesity, abDepthScatter, abDepthStanScatter, "AB");
+        this.plotPopDep(abdSampleFileS, abdDepthDesity, abdDepthSDDesity, abdDepthStanDesity, abdDepthScatter, abdDepthStanScatter, "ABD");
+        this.plotPopDep(dSampleFileS, dDepthDesity, dDepthSDDesity, dDepthStanDesity, dDepthScatter, dDepthStanScatter, "D");
     }
 
-    private void plotPopDep (String infileS, String depthDensity, String depthStanDensity, String depthScatter, String depthStanScatter, String genomeType) {
+    private void plotPopDep (String infileS, String depthDensity, String sdDensity, String depthStanDensity, String depthScatter, String depthStanScatter, String genomeType) {
         RowTable<String> t = new RowTable<>(infileS);
         double[] depth = t.getColumnAsDoubleArray(1);
         double[] depthSD = t.getColumnAsDoubleArray(2);
@@ -213,6 +273,16 @@ class DepthProfile {
         d.setXLab("Mean of depth");
         d.setYLab("Density");
         d.saveGraph(depthDensity);
+
+        d = new DensityPlot(depthSD);
+        d.setTitle(genomeType);
+        d.setXLim(0, 13);
+        d.setXLab("Mean of depth SD");
+        d.setYLab("Density");
+        d.setSmoothN(5000);
+        //d.showGraph();
+        d.saveGraph(sdDensity);
+
         d = new DensityPlot(depthStan);
         d.setXLim(0,3);
         d.setXLab("Mean of standardized depth");
@@ -220,15 +290,22 @@ class DepthProfile {
         d.saveGraph(depthStanDensity);
         ScatterPlot s = new ScatterPlot(depth, depthSD);
         s.setTitle(genomeType);
-        s.setXLim(0, 20);
-        s.setYLim(0, 20);
+        if (genomeType.equals("AB")) {
+            s.setXLim(0, 8);
+            s.setYLim(0, 8);
+        }
+        else {
+            s.setXLim(0, 20);
+            s.setYLim(0, 12);
+        }
+
         s.setXLab("Mean of depth");
         s.setYLab("SD of depth");
         s.setColor(255, 0, 0, 20);
         s.saveGraph(depthScatter);
-        s = new ScatterPlot(depthStan, depthSD);
-        s.setXLim(0, 5);
-        s.setYLim(0, 10);
+        s = new ScatterPlot(depthStan, depthStanSD);
+        s.setXLim(0, 2);
+        s.setYLim(0, 1);
         s.setXLab("Mean of standardized depth");
         s.setYLab("SD of standardized depth");
         s.setColor(255, 0, 0, 20);
