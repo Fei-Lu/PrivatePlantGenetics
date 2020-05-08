@@ -29,32 +29,28 @@ class DepthProfile {
         //this.vcfPlotSample();
         //this.vcfPlot();
         //this.findPopDepMode();
-        this.densityFilter();
+//        this.densityFilter();
     }
 
     public void densityFilter () {
-        double abDepthMode = 5.144204;
-        double abdDepthMode = 9.607552;
-        double dDepthMode = 11.91677;
-        double abSDMode = 4.226852;
-        double abdSDMode = 5.162204;
-        double dSDMode = 7.056306;
         String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_sample.txt";
         String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
         String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";
-        double modeThresh = 0.5;
-        double densityThresh = 0.01;
-        this.densityFilterPlot(abDepthMode, abSDMode, modeThresh, densityThresh, abSampleFileS);
-//        this.densityFilterPlot(abdDepthMode, abdSDMode, modeThresh, densityThresh, abdSampleFileS);
-//        this.densityFilterPlot(dDepthMode, dSDMode, modeThresh, densityThresh, dSampleFileS);
+        double proportionOfSite = 0.70;
+        this.densityFilterPlotAB(proportionOfSite, abSampleFileS);
+        this.densityFilterPlotABD(proportionOfSite, abdSampleFileS);
+        this.densityFilterPlotD(proportionOfSite, dSampleFileS);
+
     }
 
-    public void densityFilterPlot (double depthMode, double SDMode, double modeThresh, double densityThresh, String inputFileS) {
+    public void densityFilterPlotD(double proportionOfSite, String inputFileS) {
+        String beforeFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/beforeAfter/d_before_scatter.pdf";
+        String afterFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/beforeAfter/d_after_scatter.pdf";
         RowTable<String> t = new RowTable<>(inputFileS);
-        double depthStart = (1-modeThresh)*depthMode;
-        double depthEnd = (1+modeThresh)*depthMode;
-        double SDStart = (1-modeThresh)*SDMode;
-        double SDEnd = (1+modeThresh)*SDMode;
+        double depthStart = 3;
+        double depthEnd = 17;
+        double SDStart = 3;
+        double SDEnd = 10;
         int nBin = 100;
         Grid gr = new Grid(depthStart, depthEnd, SDStart, SDEnd, nBin);
         for (int i = 0; i < t.getRowNumber(); i++) {
@@ -63,15 +59,113 @@ class DepthProfile {
         gr.buildHashMap();
         TDoubleArrayList xList = new TDoubleArrayList();
         TDoubleArrayList yList = new TDoubleArrayList();
+        int indexThresh = gr.getOrderIndexOfProportionOfSite(proportionOfSite);
         for (int i = 0; i < t.getRowNumber(); i++) {
             double x = t.getCellAsDouble(i, 1);
             double y = t.getCellAsDouble(i, 2);
-            if (!gr.isHighDensity(x, y , densityThresh)) continue;
+            if (!gr.isHighDensity(x, y , indexThresh)) continue;
             xList.add(x);
             yList.add(y);
         }
-        ScatterPlot s = new ScatterPlot(xList.toArray(), yList.toArray());
-        s.showGraph();
+
+        ScatterPlot s = new ScatterPlot(t.getColumnAsDoubleArray(1), t.getColumnAsDoubleArray(2));
+        s.setTitle("D_before");
+        s.setColor(255,0, 0, 5);
+        s.setXLim(0, 20);
+        s.setYLim(0, 12);
+        s.setXLab("Mean of depth");
+        s.setYLab("SD of depth");
+        s.saveGraph(beforeFileS);
+        s = new ScatterPlot(xList.toArray(), yList.toArray());
+        s.setColor(255,0, 0, 5);
+        s.setXLim(0, 20);
+        s.setYLim(0, 12);
+        s.setXLab("Mean of depth");
+        s.setYLab("SD of depth");
+        s.saveGraph(afterFileS);
+    }
+    public void densityFilterPlotABD(double proportionOfSite, String inputFileS) {
+        String beforeFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/beforeAfter/abd_before_scatter.pdf";
+        String afterFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/beforeAfter/abd_after_scatter.pdf";
+        RowTable<String> t = new RowTable<>(inputFileS);
+        double depthStart = 3;
+        double depthEnd = 15;
+        double SDStart = 3;
+        double SDEnd = 8;
+        int nBin = 100;
+        Grid gr = new Grid(depthStart, depthEnd, SDStart, SDEnd, nBin);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            gr.addXY(t.getCellAsDouble(i,1), t.getCellAsDouble(i,2));
+        }
+        gr.buildHashMap();
+        TDoubleArrayList xList = new TDoubleArrayList();
+        TDoubleArrayList yList = new TDoubleArrayList();
+        int indexThresh = gr.getOrderIndexOfProportionOfSite(proportionOfSite);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            double x = t.getCellAsDouble(i, 1);
+            double y = t.getCellAsDouble(i, 2);
+            if (!gr.isHighDensity(x, y , indexThresh)) continue;
+            xList.add(x);
+            yList.add(y);
+        }
+
+        ScatterPlot s = new ScatterPlot(t.getColumnAsDoubleArray(1), t.getColumnAsDoubleArray(2));
+        s.setTitle("ABD_before");
+        s.setColor(255,0, 0, 5);
+        s.setXLim(0, 20);
+        s.setYLim(0, 12);
+        s.setXLab("Mean of depth");
+        s.setYLab("SD of depth");
+        s.saveGraph(beforeFileS);
+        s = new ScatterPlot(xList.toArray(), yList.toArray());
+        s.setTitle("ABD_after");
+        s.setColor(255,0, 0, 5);
+        s.setXLim(0, 20);
+        s.setYLim(0, 12);
+        s.setXLab("Mean of depth");
+        s.saveGraph(afterFileS);
+    }
+
+    public void densityFilterPlotAB(double proportionOfSite, String inputFileS) {
+        String beforeFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/beforeAfter/ab_before_scatter.pdf";
+        String afterFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/beforeAfter/ab_after_scatter.pdf";
+        RowTable<String> t = new RowTable<>(inputFileS);
+        double depthStart = 2;
+        double depthEnd = 8;
+        double SDStart = 2;
+        double SDEnd = 8;
+        int nBin = 100;
+        Grid gr = new Grid(depthStart, depthEnd, SDStart, SDEnd, nBin);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            gr.addXY(t.getCellAsDouble(i,1), t.getCellAsDouble(i,2));
+        }
+        gr.buildHashMap();
+        TDoubleArrayList xList = new TDoubleArrayList();
+        TDoubleArrayList yList = new TDoubleArrayList();
+        int indexThresh = gr.getOrderIndexOfProportionOfSite(proportionOfSite);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            double x = t.getCellAsDouble(i, 1);
+            double y = t.getCellAsDouble(i, 2);
+            if (!gr.isHighDensity(x, y , indexThresh)) continue;
+            xList.add(x);
+            yList.add(y);
+        }
+        ScatterPlot s = new ScatterPlot(t.getColumnAsDoubleArray(1), t.getColumnAsDoubleArray(2));
+        s.setTitle("AB_before");
+        s.setColor(255,0, 0, 5);
+        s.setXLim(0, 8);
+        s.setYLim(0, 8);
+        s.setXLab("Mean of depth");
+        s.setYLab("SD of depth");
+        s.saveGraph(beforeFileS);
+        s = new ScatterPlot(xList.toArray(), yList.toArray());
+        s.setTitle("AB_after");
+        s.setColor(255,0, 0, 5);
+        s.setXLim(0, 8);
+        s.setYLim(0, 8);
+        s.setXLab("Mean of depth");
+        s.setYLab("SD of depth");
+        s.saveGraph(afterFileS);
     }
 
     /**
@@ -319,7 +413,7 @@ class DepthProfile {
         String abdFile2 = "/Volumes/VMap2_Fei/popdep_vmap2/ABD/chr002_ABD_popdep_vmap2.txt.gz";
         String dFile1 = "/Volumes/VMap2_Fei/popdep_vmap2/D/chr005_D_popdep_vmap2.txt.gz";
         String dFile2 = "/Volumes/VMap2_Fei/popdep_vmap2/D/chr006_D_popdep_vmap2.txt.gz";
-        int sampleSize = 10000;
+        int sampleSize = 50000;
         String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_sample.txt";
         String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
         String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";

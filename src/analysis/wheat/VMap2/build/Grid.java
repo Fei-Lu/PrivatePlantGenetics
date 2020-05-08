@@ -72,7 +72,25 @@ class Grid {
         return bound;
     }
 
-    public boolean isHighDensity (double x, double y, double densityThresh) {
+    public int getTotalSiteCount () {
+        int cnt = 0;
+        for (int i = 0; i < this.cellCounts.length; i++) {
+            cnt+=cellCounts[i];
+        }
+        return cnt;
+    }
+
+    public int getOrderIndexOfProportionOfSite (double proportion) {
+        int totalCount = this.getTotalSiteCount();
+        double current = 0;
+        for (int i = cellCounts.length-1; i > -1; i--) {
+            current+=(double)cellCounts[i]/totalCount;
+            if (current>proportion) return i;
+        }
+        return Integer.MIN_VALUE;
+    }
+
+    public boolean isHighDensity (double x, double y, double indexThresh) {
         int xIndex = Arrays.binarySearch(this.xBound, x);
         if (xIndex < 0) {
             xIndex = -xIndex-2;
@@ -87,7 +105,6 @@ class Grid {
         if (yIndex > nBin - 1) return false;
         int coor = this.getCoordinate((short)xIndex, (short)yIndex);
         int index = this.coordinateOrderMap.get(coor);
-        int indexThresh = (int)((1-densityThresh)*coordinates.length);
         if (index > indexThresh) return true;
         return false;
     }
@@ -126,7 +143,6 @@ class Grid {
 
             }
         }
-        int a = 3;
     }
 
     protected Swapper swapper = new Swapper() {
