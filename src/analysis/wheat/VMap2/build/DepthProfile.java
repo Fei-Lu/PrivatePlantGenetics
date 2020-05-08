@@ -30,6 +30,90 @@ class DepthProfile {
         //this.vcfPlot();
         //this.findPopDepMode();
 //        this.densityFilter();
+        this.mkReliableGenotypeSite();
+    }
+
+    public void mkReliableGenotypeSite () {
+        String abInDirS = "/Volumes/VMap2_Fei/popdep_vmap2/AB/";
+        String abdInDirS = "/Volumes/VMap2_Fei/popdep_vmap2/ABD/";
+        String dInDirS = "/Volumes/VMap2_Fei/popdep_vmap2/D/";
+
+        String abOutDirS = "/Volumes/VMap2_Fei/reliableSites/AB";
+        String abdOutDirS = "/Volumes/VMap2_Fei/reliableSites/ABD";
+        String dOutDirS = "/Volumes/VMap2_Fei/reliableSites/D";
+
+        String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_sample.txt";
+        String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
+        String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";
+
+        double depthStart = 2;
+        double depthEnd = 8;
+        double SDStart = 2;
+        double SDEnd = 8;
+        int nBin = 100;
+        double proportionOfSite = 0.7;
+
+        this.mkReliable(abInDirS, abOutDirS, abSampleFileS, depthStart, depthEnd, SDStart, SDEnd, nBin, proportionOfSite);
+
+        depthStart = 3;
+        depthEnd = 15;
+        SDStart = 3;
+        SDEnd = 8;
+        this.mkReliable(abdInDirS, abdOutDirS, abdSampleFileS, depthStart, depthEnd, SDStart, SDEnd, nBin, proportionOfSite);
+
+        depthStart = 3;
+        depthEnd = 17;
+        SDStart = 3;
+        SDEnd = 10;
+        this.mkReliable(dInDirS, dOutDirS, dSampleFileS, depthStart, depthEnd, SDStart, SDEnd, nBin, proportionOfSite);
+
+    }
+
+    private void mkReliable (String inDirS, String outDirS, String sampleFileS, double depthStart, double depthEnd, double SDStart, double SDEnd, int nBin, double proportionOfSite) {
+        RowTable<String> t = new RowTable<>(sampleFileS);
+        Grid gr = new Grid(depthStart, depthEnd, SDStart, SDEnd, nBin);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            gr.addXY(t.getCellAsDouble(i,1), t.getCellAsDouble(i,2));
+        }
+        gr.buildHashMap();
+        int indexThresh = gr.getOrderIndexOfProportionOfSite(proportionOfSite);
+        List<File> fList = IOUtils.getFileListInDirEndsWith(inDirS,".gz");
+        fList.stream().forEach(f -> {
+            String outfileS = f.getName().replaceFirst("popdep_vmap2.txt.gz", "reliable.txt.gz");
+            outfileS = new File(outDirS, outfileS).getAbsolutePath();
+            try {
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                BufferedWriter bw = IOUtils.getTextGzipWriter(outfileS);
+                bw.write("IfReliable(0/1)");
+                bw.newLine();
+                List<String> l = new ArrayList<>();
+                String temp = br.readLine();
+                double x;
+                double y;
+                int cnt = 0;
+                while ((temp = br.readLine()) != null) {
+                    l = PStringUtils.fastSplit(temp);
+                    x = Double.parseDouble(l.get(1));
+                    y = Double.parseDouble(l.get(2));
+                    if (gr.isHighDensity(x, y, indexThresh)) {
+                        bw.write("1");
+                    }
+                    else {
+                        bw.write("0");
+                    }
+                    bw.newLine();
+                    cnt++;
+                    if (cnt%10000000 == 0) System.out.println(cnt);
+                }
+                bw.flush();
+                bw.close();
+                br.close();
+                System.out.println(f.getName());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void densityFilter () {
