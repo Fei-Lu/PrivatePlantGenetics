@@ -43,7 +43,7 @@ class DepthProfile {
         String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
         String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";
         double modeThresh = 0.5;
-        double densityThresh = 0.7;
+        double densityThresh = 0.01;
         this.densityFilterPlot(abDepthMode, abSDMode, modeThresh, densityThresh, abSampleFileS);
 //        this.densityFilterPlot(abdDepthMode, abdSDMode, modeThresh, densityThresh, abdSampleFileS);
 //        this.densityFilterPlot(dDepthMode, dSDMode, modeThresh, densityThresh, dSampleFileS);

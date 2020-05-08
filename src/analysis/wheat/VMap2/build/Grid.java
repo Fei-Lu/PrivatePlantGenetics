@@ -99,7 +99,7 @@ class Grid {
         }
         if (xIndex < 0) return;
         if (xIndex > nBin - 1) return;
-        int yIndex = Arrays.binarySearch(this.yBound, x);
+        int yIndex = Arrays.binarySearch(this.yBound, y);
         if (yIndex < 0) {
             yIndex = -yIndex-2;
         }
