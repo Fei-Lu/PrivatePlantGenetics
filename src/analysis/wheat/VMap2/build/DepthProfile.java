@@ -30,7 +30,231 @@ class DepthProfile {
         //this.vcfPlot();
         //this.findPopDepMode();
 //        this.densityFilter();
-        this.mkReliableGenotypeSite();
+        //this.mkReliableGenotypeSite();
+        //this.mkReliableIntersection();
+        //this.intersectionCheck();
+    }
+
+    public void intersectionCheck () {
+        String abSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abPopDep_sample.txt";
+        String abdSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/abdPopDep_sample.txt";
+        String dSampleFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/dPopDep_sample.txt";
+
+        String abFile1S = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/abPopDep_sample_chr001.txt";
+        String abFile2S = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/abPopDep_sample_chr002.txt";
+        String abdFile1S = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/abdPopDep_sample_chr001.txt";
+        String abdFile2S = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/abdPopDep_sample_chr002.txt";
+        String dFile1S = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/dPopDep_sample_chr005.txt";
+        String dFile2S = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/dPopDep_sample_chr006.txt";
+
+//        this.split(abSampleFileS, abFile1S, abFile2S);
+//        this.split(abdSampleFileS, abdFile1S, abdFile2S);
+//        this.split(dSampleFileS, dFile1S, dFile2S);
+
+        String reliableChr001 = "/Volumes/VMap2_Fei/reliableSites/ABD_intersect/chr001_intersect_reliable.txt.gz";
+        String reliableChr002 = "/Volumes/VMap2_Fei/reliableSites/ABD_intersect/chr002_intersect_reliable.txt.gz";
+        String reliableChr005 = "/Volumes/VMap2_Fei/reliableSites/ABD_intersect/chr005_intersect_reliable.txt.gz";
+        String reliableChr006 = "/Volumes/VMap2_Fei/reliableSites/ABD_intersect/chr006_intersect_reliable.txt.gz";
+
+        String abDepthDensity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/abPopDep_intersect_depth_density.pdf";
+        String abScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/abPopDep_intersect_scatter.pdf";
+        String abdDepthDensity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/abdPopDep_intersect_depth_density.pdf";
+        String abdScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/abdPopDep_intersect_scatter.pdf";
+        String dDepthDensity = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/dPopDep_intersect_depth_density.pdf";
+        String dScatter = "/Users/feilu/Documents/analysisL/production/vmap2/depth/plot/intersection/dPopDep_intersect_scatter.pdf";
+        this.plotIntersection(abFile1S, abFile2S, reliableChr001, reliableChr002, abDepthDensity, abScatter, "AB");
+        this.plotIntersection(abdFile1S, abdFile2S, reliableChr001, reliableChr002, abdDepthDensity, abdScatter, "ABD");
+        this.plotIntersection(dFile1S, dFile2S, reliableChr005, reliableChr006, dDepthDensity, dScatter, "D");
+    }
+
+    private void plotIntersection (String file1, String file2, String reliableFile1, String reliableFile2, String densityPlot, String scatterPlot, String genomeType) {
+        TDoubleArrayList depthList = new TDoubleArrayList();
+        TDoubleArrayList sdList = new TDoubleArrayList();
+        int totalCnt = 0;
+        int depthFilterCnt = 0;
+        int[] values =this.plotIntersection2(file1, reliableFile1, depthList, sdList);
+        totalCnt+=values[0]; depthFilterCnt+=values[1];
+        values = this.plotIntersection2(file2, reliableFile2, depthList, sdList);
+        totalCnt+=values[0]; depthFilterCnt+=values[1];
+        double[] x = depthList.toArray();
+        double[] y = sdList.toArray();
+        ScatterPlot s = new ScatterPlot(x, y);
+        DensityPlot d = new DensityPlot(x);
+        if (genomeType.equals("AB")) {
+            s.setTitle("AB_intersect");
+            s.setXLim(0, 8);
+            s.setYLim(0, 8);
+            s.setColor(255, 0, 0, 5);
+            s.setXLab("Mean of depth");
+            s.setYLab("SD of depth");
+            s.saveGraph(scatterPlot);
+            d.setXLim(0, 8);
+            d.setXLab("Mean of depth");
+            d.setYLab("Density");
+            d.setTitle("AB_intersect");
+            d.saveGraph(densityPlot);
+        }
+        else if (genomeType.equals("ABD")) {
+            s.setTitle("ABD_intersect");
+            s.setXLim(0, 20);
+            s.setYLim(0, 12);
+            s.setColor(255, 0, 0, 5);
+            s.setXLab("Mean of depth");
+            s.setYLab("SD of depth");
+            s.saveGraph(scatterPlot);
+            d.setXLim(0, 20);
+            d.setXLab("Mean of depth");
+            d.setYLab("Density");
+            d.setTitle("ABD_intersect");
+            d.saveGraph(densityPlot);
+        }
+        else if (genomeType.equals("D")) {
+            s.setTitle("D_intersect");
+            s.setXLim(0, 20);
+            s.setYLim(0, 12);
+            s.setColor(255, 0, 0, 5);
+            s.setXLab("Mean of depth");
+            s.setYLab("SD of depth");
+            s.saveGraph(scatterPlot);
+            d.setXLim(0, 20);
+            d.setXLab("Mean of depth");
+            d.setYLab("Density");
+            d.setTitle("D_intersect");
+            d.saveGraph(densityPlot);
+        }
+        System.out.println(genomeType);
+        System.out.println((double)x.length/totalCnt);
+
+    }
+
+    private int[] plotIntersection2 (String file, String reliableFile, TDoubleArrayList depthList, TDoubleArrayList sdList) {
+        RowTable<String> t = new RowTable<>(file);
+        int[] positions = t.getColumnAsIntArray(0);
+        boolean[] ifSelected = new boolean[positions.length];
+        int depthFilterCnt = 0;
+        try {
+            BufferedReader br = IOUtils.getTextGzipReader(reliableFile);
+            String temp = br.readLine();
+            int currentPos = 0;
+            int value;
+            int index;
+
+            while ((temp = br.readLine()) != null) {
+                currentPos++;
+                if (currentPos%10000000 == 0) System.out.println(currentPos);
+                value = Integer.parseInt(temp);
+                if (value == 0) {
+                    continue;
+                }
+                index = Arrays.binarySearch(positions, currentPos);
+                if (index < 0) {
+
+                    continue;
+                }
+                ifSelected[index] = true;
+            }
+            br.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            if (!ifSelected[i]) continue;
+            depthList.add(Double.parseDouble(t.getCell(i,1)));
+            sdList.add(Double.parseDouble(t.getCell(i,2)));
+        }
+        int[] values = new int[2];
+        values[0] = t.getRowNumber();
+        values[1] = t.getRowNumber()-depthFilterCnt;
+        return values;
+    }
+
+    private void split (String sourceFileS, String file1, String file2) {
+        try {
+            BufferedReader br = IOUtils.getTextReader(sourceFileS);
+            String header  = br.readLine();
+            String temp = null;
+            BufferedWriter bw1 = IOUtils.getTextWriter(file1);
+            BufferedWriter bw2 = IOUtils.getTextWriter(file2);
+            bw1.write(header);
+            bw1.newLine();
+            bw2.write(header);
+            bw2.newLine();
+            List<String> l = new ArrayList<>();
+            int current = -1;
+            int next = -1;
+            while ((temp = br.readLine()) != null) {
+                l = PStringUtils.fastSplit(temp);
+                next = Integer.parseInt(l.get(0));
+                if (next < current) {
+                    bw2.write(temp);
+                    bw2.newLine();
+                    while ((temp = br.readLine()) != null) {
+                        bw2.write(temp);
+                        bw2.newLine();
+                    }
+                }
+                else {
+                    bw1.write(temp);
+                    bw1.newLine();
+                }
+                current = next;
+            }
+            bw1.flush();
+            bw1.close();
+            bw2.flush();
+            bw2.close();
+            br.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mkReliableIntersection () {
+        String abDirS = "/Volumes/VMap2_Fei/reliableSites/AB/";
+        String abdDirS = "/Volumes/VMap2_Fei/reliableSites/ABD/";
+        String dDirS = "/Volumes/VMap2_Fei/reliableSites/D/";
+
+        String resultDirS = "/Volumes/VMap2_Fei/reliableSites/ABD_intersect";
+
+        this.mkReliable(abDirS, abdDirS, resultDirS);
+        this.mkReliable(dDirS, abdDirS, resultDirS);
+
+    }
+
+    private void mkReliable (String source1DirS, String source2DirS, String resultDirS) {
+        List<File> fList = IOUtils.getFileListInDirEndsWith(source1DirS, ".gz");
+        Collections.sort(fList);
+        fList.parallelStream().forEach(f -> {
+            String source2FileS = new File (source2DirS, f.getName().split("_")[0]+"_ABD_reliable.txt.gz").getAbsolutePath();
+            String outputFileS = new File (resultDirS, f.getName().split("_")[0]+"_intersect_reliable.txt.gz").getAbsolutePath();
+            try {
+                BufferedReader br1 = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                BufferedReader br2 = IOUtils.getTextGzipReader(source2FileS);
+                BufferedWriter bw = IOUtils.getTextGzipWriter(outputFileS);
+                String temp1 = br1.readLine();
+                String temp2 = br2.readLine();
+                bw.write(temp1);
+                bw.newLine();
+                int cnt = 0;
+                while ((temp1 = br1.readLine()) != null) {
+                    temp2 = br2.readLine();
+                    bw.write(String.valueOf(Integer.parseInt(temp1)*Integer.parseInt(temp2)));
+                    bw.newLine();
+                    cnt++;
+                    if (cnt%10000000 == 0) System.out.println(cnt);
+                }
+                bw.flush();
+                bw.close();
+                br1.close();
+                br2.close();
+                System.out.println(f.getName());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void mkReliableGenotypeSite () {
