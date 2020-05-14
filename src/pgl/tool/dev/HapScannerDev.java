@@ -3,7 +3,7 @@ package pgl.tool.dev;
 import pgl.app.hapScanner.HapScanner;
 import pgl.infra.dna.allele.AlleleEncoder;
 import pgl.infra.dna.genotype.GenoIOFormat;
-import pgl.infra.dna.genotype.GenotypeBit;
+import pgl.infra.dna.genotype.GenotypeRows;
 import pgl.infra.dna.genotype.GenotypeTable;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
@@ -51,7 +51,7 @@ public class HapScannerDev {
         String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/vcf/chr001.vcf";
         String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/hapScanner/inputfile/posAllele_hapscanner.txt";
         int size = 10;
-        GenotypeTable gt = new GenotypeBit(vcfFileS, GenoIOFormat.VCF);
+        GenotypeTable gt = new GenotypeRows(vcfFileS, GenoIOFormat.VCF);
         StringBuilder sb = new StringBuilder();
         try {
             BufferedWriter bw = IOUtils.getTextWriter(outfileS);
