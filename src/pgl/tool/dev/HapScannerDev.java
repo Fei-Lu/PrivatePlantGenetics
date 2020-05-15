@@ -18,7 +18,7 @@ public class HapScannerDev {
 //        this.mkTaxaRefBamFileS();
 //        this.mkPosAlleleFileS();
 //        this.mkPosFileS();
-//        this.runHapScanner();
+        this.runHapScanner();
     }
 
     public void runHapScanner () {

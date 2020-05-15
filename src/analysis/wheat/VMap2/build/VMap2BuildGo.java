@@ -5,6 +5,7 @@ public class VMap2BuildGo {
     public VMap2BuildGo() {
         //this.depthProfile();
         //this.filterByDepth();
+        this.scanLibrary();
     }
 
     public void scanLibrary () {
@@ -18,6 +19,5 @@ public class VMap2BuildGo {
     public void depthProfile () {
         new DepthProfile();
     }
-
 
 }
