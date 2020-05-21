@@ -18,7 +18,7 @@ import java.util.List;
 class FilterByDepth {
 
     public FilterByDepth () {
-        //this.filterVCF();
+//        this.filterVCF();
 //        this.qualityCheck();
     }
 

@@ -4,9 +4,15 @@ public class VMap2BuildGo {
 
     public VMap2BuildGo() {
         //this.depthProfile();
-        //this.filterByDepth();
-        this.scanLibrary();
+//        this.filterByDepth();
+//        this.scanLibrary();
+        this.filterMafAndOccurrence();
     }
+
+    public void filterMafAndOccurrence () {
+        new MafAndOccurrence();
+    }
+
 
     public void scanLibrary () {
         new ScanLibrary();
