@@ -13,10 +13,11 @@ public class WheatVMap1Go {
 
     public WheatVMap1Go () {
 //        this.convergenceHyper();
+        this.introgression();
     }
 
     public void introgression () {
-
+        new Introgression();
     }
 
     public void convergenceHyper () {
