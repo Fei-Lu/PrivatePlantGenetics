@@ -1,9 +1,8 @@
 package pgl.tool.dev;
 
 import pgl.app.popdep.PopDep;
-import pgl.graphcis.r.DensityPlot;
-import pgl.graphcis.r.Histogram;
-import pgl.graphcis.r.ScatterPlot;
+import pgl.graph.r.Histogram;
+import pgl.graph.r.ScatterPlot;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PArrayUtils;

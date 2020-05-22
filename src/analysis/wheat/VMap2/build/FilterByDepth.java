@@ -1,9 +1,8 @@
 package analysis.wheat.VMap2.build;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import pgl.graphcis.r.Histogram;
-import pgl.infra.dna.genotype.*;
-import pgl.infra.table.RowTable;
+import pgl.graph.r.Histogram;
+import pgl.infra.dna.genot.*;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
 

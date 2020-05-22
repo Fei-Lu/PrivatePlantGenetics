@@ -5,7 +5,7 @@
  */
 package deprecated.analysis.maizeGeneticLoad;
 
-import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.anno.gene.GeneFeature;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

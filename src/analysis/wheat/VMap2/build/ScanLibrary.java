@@ -2,8 +2,6 @@ package analysis.wheat.VMap2.build;
 
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.set.hash.TIntHashSet;
-import pgl.infra.dna.genotype.GenoIOFormat;
-import pgl.infra.dna.genotype.GenotypeGrid;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PArrayUtils;
 

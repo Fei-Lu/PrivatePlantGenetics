@@ -1,8 +1,8 @@
 package pgl.tool.dev;
 
-import pgl.infra.alignment.gen2.SAMPEAlignment;
-import pgl.infra.alignment.gen2.SAMSEAlignment;
-import pgl.infra.alignment.gen2.SEAlignRecord;
+import pgl.infra.align.g2.SAMPEAlignment;
+import pgl.infra.align.g2.SAMSEAlignment;
+import pgl.infra.align.g2.SEAlignRecord;
 
 public class AlignmentDev {
     

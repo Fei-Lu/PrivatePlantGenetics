@@ -12,7 +12,11 @@ package analysis.wheat.VMap1;
 public class WheatVMap1Go {
 
     public WheatVMap1Go () {
-        this.convergenceHyper();
+//        this.convergenceHyper();
+    }
+
+    public void introgression () {
+
     }
 
     public void convergenceHyper () {

@@ -14,7 +14,7 @@ import java.util.List;
 import pgl.infra.table.ColumnTable;
 import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import pgl.graphcis.r.Histogram;
+import pgl.graph.r.Histogram;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PArrayUtils;
 import pgl.infra.utils.PStringUtils;

@@ -3,8 +3,8 @@ package pgl.tool.dev;
 import pgl.infra.dna.allele.Allele;
 import pgl.infra.dna.allele.AlleleEncoder;
 import pgl.infra.dna.allele.AlleleType;
-import pgl.infra.dna.genotype.*;
-import pgl.infra.dna.genotype.summary.SumTaxaDivergence;
+import pgl.infra.dna.genot.*;
+import pgl.infra.dna.genot.summa.SumTaxaDivergence;
 import pgl.infra.utils.IOFileFormat;
 
 public class GenotypeDev {
@@ -23,7 +23,7 @@ public class GenotypeDev {
         GenotypeTable gt  = new GenotypeGrid(inFileS, GenoIOFormat.Binary_GZ);
         SumTaxaDivergence std = new SumTaxaDivergence(gt);
         std.writeDxyMatrix(outfileS, IOFileFormat.Text);
-        gt.getDxyMatrix();
+        gt.getIBSDistanceMatrix();
     }
 
     public void dxyTest1 () {

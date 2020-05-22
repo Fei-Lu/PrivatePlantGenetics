@@ -5,11 +5,11 @@
  */
 package deprecated.analysis.maize2k;
 
-import pgl.infra.alignment.gen2.ShortreadPEAlignment;
+import pgl.infra.align.g2.ShortreadPEAlignment;
 import pgl.infra.dna.Fastq;
 import pgl.infra.table.RowTable;
 import pgl.infra.table.TableInterface;
-import pgl.graphcis.r.DensityPlot;
+import pgl.graph.r.DensityPlot;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

@@ -5,7 +5,7 @@
  */
 package analysis.wheat.VMap2;
 
-import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.anno.gene.GeneFeature;
 import pgl.infra.range.Range;
 import pgl.infra.table.ColumnTable;
 import pgl.infra.table.RowTable;
@@ -13,7 +13,7 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.set.hash.TIntHashSet;
-import pgl.graphcis.tablesaw.TablesawUtils;
+import pgl.graph.tSaw.TablesawUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

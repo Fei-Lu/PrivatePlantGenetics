@@ -8,7 +8,7 @@ package analysis.wheat.ncnam;
 import pgl.infra.table.RowTable;
 import pgl.infra.tree.Newick;
 import gnu.trove.list.array.TDoubleArrayList;
-import pgl.graphcis.r.ScatterPlot;
+import pgl.graph.r.ScatterPlot;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.ArrayList;

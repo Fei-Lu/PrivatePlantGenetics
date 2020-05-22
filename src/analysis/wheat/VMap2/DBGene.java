@@ -5,10 +5,10 @@
  */
 package analysis.wheat.VMap2;
 
-import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.anno.gene.GeneFeature;
 import pgl.infra.range.Range;
 import pgl.infra.table.ColumnTable;
-import pgl.graphcis.tablesaw.TablesawUtils;
+import pgl.graph.tSaw.TablesawUtils;
 
 import java.io.File;
 import java.util.HashMap;

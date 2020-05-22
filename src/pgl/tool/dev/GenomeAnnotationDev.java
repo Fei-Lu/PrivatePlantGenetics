@@ -1,6 +1,6 @@
 package pgl.tool.dev;
 
-import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.anno.gene.GeneFeature;
 
 public class GenomeAnnotationDev {
     public GenomeAnnotationDev () {

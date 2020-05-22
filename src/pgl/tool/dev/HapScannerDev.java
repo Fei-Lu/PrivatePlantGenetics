@@ -2,9 +2,9 @@ package pgl.tool.dev;
 
 import pgl.app.hapScanner.HapScanner;
 import pgl.infra.dna.allele.AlleleEncoder;
-import pgl.infra.dna.genotype.GenoIOFormat;
-import pgl.infra.dna.genotype.GenotypeRows;
-import pgl.infra.dna.genotype.GenotypeTable;
+import pgl.infra.dna.genot.GenoIOFormat;
+import pgl.infra.dna.genot.GenotypeRows;
+import pgl.infra.dna.genot.GenotypeTable;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 

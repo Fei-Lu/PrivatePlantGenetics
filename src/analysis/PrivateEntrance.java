@@ -24,8 +24,8 @@ public class PrivateEntrance {
     }
     
     private void analysis () {
-//        this.wheatVMap1Go();
-        this.wheatVMap2BuildGo();
+        this.wheatVMap1Go();
+//        this.wheatVMap2BuildGo();
 //        this.wheatVMap2Go();
 //        this.envGWASGo();
 //        this.labPublicGo();

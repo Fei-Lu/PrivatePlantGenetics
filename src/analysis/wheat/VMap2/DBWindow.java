@@ -1,6 +1,6 @@
 package analysis.wheat.VMap2;
 
-import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.anno.gene.GeneFeature;
 import pgl.infra.range.Range;
 import pgl.infra.table.RowTable;
 import pgl.infra.window.SimpleWindow;

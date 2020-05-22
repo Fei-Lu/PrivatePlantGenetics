@@ -5,7 +5,7 @@
  */
 package analysis.wheat.RNASeq;
 
-import pgl.infra.genomeAnnotation.GeneFeature;
+import pgl.infra.anno.gene.GeneFeature;
 import pgl.infra.table.RowTable;
 import gnu.trove.set.hash.TIntHashSet;
 import java.io.BufferedWriter;

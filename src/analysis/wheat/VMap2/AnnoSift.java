@@ -7,7 +7,7 @@ package analysis.wheat.VMap2;
 
 import pgl.infra.table.RowTable;
 import gnu.trove.list.array.TDoubleArrayList;
-import pgl.graphcis.r.Histogram;
+import pgl.graph.r.Histogram;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;

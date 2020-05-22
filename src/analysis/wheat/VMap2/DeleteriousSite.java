@@ -3,7 +3,7 @@ package analysis.wheat.VMap2;
 import pgl.infra.table.RowTable;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import pgl.graphcis.r.BoxPlot;
+import pgl.graph.r.BoxPlot;
 import pgl.infra.utils.Dyad;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
