@@ -2,6 +2,7 @@ package analysis.wheat.VMap1;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.set.hash.TIntHashSet;
+import htsjdk.samtools.util.IOUtil;
 import pgl.graph.r.DensityPlot;
 import pgl.graph.r.Histogram;
 import pgl.infra.range.Range;
@@ -9,6 +10,7 @@ import pgl.infra.range.Ranges;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PArrayUtils;
+import pgl.infra.utils.PStringUtils;
 import pgl.infra.utils.wheat.RefV1Utils;
 
 import java.io.BufferedReader;
@@ -24,11 +26,43 @@ class Introgression {
     public Introgression () {
 //        this.intervalSize();
 //        this.findIndividualWithMaxFd();
-        this.maxFdHist();
+//        this.maxFdHist();
     }
 
-    public void maxFdHist () {
 
+    public void maxFdHist () {
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/maxFd";
+        String outDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/maxFd_hist";
+        List<File> dirList = IOUtils.getDirListInDir(inDirS);
+        for (int i = 0; i < dirList.size(); i++) {
+            String outfileS = new File (outDirS,dirList.get(i).getName()+".pdf").getAbsolutePath();
+            List<File> fList = IOUtils.getFileListInDirEndsWith(dirList.get(i).getAbsolutePath(), ".gz");
+            TDoubleArrayList fds = new TDoubleArrayList();
+            for (int j = 0; j < fList.size(); j++) {
+                try {
+                    BufferedReader br = IOUtils.getTextGzipReader(fList.get(j).getAbsolutePath());
+                    String temp = br.readLine();
+                    List<String> l = new ArrayList<>();
+                    while ((temp = br.readLine()) != null) {
+                        l = PStringUtils.fastSplit(temp);
+                        fds.add(Double.parseDouble(l.get(3)));
+                    }
+                    br.close();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(outfileS);
+            double[] sample = PArrayUtils.getNonredundantRandomSubset(fds.toArray(), 20000);
+            Histogram h = new Histogram(sample);
+            h.setTitle(dirList.get(i).getName());
+            h.setXLab("fd");
+            h.setYLab("Proportion");
+            h.setBreakNumber(100);
+            h.setXLim(0,1);
+            h.saveGraph(outfileS);
+        }
     }
 
     public void findIndividualWithMaxFd () {
@@ -50,7 +84,7 @@ class Introgression {
         String[] taxaB = this.getTaxaNames(dirListB.get(0));
         String[] taxaD = this.getTaxaNames(dirListD.get(0));
 
-//        this.outputMaxFd(dirListA, ranA, taxaA, outfileDirSA);
+        this.outputMaxFd(dirListA, ranA, taxaA, outfileDirSA);
         this.outputMaxFd(dirListB, ranB, taxaB, outfileDirSB);
         this.outputMaxFd(dirListD, ranD, taxaD, outfileDirSD);
     }
@@ -154,8 +188,11 @@ class Introgression {
 //        String file3 = "/Users/feilu/Desktop/untitled folder/AB1.csv";
 //        String file4 = "/Users/feilu/Desktop/untitled folder/AB2.csv";
         String infileS = "/Volumes/Fei_HDD_Mac/VMap1.0/fd/all_individual/raw/B001/AB1.csv.gz";
+        String infileSD = "/Volumes/Fei_HDD_Mac/VMap1.0/fd/all_individual/raw/D001/D1.csv.gz";
         String intervalA = "/Users/feilu/Documents/analysisH/vmap1/fd/interval/A_interval_density.pdf";
         String intervalB = "/Users/feilu/Documents/analysisH/vmap1/fd/interval/B_interval_density.pdf";
+        String intervalD = "/Users/feilu/Documents/analysisH/vmap1/fd/interval/D_interval_density.pdf";
+
         RowTable<String> t = new RowTable<>(infileS, ",");
         int[] chrs = t.getColumnAsIntArray(0);
         TIntHashSet cSet = new TIntHashSet(chrs);
@@ -173,6 +210,22 @@ class Introgression {
                 BList.add(dis);
             }
         }
+
+        t = new RowTable<>(infileSD, ",");
+        chrs = t.getColumnAsIntArray(0);
+        cSet = new TIntHashSet(chrs);
+        chrs = cSet.toArray();
+        Arrays.sort(chrs);
+        TDoubleArrayList DList = new TDoubleArrayList();
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            String genomeType = RefV1Utils.getSubgenomeFromChrID(Integer.parseInt(t.getCell(i,0)));
+            int dis = Integer.parseInt(t.getCell(i,2))-Integer.parseInt(t.getCell(i,1));
+            if (genomeType.equals("D")) {
+                DList.add(dis);
+            }
+        }
+
+
         DensityPlot d = new DensityPlot(AList.toArray());
         d.setSmoothN(5000);
         d.setTitle("Interval distribution of fd test in A subgenome");
@@ -188,6 +241,13 @@ class Introgression {
         d.setXLim(0, 10000000);
         d.saveGraph(intervalB);
 
+        d = new DensityPlot(DList.toArray());
+        d.setSmoothN(5000);
+        d.setTitle("Interval distribution of fd test in D subgenome");
+        d.setXLab("Interval size (bp)");
+        d.setYLab("Density");
+        d.setXLim(0, 10000000);
+        d.saveGraph(intervalD);
     }
 
 }
