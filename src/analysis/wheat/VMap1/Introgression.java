@@ -5,6 +5,8 @@ import gnu.trove.set.hash.TIntHashSet;
 import htsjdk.samtools.util.IOUtil;
 import pgl.graph.r.DensityPlot;
 import pgl.graph.r.Histogram;
+import pgl.infra.dna.genot.GenoIOFormat;
+import pgl.infra.dna.genot.GenotypeGrid;
 import pgl.infra.range.Range;
 import pgl.infra.range.Ranges;
 import pgl.infra.table.RowTable;
@@ -16,10 +18,7 @@ import pgl.infra.utils.wheat.RefV1Utils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 class Introgression {
 
@@ -27,8 +26,128 @@ class Introgression {
 //        this.intervalSize();
 //        this.findIndividualWithMaxFd();
 //        this.maxFdHist();
+        this.findIndividualWithMinIBSDistance();
     }
 
+    public void findIndividualWithMinIBSDistance () {
+        String vmap1DirS = "/Volumes/Fei_HDD_Mac/VMap1.0/VMapI";
+        String maxFdDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/maxFd";
+        String minIBSDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/minIBSD";
+        String convertFileS = "/Users/feilu/Documents/analysisH/vmap1/fd/landrace_ID_convert.txt";
+        RowTable<String> t = new RowTable<>(convertFileS);
+        HashMap<Integer, String> landMap = new HashMap<>();
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            landMap.put(i+1, t.getCell(i,2));
+        }
+        List<File> maxfdDirs = IOUtils.getDirListInDir(maxFdDirS);
+        for (int i = 0; i < maxfdDirs.size(); i++) {
+            String outDirS = new File (minIBSDirS, maxfdDirs.get(i).getName().split("_")[0]+"_minIBSD").getAbsolutePath();
+            this.outputMinIBSDistance(maxfdDirs.get(i).getAbsolutePath(), outDirS, vmap1DirS, landMap);
+        }
+    }
+
+    private void outputMinIBSDistance (String inDirS, String outDirS, String vcfDirS, HashMap<Integer, String> landMap) {
+        File outDir = new File (outDirS);
+        outDir.mkdir();
+        List<File> infiles = IOUtils.getFileListInDirEndsWith(inDirS, ".gz");
+        Ranges rs = null;
+        try {
+            BufferedReader br = IOUtils.getTextGzipReader(infiles.get(0).getAbsolutePath());
+            String temp = br.readLine();
+            List<Range> rList = new ArrayList<>();
+            List<String> l = new ArrayList<>();
+            while ((temp = br.readLine()) != null) {
+                l = PStringUtils.fastSplit(temp);
+                Range r = new Range (Integer.parseInt(l.get(0)), Integer.parseInt(l.get(1)), Integer.parseInt(l.get(2)));
+                rList.add(r);
+            }
+            rs = new Ranges(rList);
+            br.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<String> outfiles = new ArrayList<>();
+        for (int i = 0; i < infiles.size(); i++) {
+            outfiles.add(new File (outDirS, infiles.get(i).getName().split("_")[0]+"_minIBSD.txt").getAbsolutePath());
+        }
+        try {
+            BufferedReader[] brs = new BufferedReader[infiles.size()];
+            BufferedWriter[] bws = new BufferedWriter[outfiles.size()];
+            int[] landID = new int[infiles.size()];
+            for (int i = 0; i < brs.length; i++) {
+                landID[i] = Integer.parseInt(infiles.get(i).getName().split("_")[0]);
+                brs[i] = IOUtils.getTextGzipReader(infiles.get(i).getAbsolutePath());
+                brs[i].readLine();
+                bws[i] = IOUtils.getTextWriter(outfiles.get(i));
+                bws[i].write("Chr\tStart\tEnd\tMinIBSDistance\tTaxa");
+                bws[i].newLine();
+            }
+            String temp = null;
+            List<String> l = new ArrayList<>();
+            GenotypeGrid gt = null;
+            StringBuilder sb = new StringBuilder();
+            while ((temp = brs[0].readLine()) != null) {
+                l = PStringUtils.fastSplit(temp);
+                int currentChr = Integer.parseInt(l.get(0));
+                int currentStart = Integer.parseInt(l.get(1));
+                int currentEnd = Integer.parseInt(l.get(2));
+                if (gt == null || gt.getChromosome(0) != currentChr) {
+                    String vcfFileS = new File (vcfDirS, "chr"+String.valueOf(currentChr)+".vcf.gz").getAbsolutePath();
+                    gt = new GenotypeGrid(vcfFileS, GenoIOFormat.VCF_GZ);
+                    gt.sortByTaxa();
+                }
+                int startIndex = gt.getSiteIndex((short)currentChr, currentStart);
+//                if (startIndex < 0) startIndex = -startIndex-1;
+                int endIndex = gt.getSiteIndex((short)currentChr, currentEnd);
+//                if (endIndex < 0) endIndex = -endIndex-1;
+                for (int i = 0; i < brs.length; i++) {
+                    if (i != 0) temp = brs[i].readLine();
+                    this.processIBSOutputLine(currentChr, currentStart, currentEnd, temp, gt, landMap.get(landID[i]), sb);
+                    bws[i].write(sb.toString());
+                    bws[i].newLine();
+                }
+            }
+            for (int i = 0; i < brs.length; i++) {
+                bws[i].flush();
+                bws[i].close();
+                brs[i].close();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void processIBSOutputLine (int chr, int start, int end, String inputLine, GenotypeGrid gt, String currentTaxon, StringBuilder sb) {
+        sb.setLength(0);
+        sb.append(chr).append("\t").append(start).append("\t").append(end).append("\t");
+        List<String> l = PStringUtils.fastSplit(inputLine);
+        float fd = Float.parseFloat(l.get(3));
+        if (fd == 1.0) {
+            int n = l.size()-4;
+            float[] ds = new float[n];
+            Arrays.fill(ds, 1);
+            int currentIndex = gt.getTaxonIndex(currentTaxon);
+            for (int i = 0; i < n; i++) {
+                int nextIndex = gt.getTaxonIndex(l.get(i+4));
+                ds[i] = gt.getIBSDistance(currentIndex, nextIndex, start, end);
+            }
+            float minIBSD = 1;
+            for (int i = 0; i < n; i++) {
+                if (ds[i] < minIBSD) minIBSD = ds[i];
+            }
+            sb.append(minIBSD);
+            for (int i = 0; i < n; i++) {
+                if (ds[i] == minIBSD) {
+                    sb.append("\t").append(l.get(i+4));
+                }
+            }
+        }
+        else {
+            sb.append("NA");
+        }
+    }
 
     public void maxFdHist () {
         String inDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/maxFd";
