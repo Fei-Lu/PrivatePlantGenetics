@@ -11,36 +11,125 @@ import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PArrayUtils;
 import pgl.infra.utils.wheat.RefV1Utils;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 class Introgression {
 
     public Introgression () {
 //        this.intervalSize();
-        this.findIndividualWithMaxFd();
+//        this.findIndividualWithMaxFd();
+        this.maxFdHist();
+    }
+
+    public void maxFdHist () {
+
     }
 
     public void findIndividualWithMaxFd () {
         String inDirS = "/Volumes/Fei_HDD_Mac/VMap1.0/fd/all_individual/raw";
         List<File> dirListA = IOUtils.getDirListInDirStartsWith(inDirS, "A");
-        List<File> dirListB = IOUtils.getDirListInDirStartsWith(inDirS, "A");
+        List<File> dirListB = IOUtils.getDirListInDirStartsWith(inDirS, "B");
+        List<File> dirListD = IOUtils.getDirListInDirStartsWith(inDirS, "D");
+        dirListA.addAll(dirListB);
         String sampleAFileS = "/Volumes/Fei_HDD_Mac/VMap1.0/fd/all_individual/raw/A025/A1.csv.gz";
         String sampleBFileS = "/Volumes/Fei_HDD_Mac/VMap1.0/fd/all_individual/raw/B001/AB1.csv.gz";
+        String sampleDFileS = "/Volumes/Fei_HDD_Mac/VMap1.0/fd/all_individual/raw/D001/D1.csv.gz";
+        String outfileDirSA = "/Users/feilu/Documents/analysisH/vmap1/fd/maxFd/A_maxFd";
+        String outfileDirSB = "/Users/feilu/Documents/analysisH/vmap1/fd/maxFd/B_maxFd";
+        String outfileDirSD = "/Users/feilu/Documents/analysisH/vmap1/fd/maxFd/D_maxFd";
         Ranges ranA = this.getRanges(sampleAFileS, "A");
         Ranges ranB = this.getRanges(sampleBFileS, "B");
+        Ranges ranD = this.getRanges(sampleDFileS, "D");
         String[] taxaA = this.getTaxaNames(dirListA.get(0));
-        String[] taxaB = this.getTaxaNames(dirListA.get(0));
+        String[] taxaB = this.getTaxaNames(dirListB.get(0));
+        String[] taxaD = this.getTaxaNames(dirListD.get(0));
 
+//        this.outputMaxFd(dirListA, ranA, taxaA, outfileDirSA);
+        this.outputMaxFd(dirListB, ranB, taxaB, outfileDirSB);
+        this.outputMaxFd(dirListD, ranD, taxaD, outfileDirSD);
+    }
+
+    private void outputMaxFd (List<File> sourceDirList, Ranges rs, String[] targetTaxa, String outDirS) {
+        File outDir = new File (outDirS);
+        outDir.mkdir();
+        rs.sortByStartPosition();
+        for (int i = 0; i < targetTaxa.length; i++) {
+            File[] inputFiles = new File[sourceDirList.size()];
+            float[][] fds = new float[rs.getRangeNumber()][sourceDirList.size()];
+            RowTable<String> t = null;
+            for (int j = 0; j < sourceDirList.size(); j++) {
+                if (sourceDirList.get(j).getName().startsWith("B")) {
+                    inputFiles[j] = new File(sourceDirList.get(j), "AB"+targetTaxa[i]+".csv.gz").getAbsoluteFile();
+                }
+                else if (sourceDirList.get(j).getName().startsWith("A")) {
+                    inputFiles[j] = new File(sourceDirList.get(j), "A"+targetTaxa[i]+".csv.gz").getAbsoluteFile();
+                }
+                else if (sourceDirList.get(j).getName().startsWith("D")) {
+                    inputFiles[j] = new File(sourceDirList.get(j), "D"+targetTaxa[i]+".csv.gz").getAbsoluteFile();
+                }
+                t = new RowTable<>(inputFiles[j].getAbsolutePath(), ",");
+                for (int k = 0; k < t.getRowNumber(); k++) {
+                    Range r = new Range (Integer.parseInt(t.getCell(k, 0)), Integer.parseInt(t.getCell(k,1)), Integer.parseInt(t.getCell(k,2)));
+                    int index = Collections.binarySearch(rs.getRangeList(), r);
+                    if (index < 0) continue;
+                    String dS = t.getCell(k,8);
+                    String fdS = t.getCell(k, 9);
+                    if (dS.startsWith("n") || Double.parseDouble(dS) < 0) {
+                        fds[index][j] = 0;
+                    }
+                    else if (fdS.startsWith("n")) {
+                        fds[index][j] = 0;
+                    }
+                    else {
+                        float v = Float.parseFloat(fdS);
+                        if (v < 0 || v > 1) fds[index][j] = 0;
+                        else fds[index][j] = (float)v;
+                    }
+                }
+            }
+            String outfileS = new File (outDirS, targetTaxa[i]+"_maxFd.txt.gz").getAbsolutePath();
+            int cnt = 0;
+            try {
+                BufferedWriter bw = IOUtils.getTextGzipWriter(outfileS);
+                bw.write("Chr\tStart\tEnd\tMaxFd\tTaxa");
+                bw.newLine();
+                StringBuilder sb = new StringBuilder();
+                for (int j = 0; j < rs.getRangeNumber(); j++) {
+                    sb.setLength(0);
+                    sb.append(rs.getRangeChromosome(j)).append("\t").append(rs.getRangeStart(j)).append("\t").append(rs.getRangeEnd(j)).append("\t");
+                    float max = 0;
+                    for (int k = 0; k < fds[j].length; k++) {
+                        if (fds[j][k] > max) max = fds[j][k];
+                    }
+                    sb.append(max);
+                    for (int k = 0; k < fds[j].length; k++) {
+                        cnt = k;
+                        if (fds[j][k] == max) sb.append("\t").append(sourceDirList.get(k).getName());
+                    }
+                    bw.write(sb.toString());
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                System.out.println(cnt);
+            }
+        }
     }
 
     private String[] getTaxaNames (File dir) {
         List<File> fList = IOUtils.getFileListInDirEndsWith(dir.getAbsolutePath(), ".gz");
         String[] taxa = new String[fList.size()];
         for (int i = 0; i < taxa.length; i++) {
-            taxa[i] = fList.get(i).getName().split("\\.")[0];
+            taxa[i] = String.valueOf(i+1);
         }
         return taxa;
     }
