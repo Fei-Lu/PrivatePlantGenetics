@@ -1,12 +1,13 @@
 package analysis.wheat.VMap1;
 
 import gnu.trove.list.array.TDoubleArrayList;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.set.hash.TIntHashSet;
-import htsjdk.samtools.util.IOUtil;
 import pgl.graph.r.DensityPlot;
 import pgl.graph.r.Histogram;
 import pgl.infra.dna.genot.GenoIOFormat;
 import pgl.infra.dna.genot.GenotypeGrid;
+import pgl.infra.dna.genot.GenotypeTable;
 import pgl.infra.range.Range;
 import pgl.infra.range.Ranges;
 import pgl.infra.table.RowTable;
@@ -26,7 +27,90 @@ class Introgression {
 //        this.intervalSize();
 //        this.findIndividualWithMaxFd();
 //        this.maxFdHist();
-        this.findIndividualWithMinIBSDistance();
+//        this.findIndividualWithMinIBSDistance();
+        this.plotIBSDistanceDistribution();
+    }
+
+    public void plotIBSDistanceDistribution () {
+        String landraceRegionFileS = "/Users/feilu/Documents/analysisH/vmap1/fd/Landrace_region.txt";
+        String minIBSDDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/minIBSD";
+        String outDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/minIBSD_dis";
+        RowTable<String> t = new RowTable<>(landraceRegionFileS);
+        int[] euIDs = this.getRegionIDs(t, "EU");
+        int[] waIDs = this.getRegionIDs(t, "WA");
+        int[] eaIDs = this.getRegionIDs(t, "EA");
+        double[][] ibsA = this.getIBSDofTaxon(minIBSDDirS, "A");
+        double[][] ibsB = this.getIBSDofTaxon(minIBSDDirS, "B");
+        double[][] ibsD = this.getIBSDofTaxon(minIBSDDirS, "D");
+        int[][] IDs = new int[3][];
+        IDs[0] = euIDs;IDs[1] = waIDs;IDs[2] = eaIDs;
+        double[][][] ibs = new double[3][][];
+        ibs[0] = ibsA;ibs[1] = ibsB;ibs[2] = ibsD;
+        String[] regions = {"EU", "WA", "EA"};
+        String[] subgenomes = {"A", "B", "D"};
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < regions.length; i++) {
+            for (int j = 0; j < subgenomes.length; j++) {
+                sb.setLength(0);
+                sb.append(regions[i]).append("_").append(subgenomes[j]).append("_IBSD_dis.pdf");
+                String outfileS = new File (outDirS, sb.toString()).getAbsolutePath();
+                TDoubleArrayList dList = new TDoubleArrayList();
+                for (int k = 0; k < IDs[i].length; k++) {
+                    int taxonIndex = IDs[i][k]-1;
+                    dList.addAll(ibs[j][taxonIndex]);
+                }
+                Histogram h = new Histogram(dList.toArray());
+                h.setTitle("IBS distance of " + regions[i] + "_" + subgenomes[j]);
+                h.setXLim(0, 0.5);
+                h.setXLab("IBS distance");
+                h.setYLab("Proportion");
+                h.setBreakNumber(50);
+                h.saveGraph(outfileS);
+            }
+        }
+    }
+
+    private double[][] getIBSDofTaxon (String minIBSDDirS,  String subgenome) {
+        List<File> ibsDirs = IOUtils.getDirListInDir(minIBSDDirS);
+        double[][] value = null;
+        for (int i = 0; i < ibsDirs.size(); i++) {
+            if (ibsDirs.get(i).getName().split("_")[0].equals(subgenome)) {
+                List<File> fList = IOUtils.getFileListInDirEndsWith(ibsDirs.get(i).getAbsolutePath(), ".txt");
+                value = new double[fList.size()][];
+                for (int j = 0; j < fList.size(); j++) {
+                    int taxonIndex = Integer.parseInt(fList.get(j).getName().split("_")[0])-1;
+                    TDoubleArrayList dList = new TDoubleArrayList();
+                    try {
+                        BufferedReader br = IOUtils.getTextReader(fList.get(j).getAbsolutePath());
+                        String temp = br.readLine();
+                        List<String> l = new ArrayList<>();
+                        while ((temp = br.readLine()) != null) {
+                            l = PStringUtils.fastSplit(temp);
+                            if (l.get(3).startsWith("N")) continue;
+                            dList.add(Double.parseDouble(l.get(3)));
+                        }
+                        br.close();
+                        value[taxonIndex] = dList.toArray();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return value;
+    }
+
+    private int[] getRegionIDs (RowTable<String> t, String region) {
+        TIntArrayList idList = new TIntArrayList();
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            if (t.getCell(i, 2).equals(region)) {
+                idList.add(Integer.parseInt(t.getCell(i,0)));
+            }
+        }
+        int[] ids = idList.toArray();
+        Arrays.sort(ids);
+        return ids;
     }
 
     public void findIndividualWithMinIBSDistance () {
@@ -85,7 +169,7 @@ class Introgression {
             }
             String temp = null;
             List<String> l = new ArrayList<>();
-            GenotypeGrid gt = null;
+            GenotypeTable gt = null;
             StringBuilder sb = new StringBuilder();
             while ((temp = brs[0].readLine()) != null) {
                 l = PStringUtils.fastSplit(temp);
@@ -97,10 +181,6 @@ class Introgression {
                     gt = new GenotypeGrid(vcfFileS, GenoIOFormat.VCF_GZ);
                     gt.sortByTaxa();
                 }
-                int startIndex = gt.getSiteIndex((short)currentChr, currentStart);
-//                if (startIndex < 0) startIndex = -startIndex-1;
-                int endIndex = gt.getSiteIndex((short)currentChr, currentEnd);
-//                if (endIndex < 0) endIndex = -endIndex-1;
                 for (int i = 0; i < brs.length; i++) {
                     if (i != 0) temp = brs[i].readLine();
                     this.processIBSOutputLine(currentChr, currentStart, currentEnd, temp, gt, landMap.get(landID[i]), sb);
@@ -119,7 +199,11 @@ class Introgression {
         }
     }
 
-    private void processIBSOutputLine (int chr, int start, int end, String inputLine, GenotypeGrid gt, String currentTaxon, StringBuilder sb) {
+    private void processIBSOutputLine (int chr, int start, int end, String inputLine, GenotypeTable gt, String currentTaxon, StringBuilder sb) {
+        int startIndex = gt.getSiteIndex((short)chr, start);
+//                if (startIndex < 0) startIndex = -startIndex-1;
+        int endIndex = gt.getSiteIndex((short)chr, end);
+//                if (endIndex < 0) endIndex = -endIndex-1;
         sb.setLength(0);
         sb.append(chr).append("\t").append(start).append("\t").append(end).append("\t");
         List<String> l = PStringUtils.fastSplit(inputLine);
@@ -131,7 +215,7 @@ class Introgression {
             int currentIndex = gt.getTaxonIndex(currentTaxon);
             for (int i = 0; i < n; i++) {
                 int nextIndex = gt.getTaxonIndex(l.get(i+4));
-                ds[i] = gt.getIBSDistance(currentIndex, nextIndex, start, end);
+                ds[i] = gt.getIBSDistance(currentIndex, nextIndex, startIndex, endIndex);
             }
             float minIBSD = 1;
             for (int i = 0; i < n; i++) {
