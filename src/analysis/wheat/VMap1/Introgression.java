@@ -1,16 +1,20 @@
 package analysis.wheat.VMap1;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.set.hash.TIntHashSet;
+import pgl.graph.r.BoxPlot;
 import pgl.graph.r.DensityPlot;
 import pgl.graph.r.Histogram;
 import pgl.infra.dna.genot.GenoIOFormat;
+import pgl.infra.dna.genot.GenotypeExport;
 import pgl.infra.dna.genot.GenotypeGrid;
 import pgl.infra.dna.genot.GenotypeTable;
 import pgl.infra.range.Range;
 import pgl.infra.range.Ranges;
 import pgl.infra.table.RowTable;
+import pgl.infra.utils.Dyad;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PArrayUtils;
 import pgl.infra.utils.PStringUtils;
@@ -28,20 +32,59 @@ class Introgression {
 //        this.findIndividualWithMaxFd();
 //        this.maxFdHist();
 //        this.findIndividualWithMinIBSDistance();
-        this.plotIBSDistanceDistribution();
+//        this.calculateProportionOfIntrogressionOfIndividual();
+//        this.calculateContributionToIndividualIntrogression();
+
+//        this.plotIBSDistanceDistribution();
+//        this.plotIBSDistanceByRegion();
+
+    }
+
+    public void plotIBSDistanceByRegion () {
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/minIBSD_dis";
+        String[] regions = {"EU", "WA", "EA"};
+        String[] subgenomes = {"A", "B", "D"};
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < subgenomes.length; i++) {
+            double[][] values = new double[regions.length][];
+            for (int j = 0; j < regions.length; j++) {
+                sb.setLength(0);
+                sb.append(regions[j]).append("_").append(subgenomes[i]).append("_IBSD_dis.txt");
+                String infileS = new File (inDirS, sb.toString()).getAbsolutePath();
+                RowTable<String> t = new RowTable<>(infileS);
+                values[j] = t.getColumnAsDoubleArray(0);
+                values[j] = this.logTransformIBSD(values[j]);
+            }
+            sb.setLength(0);
+            sb.append(subgenomes[i]).append("_IBSD_box.pdf");
+            String outfileS = new File (inDirS, sb.toString()).getAbsolutePath();
+            BoxPlot b = new BoxPlot(values, regions);
+            b.setTitle("IBSD_"+subgenomes[i]);
+            b.setYLab("IBS Distance");
+            b.saveGraph(outfileS);
+        }
+    }
+
+    private double[] logTransformIBSD (double[] xs) {
+        double[] values = new double[xs.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = Math.log10(xs[i]+0.00001);
+        }
+        return values;
     }
 
     public void plotIBSDistanceDistribution () {
         String landraceRegionFileS = "/Users/feilu/Documents/analysisH/vmap1/fd/Landrace_region.txt";
         String minIBSDDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/minIBSD";
         String outDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/minIBSD_dis";
+        float fdThresh = (float)0.5;
         RowTable<String> t = new RowTable<>(landraceRegionFileS);
         int[] euIDs = this.getRegionIDs(t, "EU");
         int[] waIDs = this.getRegionIDs(t, "WA");
         int[] eaIDs = this.getRegionIDs(t, "EA");
-        double[][] ibsA = this.getIBSDofTaxon(minIBSDDirS, "A");
-        double[][] ibsB = this.getIBSDofTaxon(minIBSDDirS, "B");
-        double[][] ibsD = this.getIBSDofTaxon(minIBSDDirS, "D");
+        double[][] ibsA = this.getIBSDofTaxon(minIBSDDirS, "A", fdThresh);
+        double[][] ibsB = this.getIBSDofTaxon(minIBSDDirS, "B", fdThresh);
+        double[][] ibsD = this.getIBSDofTaxon(minIBSDDirS, "D", fdThresh);
         int[][] IDs = new int[3][];
         IDs[0] = euIDs;IDs[1] = waIDs;IDs[2] = eaIDs;
         double[][][] ibs = new double[3][][];
@@ -54,23 +97,39 @@ class Introgression {
                 sb.setLength(0);
                 sb.append(regions[i]).append("_").append(subgenomes[j]).append("_IBSD_dis.pdf");
                 String outfileS = new File (outDirS, sb.toString()).getAbsolutePath();
+                String outtextFileS = outfileS.replaceFirst(".pdf", ".txt");
                 TDoubleArrayList dList = new TDoubleArrayList();
                 for (int k = 0; k < IDs[i].length; k++) {
                     int taxonIndex = IDs[i][k]-1;
                     dList.addAll(ibs[j][taxonIndex]);
                 }
-                Histogram h = new Histogram(dList.toArray());
+                double[] diss = dList.toArray();
+                Histogram h = new Histogram(diss);
                 h.setTitle("IBS distance of " + regions[i] + "_" + subgenomes[j]);
-                h.setXLim(0, 0.5);
+                h.setXLim(0, 0.3);
                 h.setXLab("IBS distance");
                 h.setYLab("Proportion");
                 h.setBreakNumber(50);
                 h.saveGraph(outfileS);
+                try {
+                    BufferedWriter bw = IOUtils.getTextWriter(outtextFileS);
+                    bw.write("IBSDistance");
+                    bw.newLine();
+                    for (int k = 0; k < diss.length; k++) {
+                        bw.write(String.valueOf((float)diss[k]));
+                        bw.newLine();
+                    }
+                    bw.flush();
+                    bw.close();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    private double[][] getIBSDofTaxon (String minIBSDDirS,  String subgenome) {
+    private double[][] getIBSDofTaxon (String minIBSDDirS,  String subgenome, float fdThresh) {
         List<File> ibsDirs = IOUtils.getDirListInDir(minIBSDDirS);
         double[][] value = null;
         for (int i = 0; i < ibsDirs.size(); i++) {
@@ -86,8 +145,10 @@ class Introgression {
                         List<String> l = new ArrayList<>();
                         while ((temp = br.readLine()) != null) {
                             l = PStringUtils.fastSplit(temp);
-                            if (l.get(3).startsWith("N")) continue;
-                            dList.add(Double.parseDouble(l.get(3)));
+                            if (l.get(4).startsWith("N")) continue;
+                            float fd = Float.parseFloat(l.get(3));
+                            if (fd < fdThresh) continue;
+                            dList.add(Double.parseDouble(l.get(4)));
                         }
                         br.close();
                         value[taxonIndex] = dList.toArray();
@@ -113,6 +174,169 @@ class Introgression {
         return ids;
     }
 
+    public void calculateContributionToIndividualIntrogression() {
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/minIBSD";
+        String taxaFileS = "/Users/feilu/Documents/analysisH/vmap1/fd/taxa_info.txt";
+        String landFileS = "/Users/feilu/Documents/analysisH/vmap1/fd/Landrace_region.txt";
+        String outfileS = "/Users/feilu/Documents/analysisH/vmap1/fd/individual_intro/individual_contribution.txt";
+        RowTable<String> t = new RowTable<>(taxaFileS);
+        String[] types = {"Urartu", "Wild_emmer", "Domesticated_emmer", "Strangulata", "Free_threshing"};
+        Arrays.sort(types);
+        HashMap<String, String> taxaTypeMap = new HashMap<>();
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            int index = Arrays.binarySearch(types, t.getCell(i,9));
+            if (index < 0) continue;
+            taxaTypeMap.put(t.getCell(i, 0), types[index]);
+        }
+        t = new RowTable<>(landFileS);
+        String[] subgenomes = {"A", "B", "D"};
+        List<File> dirs = new ArrayList<>();
+        for (int i = 0; i < subgenomes.length; i++) {
+            dirs.add(new File (inDirS, subgenomes[i]+"_minIBSD"));
+        }
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            String header = "TaxaID\tTaxa\tRegion\tUrautu\tWE\tDE\tFree\tStrangulata";
+            StringBuilder sb = new StringBuilder("TaxaID\tTaxa\tRegion");
+            for (int i = 0; i < types.length; i++) {
+                sb.append("\t").append(types[i]);
+            }
+            bw.write(sb.toString());
+            bw.newLine();
+            for (int i = 0; i < t.getRowNumber(); i++) {
+                sb.setLength(0);
+                sb.append(t.getCell(i, 0)).append("\t");
+                sb.append(t.getCell(i, 1)).append("\t");
+                sb.append(t.getCell(i, 2));
+                double[] lengths = new double[types.length];
+                long total = 0;
+                String temp = null;
+                for (int j = 0; j < dirs.size(); j++) {
+                    String infileS = new File (dirs.get(j).getAbsolutePath(), String.valueOf(i+1)+"_minIBSD.txt").getAbsolutePath();
+                    try {
+                        BufferedReader  br = IOUtils.getTextReader(infileS);
+                        temp = br.readLine();
+                        List<String> l = new ArrayList<>();
+                        while ((temp = br.readLine()) != null) {
+                            l = PStringUtils.fastSplit(temp);
+                            int len = Integer.parseInt(l.get(2))- Integer.parseInt(l.get(1));
+                            total+=len;
+                            if (l.get(4).startsWith("N")) continue;
+                            double fd = Double.parseDouble(l.get(3));
+                            int n = l.size()-5;
+                            boolean[] ifOut = new boolean[types.length];
+                            for (int k = 0; k < n; k++) {
+                                String query = taxaTypeMap.get(l.get(k+5));
+                                int index = Arrays.binarySearch(types, query);
+                                if (!ifOut[index]) {
+                                    ifOut[index] = true;
+                                    lengths[index]+=fd*len;
+                                }
+                            }
+                        }
+                        br.close();
+                    }
+                    catch (Exception e) {
+//                        System.out.println(infileS);
+//                        System.out.println(temp);
+                        e.printStackTrace();
+                        //System.exit(1);
+                    }
+                }
+                for (int j = 0; j < types.length; j++) {
+                    sb.append("\t").append((float)(lengths[j]/total));
+                }
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void calculateProportionOfIntrogressionOfIndividual() {
+        String inDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/minIBSD";
+        String landRegionFileS = "/Users/feilu/Documents/analysisH/vmap1/fd/Landrace_region.txt";
+        String outfileS = "/Users/feilu/Documents/analysisH/vmap1/fd/individual_intro/individual_proportion.txt";
+        String[] subgenomes = {"A", "B", "D"};
+        List<File> dirs = new ArrayList<>();
+        RowTable<String> t = new RowTable<>(landRegionFileS);
+        Dyad<Long, float[]>[] results = new Dyad[subgenomes.length];
+        for (int i = 0; i < subgenomes.length; i++) {
+            dirs.add(new File (inDirS, subgenomes[i]+"_minIBSD"));
+            results[i] = this.getProportionOfSubgenome(dirs.get(i), t.getRowNumber());
+        }
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write("TaxaID\tTaxa\tRegion\tA_Introgression\tB_introgression\tD_introgression\tAB_introgression\tAll_introgression");
+            bw.newLine();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < t.getRowNumber(); i++) {
+                sb.setLength(0);
+                sb.append(t.getCell(i, 0)).append("\t");
+                sb.append(t.getCell(i, 1)).append("\t");
+                sb.append(t.getCell(i, 2)).append("\t");
+                long total = 0;
+                long abTotal = 0;
+                for (int j = 0; j < subgenomes.length; j++) {
+                    sb.append(results[j].getSecondElement()[i]).append("\t");
+                    total+=results[j].getFirstElement();
+                    if (j== 2) continue;
+                    abTotal+=results[j].getFirstElement();
+                }
+                double pro = 0;
+                double abPro = 0;
+                for (int j = 0; j < subgenomes.length; j++) {
+                    pro+=results[j].getSecondElement()[i]*((double)results[j].getFirstElement()/total);
+                    if (j== 2) continue;
+                    abPro+=results[j].getSecondElement()[i]*((double)results[j].getFirstElement()/abTotal);
+                }
+                sb.append((float)abPro).append("\t").append((float)pro);
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Dyad<Long, float[]> getProportionOfSubgenome (File dir, int taxaNum) {
+        long total = 0;
+        TIntArrayList regionList = new TIntArrayList();
+        File[] fs = new File[taxaNum];
+        float[] values = new float[taxaNum];
+        for (int i = 0; i < fs.length; i++) {
+            fs[i] = new File (dir, String.valueOf(i+1)+"_minIBSD.txt");
+            total = 0;
+            double actual = 0;
+            try {
+                BufferedReader br = IOUtils.getTextReader(fs[i].getAbsolutePath());
+                String temp = br.readLine();
+                List<String> l = new ArrayList<>();
+                while ((temp = br.readLine()) != null) {
+                    l = PStringUtils.fastSplit(temp);
+                    int length = Integer.parseInt(l.get(2))- Integer.parseInt(l.get(1));
+                    total+=length;
+                    if (l.get(4).startsWith("N")) continue;
+                    double fd = Double.parseDouble(l.get(3));
+                    actual+=(fd*length);
+                }
+                values[i] = (float)((double)actual/total);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return new Dyad<>(total, values);
+    }
+
     public void findIndividualWithMinIBSDistance () {
         String vmap1DirS = "/Volumes/Fei_HDD_Mac/VMap1.0/VMapI";
         String maxFdDirS = "/Users/feilu/Documents/analysisH/vmap1/fd/maxFd";
@@ -124,6 +348,7 @@ class Introgression {
             landMap.put(i+1, t.getCell(i,2));
         }
         List<File> maxfdDirs = IOUtils.getDirListInDir(maxFdDirS);
+        new File(minIBSDirS).mkdir();
         for (int i = 0; i < maxfdDirs.size(); i++) {
             String outDirS = new File (minIBSDirS, maxfdDirs.get(i).getName().split("_")[0]+"_minIBSD").getAbsolutePath();
             this.outputMinIBSDistance(maxfdDirs.get(i).getAbsolutePath(), outDirS, vmap1DirS, landMap);
@@ -164,7 +389,7 @@ class Introgression {
                 brs[i] = IOUtils.getTextGzipReader(infiles.get(i).getAbsolutePath());
                 brs[i].readLine();
                 bws[i] = IOUtils.getTextWriter(outfiles.get(i));
-                bws[i].write("Chr\tStart\tEnd\tMinIBSDistance\tTaxa");
+                bws[i].write("Chr\tStart\tEnd\tMaxFd\tMinIBSDistance\tTaxa");
                 bws[i].newLine();
             }
             String temp = null;
@@ -207,8 +432,10 @@ class Introgression {
         sb.setLength(0);
         sb.append(chr).append("\t").append(start).append("\t").append(end).append("\t");
         List<String> l = PStringUtils.fastSplit(inputLine);
+        sb.append(l.get(3)).append("\t");
         float fd = Float.parseFloat(l.get(3));
-        if (fd == 1.0) {
+        //set the threshold of fd here
+        if (fd > 0.5) {
             int n = l.size()-4;
             float[] ds = new float[n];
             Arrays.fill(ds, 1);
