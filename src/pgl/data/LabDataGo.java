@@ -15,6 +15,11 @@ public class LabDataGo {
         //this.referenceGenome();
 //        this.referenceGene();
 //        this.bamManagement();
+        this.germplasm();
+    }
+
+    public void germplasm () {
+        new Germplasm();
     }
 
     public void bamManagement () {

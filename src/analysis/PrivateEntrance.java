@@ -11,8 +11,8 @@ import analysis.wheat.VMap2.WheatVMap2Go;
 public class PrivateEntrance {
 
     public PrivateEntrance (String[] args) {
-        this.analysis();
-//        this.data();
+//        this.analysis();
+        this.data();
 //        this.tool();
     }
     
