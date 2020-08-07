@@ -3,6 +3,7 @@ package analysis;
 import analysis.envGWAS.EnvGWASGo;
 import analysis.wheat.VMap1.WheatVMap1Go;
 import analysis.wheat.VMap2.build.VMap2BuildGo;
+import analysis.wheat.sv.WheatSVGo;
 import pgl.infra.utils.Benchmark;
 import pgl.tool.dev.PGLToolDevGo;
 import pgl.data.LabDataGo;
@@ -11,9 +12,9 @@ import analysis.wheat.VMap2.WheatVMap2Go;
 public class PrivateEntrance {
 
     public PrivateEntrance (String[] args) {
-//        this.analysis();
+        this.analysis();
 //        this.data();
-        this.tool();
+//        this.tool();
     }
     
     private void tool () {
@@ -25,13 +26,18 @@ public class PrivateEntrance {
     }
     
     private void analysis () {
-        this.wheatVMap1Go();
+        this.svGo();
+//        this.wheatVMap1Go();
 //        this.wheatVMap2BuildGo();
 //        this.wheatVMap2Go();
 //        this.envGWASGo();
 //        this.labPublicGo();
     }
-    
+
+    public void svGo () {
+        new WheatSVGo();
+    }
+
     public void wheatVMap1Go () {
         new WheatVMap1Go();
     }
@@ -55,6 +61,6 @@ public class PrivateEntrance {
     public static void main (String[] args) {
         long start = System.nanoTime();
         new PrivateEntrance(args);
-        System.out.println("Program finished in " + Benchmark.getTimeSpanMinutes(start) + " minutes");
+        System.out.println("Program finished in " + (float)Benchmark.getTimeSpanMinutes(start) + " minutes");
     }
 }

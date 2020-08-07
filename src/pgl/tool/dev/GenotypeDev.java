@@ -13,11 +13,25 @@ public class GenotypeDev {
 //        this.testAlleles();
 //        this.ioTestGenotypeBit();
 //        this.ioTestGenotypeGrid();
-//        this.dxyTest1();
-//        this.dxyTest2();
+//        this.ibsDistanceTest1();
+//        this.ibsDistanceTest2();
+        this.test1();
     }
 
-    public void dxyTest2 () {
+    public void test1 () {
+        String infileS1 = "/Users/feilu/Downloads/1.snp_overlap_withoutHeader.vcf";
+        String infileS2 = "/Users/feilu/Downloads/chr001_overlap_withoutHeader.vcf";
+        String ibsOutfileS = "/Users/feilu/Downloads/a.txt";
+        GenotypeGrid g1 = new GenotypeGrid(infileS1, GenoIOFormat.VCF);
+        GenotypeGrid g2 = new GenotypeGrid(infileS2, GenoIOFormat.VCF);
+        GenotypeGrid g = GenotypeOperation.mergeGenotypesByTaxon(g1, g2);
+        System.out.println(g.getTaxaNumber());
+        SumTaxaDivergence std = new SumTaxaDivergence(g);
+        std.writeDxyMatrix(ibsOutfileS, IOFileFormat.Text);
+
+    }
+
+    public void ibsDistanceTest2() {
         String inFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.bin.gz";
         String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/taxaDivergence.txt";
         GenotypeTable gt  = new GenotypeGrid(inFileS, GenoIOFormat.Binary_GZ);
@@ -26,7 +40,7 @@ public class GenotypeDev {
         gt.getIBSDistanceMatrix();
     }
 
-    public void dxyTest1 () {
+    public void ibsDistanceTest1() {
         String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/chr001_exon.bin.gz";
         String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/genotype/taxaDivergence.txt";
         GenotypeTable gt  = new GenotypeRows(vcfFileS, GenoIOFormat.Binary_GZ);
