@@ -19,7 +19,7 @@ class MafAndOccurrence {
     public MafAndOccurrence () {
         this.filter();
     }
-
+    //didn't complete here, this was done by aoyue
     public void filter () {
         String inputVCFDirS = "/Volumes/VMap2_Fei/vcf/003_hapScanner/";
         String outputVCFDirS = "/Volumes/VMap2_Fei/vcf/003_hapScanner/output";

@@ -3,12 +3,13 @@ package pgl.tool.dev;
 public class PGLToolDevGo {
 
     public PGLToolDevGo () {
+//        this.dnaDev();
 //        this.alignmentDev();
-        this.genotypeDev();
+//        this.genotypeDev();
 //        this.popgenDev();
 //        this.genomeAnnotationDev();
 //        this.fastCallDev();
-//        this.hapScannerDev();
+        this.hapScannerDev();
 //        this.speedCallDev();
 //        this.popdepDev();
     }
@@ -45,5 +46,8 @@ public class PGLToolDevGo {
         new GenotypeDev();
     }
 
+    public void dnaDev () {
+        new DNADev();
+    }
 
 }
