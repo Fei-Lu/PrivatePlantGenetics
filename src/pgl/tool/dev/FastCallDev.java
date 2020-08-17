@@ -16,7 +16,7 @@ public class FastCallDev {
 //        this.mkSubReference();
 //        this.mkBams();
 //        this.mkTaxaBamFiles();
-        this.runFastCall();
+//        this.runFastCall();
     }
 
     public void runFastCall () {

@@ -50,7 +50,7 @@ public class HapScannerDev {
     public void mkPosAlleleFileS () {
         String vcfFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/vcf/chr001.vcf";
         String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/hapScanner/inputfile/posAllele_hapscanner.txt";
-        int size = 10;
+        int size = 50;
         GenotypeTable gt = new GenotypeRows(vcfFileS, GenoIOFormat.VCF);
         StringBuilder sb = new StringBuilder();
         try {
