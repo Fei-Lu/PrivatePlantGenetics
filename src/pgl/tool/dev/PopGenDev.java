@@ -2,13 +2,18 @@ package pgl.tool.dev;
 
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.list.array.TIntArrayList;
+import pgl.infra.dna.allele.AlleleEncoder;
 import pgl.infra.dna.genot.GenoIOFormat;
 import pgl.infra.dna.genot.GenotypeGrid;
+import pgl.infra.popg.ChromosomeFd;
+import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 class PopGenDev {
 
@@ -26,10 +31,31 @@ class PopGenDev {
     public void chromosomeFd () {
         String genotypeFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popg/source/chr001_1_10000000_vmap2.1.vcf.gz";
         String ancestralFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popg/source/chr001_1_10000000_secer_hv_ancestral.txt.gz";
+        String p1TaxaFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popg/source/p1_indian.txt";
+        String p2EATaxaFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popg/source/p2_EA_LR.txt";
+        String p2EUTaxaFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popg/source/p2_EU_LR.txt";
+        String p3FreeTaxaFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popg/source/p3_free.txt";
         GenotypeGrid gg = new GenotypeGrid(genotypeFileS, GenoIOFormat.VCF_GZ);
-        for (int i = 0; i < gg.getTaxaNumber(); i++) {
-            System.out.println(gg.getTaxonName(i));
+        String[] p1Taxa = this.readTaxa(p1TaxaFileS);
+        String[] p2EATaxa = this.readTaxa(p2EATaxaFileS);
+        String[] p2EUTaxa = this.readTaxa(p2EUTaxaFileS);
+        String[] p3Taxa = this.readTaxa(p3FreeTaxaFileS);
+        RowTable<String> t = new RowTable<>(ancestralFileS);
+        int[] ancestralPos = new int[t.getRowNumber()];
+        char[] ancestralAlleles = new char[t.getRowNumber()];
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            ancestralPos[i] = Integer.parseInt(t.getCell(i,1));
+            ancestralAlleles[i] = t.getCell(i,2).charAt(0);
         }
+        ChromosomeFd cf = new ChromosomeFd(gg, p1Taxa, p2EATaxa, p3Taxa, ancestralPos, ancestralAlleles);
+
+    }
+
+    private String[] readTaxa (String infileS) {
+        RowTable<String> t = new RowTable<>(infileS);
+        List<String> taxaList = t.getColumn(0);
+        String[] taxa = taxaList.toArray(new String[taxaList.size()]);
+        return taxa;
     }
 
     public void fdRange () {
