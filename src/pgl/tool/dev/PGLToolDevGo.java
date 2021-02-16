@@ -6,7 +6,7 @@ public class PGLToolDevGo {
 //        this.dnaDev();
 //        this.alignmentDev();
 //        this.genotypeDev();
-        this.popgenDev();
+//        this.popgenDev();
 //        this.genomeAnnotationDev();
 //        this.fastCallDev();
 //        this.hapScannerDev();

@@ -1,6 +1,7 @@
 package pgl.tool.dev;
 
 import pgl.app.fastCall.FastCall;
+import pgl.app.fastCall.FastCall_old;
 import pgl.infra.dna.*;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOFileFormat;
@@ -16,12 +17,13 @@ public class FastCallDev {
 //        this.mkSubReference();
 //        this.mkBams();
 //        this.mkTaxaBamFiles();
-//        this.runFastCall();
+        this.runFastCall();
     }
 
     public void runFastCall () {
         String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/parameters_fastcall.txt";
         new FastCall(parameterFileS);
+//        new FastCall_old(parameterFileS);
     }
 
     public void mkTaxaBamFiles() {
