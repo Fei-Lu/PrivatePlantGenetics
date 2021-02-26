@@ -10,6 +10,7 @@ public class PGLToolDevGo {
 //        this.genomeAnnotationDev();
 //        this.fastCallDev();
 //        this.hapScannerDev();
+        this.fastCall2Dev();
 //        this.speedCallDev();
 //        this.popdepDev();
     }
@@ -20,6 +21,10 @@ public class PGLToolDevGo {
 
     public void speedCallDev () {
         new SpeedCallDev();
+    }
+
+    public void fastCall2Dev () {
+        new FastCall2Dev();
     }
 
     public void hapScannerDev () {
