@@ -17,34 +17,48 @@ public class PopDepDev {
 
     public PopDepDev () {
 //        this.changeTaxaBamFormat();
+        /**Old scheme that needs to calculate the mode of depth ***/
 //        this.runPopDep1();
 //        this.runPopDep2();
-//        this.checkDepth();
+        /**********************************************************/
+//        this.runPopDep();
+        this.checkDepth();
     }
 
     public void checkDepth () {
-        int size = 1000;
+        int size = 10000;
         String infileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/out/chr001_popdep.txt.gz";
         RowTable<String> t = new RowTable<>(infileS);
         int[] indices = PArrayUtils.getNonredundantRandomIntArray(t.getRowNumber(), size);
         double[] depth = new double[size];
         double[] sd = new double[size];
         for (int i = 0; i < indices.length; i++) {
-            depth[i] = Double.parseDouble(t.getCell(i,3));
-            sd[i] = Double.parseDouble(t.getCell(i,4));
+            depth[i] = Double.parseDouble(t.getCell(i,1));
+            sd[i] = Double.parseDouble(t.getCell(i,2));
         }
         Histogram h = new Histogram(depth);
         h.showGraph();
-        ScatterPlot s = new ScatterPlot(depth, sd);
-        s.showGraph();
+//        ScatterPlot s = new ScatterPlot(depth, sd);
+//        s.showGraph();
 
     }
 
+    public void runPopDep () {
+        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/inputfile/parameters_popdep.txt";
+        new PopDep (parameterFileS);
+    }
+
+    /**
+     * @deprecated
+     */
     public void runPopDep2 () {
         String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/inputfile/parameters_popdep_2.txt";
         new PopDep(parameterFileS);
     }
 
+    /**
+     * @deprecated
+     */
     public void runPopDep1 () {
         String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/popdep/inputfile/parameters_popdep_1.txt";
         new PopDep(parameterFileS);

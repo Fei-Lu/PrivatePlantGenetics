@@ -24,7 +24,7 @@ class DepthProfile {
 //        this.runStep1();
 //        this.mkStep2FileS();
 //        this.runStep2();
-        //this.popdepPlotSample();
+        this.popdepPlotSample();
         //this.popdepPlot();
         //this.vcfPlotSample();
         //this.vcfPlot();
@@ -32,7 +32,8 @@ class DepthProfile {
 //        this.densityFilter();
         //this.mkReliableGenotypeSite();
         //this.mkReliableIntersection();
-        //this.intersectionCheck();
+//        this.intersectionCheck();
+
     }
 
     public void intersectionCheck () {
@@ -914,7 +915,7 @@ class DepthProfile {
         String abdInfileS = "/data1/home/feilu/popdep/abd_parameters_popdep_1.txt";
         String abInfileS = "/data1/home/feilu/popdep/ab_parameters_popdep_1.txt";
         String dInfileS = "/data1/home/feilu/popdep/d_parameters_popdep_1.txt";
-        //new PopDep(dInfileS);
+//        new PopDep(dInfileS);
 //        new PopDep(abInfileS);
 //        new PopDep(abdInfileS);
     }
@@ -946,8 +947,8 @@ class DepthProfile {
         String vmap2TaxaFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/source/wheatVMapII_germplasmInfo_20191225.txt";
         String old2newFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/source/bam_Old2New.map.txt";
         String abdFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/source/002_taxaRefBam.ABDgenome.manual.addNAFU.txt";
-        String abFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/source/003_taxaRefBam.Dgenome.addNAFU.txt";
-        String dFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/source/004_taxaRefBam.ABgenome.removeBadTaxa.addNAFU.addS1.txt";
+        String abFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/source/004_taxaRefBam.ABgenome.removeBadTaxa.addNAFU.addS1.txt";
+        String dFileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/source/003_taxaRefBam.Dgenome.addNAFU.txt";
         String abdOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/step1/abdTaxaBam.txt";
         String abOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/step1/abTaxaBam.txt";
         String dOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth/step1/dTaxaBam.txt";
@@ -969,7 +970,6 @@ class DepthProfile {
         this.mkTaxaBam(old2new, taxa, abdFileS, abdOutfileS);
         this.mkTaxaBam(old2new, taxa, abFileS, abOutfileS);
         this.mkTaxaBam(old2new, taxa, dFileS, dOutfileS);
-
     }
 
     private void mkTaxaBam (HashMap<String, String> old2new, String[] taxa, String infileS, String outfileS) {

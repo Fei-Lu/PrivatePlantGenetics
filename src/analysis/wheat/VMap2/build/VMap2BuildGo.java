@@ -3,11 +3,24 @@ package analysis.wheat.VMap2.build;
 public class VMap2BuildGo {
 
     public VMap2BuildGo() {
-//        this.depthProfile();
+//        this.firstBuild();
+        this.secondBuild();
+    }
+
+    public void secondBuild() {
+        this.depthProfile2();
+    }
+
+    public void depthProfile2 () {
+        new DepthProfile2();
+    }
+
+    public void firstBuild () {
+        //        this.depthProfile();
 //        this.filterByDepth();
 //        this.scanLibrary();
 //        this.filterMafAndOccurrence();
-        this.indelCheck();
+//        this.indelCheck();
     }
 
     public void indelCheck () {
