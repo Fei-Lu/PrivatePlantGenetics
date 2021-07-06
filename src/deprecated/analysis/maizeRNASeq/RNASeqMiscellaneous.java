@@ -26,9 +26,9 @@ public class RNASeqMiscellaneous {
         GeneFeature gf = new GeneFeature(infileS);
         List<Range> rList = new ArrayList<>();
         for (int i = 0; i < gf.getGeneNumber(); i++) {
-            if (gf.getGeneChromosome(i) != 1) continue;
+            if (gf.getChromosomeOfGene(i) != 1) continue;
             if (gf.getGeneStrand(i) != 1) continue;
-            Range r = new Range (gf.getGeneChromosome(i), gf.getGeneStart(i), gf.getGeneEnd(i));
+            Range r = new Range (gf.getChromosomeOfGene(i), gf.getGeneStart(i), gf.getGeneEnd(i));
             rList.add(r);
         }
         Ranges rs = new Ranges(rList);

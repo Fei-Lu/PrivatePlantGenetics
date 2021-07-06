@@ -9,6 +9,11 @@ public class VMap2BuildGo {
 
     public void secondBuild() {
         this.depthProfile2();
+//        this.taxaValidation();
+    }
+
+    public void taxaValidation () {
+        new TaxaValidation();
     }
 
     public void depthProfile2 () {

@@ -44,7 +44,7 @@ public class WheatReferenceGene {
         GeneFeature gf = new GeneFeature (pgfFileS);
         Range[] geneRanges = new Range[gf.getGeneNumber()];
         for (int i = 0; i < gf.getGeneNumber(); i++) {
-            geneRanges[i] = new Range(gf.getGeneChromosome(i), gf.getGeneStart(i), gf.getGeneEnd(i));
+            geneRanges[i] = new Range(gf.getChromosomeOfGene(i), gf.getGeneStart(i), gf.getGeneEnd(i));
         }
         try {
             BufferedWriter bw = IOUtils.getTextWriter(outfileS);
@@ -204,7 +204,7 @@ public class WheatReferenceGene {
         GeneFeature gf = new GeneFeature (pgfFileS);
         Range[] geneRanges = new Range[gf.getGeneNumber()];
         for (int i = 0; i < gf.getGeneNumber(); i++) {
-            geneRanges[i] = new Range(gf.getGeneChromosome(i), gf.getGeneStart(i), gf.getGeneEnd(i));
+            geneRanges[i] = new Range(gf.getChromosomeOfGene(i), gf.getGeneStart(i), gf.getGeneEnd(i));
         }
         try {
             BufferedWriter bw = IOUtils.getTextWriter(outfileS);
