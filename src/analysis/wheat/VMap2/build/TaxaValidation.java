@@ -1,5 +1,6 @@
 package analysis.wheat.VMap2.build;
 
+import pgl.infra.dna.genot.GenotypeGrid;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
@@ -14,7 +15,13 @@ public class TaxaValidation {
 
     public TaxaValidation () {
 //        this.profileSNPNumber();
-        this.sampleSNPs();
+//        this.sampleSNPs();
+    }
+
+    public void IBSMatrix () {
+        String abInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/taxaValidation/sampleGenotype/ab_sampleSite.vcf.gz";
+        String dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/taxaValidation/sampleGenotype/d_sampleSite.vcf.gz";
+        
     }
 
     public void sampleSNPs () {

@@ -22,7 +22,7 @@ class DepthProfile2 {
 //        this.mkPopDepInput();
 //        this.mkPerlBatch();
 //        this.modifyPopDepAB();
-        this.samplePopDep();
+//        this.samplePopDep();
 //        this.plotPopDep();
     }
 
