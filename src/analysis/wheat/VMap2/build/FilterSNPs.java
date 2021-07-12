@@ -24,6 +24,7 @@ class FilterSNPs {
 
 
     public void filterSNPsStep1 () {
+        //only retain biallelic SNPs
         double hetThresh = 0.05;
         double nonmissingThresh = 0.8;
         int macThresh = 2;

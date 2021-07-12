@@ -1,12 +1,16 @@
 package analysis.wheat.VMap2.build;
 
+import com.koloboke.collect.map.hash.HashIntFloatMap;
+import com.koloboke.collect.map.hash.HashIntFloatMaps;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import pgl.AppUtils;
 import pgl.graph.r.DensityPlot;
 import pgl.graph.r.ScatterPlot;
+import pgl.infra.anno.gene.GeneFeature;
+import pgl.infra.range.Range;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
-import pgl.infra.utils.PArrayUtils;
 import pgl.infra.utils.PStringUtils;
 import pgl.infra.utils.wheat.RefV1Utils;
 
@@ -24,10 +28,275 @@ class DepthProfile2 {
 //        this.modifyPopDepAB();
 //        this.samplePopDep();
 //        this.plotPopDep();
+//        this.geneDepthProfile();
+//        this.densityFilter();
+//        this.mkReliableSites();
+        this.profileReliableSites();
     }
 
-    public void geneDepthProfile () {
+    public void profileReliableSites () {
+        String inDirS = "/Volumes/VMap2_Fei/reliableSites/round_02/ABD_intersect";
+        String outfileS = "/Volumes/VMap2_Fei/reliableSites/round_02/reliable_count.txt";
+        List<File> fList = IOUtils.getFileListInDirEndsWith(inDirS, ".gz");
+        int[] chromLengths = new int[fList.size()];
+        int[] reliableNumber = new int[fList.size()];
+        fList.parallelStream().forEach(f -> {
+            int chr = Integer.parseInt(f.getName().split("_")[0].replace("chr", ""));
+            try {
+                BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                String temp = br.readLine();
+                int length = 0;
+                int cnt = 0;
+                while ((temp = br.readLine()) != null) {
+                    length++;
+                    if (Integer.parseInt(temp) == 1) cnt++;
+                }
+                br.close();
+                chromLengths[chr-1] = length;
+                reliableNumber[chr-1] = cnt;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            System.out.println(f.getName());
+        });
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write("Chr\tChromLength\tReliableCount\tRatio");
+            bw.newLine();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < chromLengths.length; i++) {
+                sb.setLength(0);
+                sb.append(i+1).append("\t").append(chromLengths[i]).append("\t").append(reliableNumber[i]).
+                        append("\t").append((float)((double)reliableNumber[i]/chromLengths[i]));
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
+    public void mkReliableSites () {
+        String abInDirS = "/Volumes/VMap2_Fei/popdep_vmap2/round_02/AB/";
+        String abd_abInDirS = "/Volumes/VMap2_Fei/popdep_vmap2/round_02/ABD/";
+        String abd_dInDirS = "/Volumes/VMap2_Fei/popdep_vmap2/round_02/ABD/";
+        String dInDirS = "/Volumes/VMap2_Fei/popdep_vmap2/round_02/D/";
+
+        String abInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/ab_popdep_sample.txt.gz";
+        String abd_abInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/abd_ab_popdep_sample.txt.gz";
+        String abd_dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/abd_d_popdep_sample.txt.gz";
+        String dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/d_popdep_sample.txt.gz";
+
+        String outDirS = "/Volumes/VMap2_Fei/reliableSites/round_02/ABD_intersect";
+        int binNum = 100;
+        double proportion = 0.6;
+
+        Grid abGrid = getGrid(2, 8, 2, 8, binNum, abInfileS);
+        Grid abd_abGrid = getGrid(5, 14, 3, 8, binNum, abd_abInfileS);
+        Grid abd_dGrid = getGrid(5, 14, 3, 8, binNum, abd_dInfileS);
+        Grid dGrid = getGrid(7, 13, 3, 9, binNum, dInfileS);
+        this.mkReliableSites(abGrid, abd_abGrid, abInDirS, abd_abInDirS, outDirS, proportion);
+        this.mkReliableSites(dGrid, abd_dGrid, dInDirS, abd_dInDirS, outDirS, proportion);
+    }
+
+    private void mkReliableSites (Grid gr1, Grid gr2, String inDirS1, String inDirS2, String outDirS, double proportion) {
+        List<File> fList = IOUtils.getFileListInDirEndsWith(inDirS1, ".gz");
+        List<File> f2List = IOUtils.getFileListInDirEndsWith(inDirS2, ".gz");
+        fList.parallelStream().forEach(f -> {
+            String header = f.getName().split("_")[0];
+            String outfileS = new File(outDirS, header+"_"+String.valueOf(proportion)+"_reliable.txt.gz").getAbsolutePath();
+            File f2 = null;
+            for (int i = 0; i < f2List.size(); i++) {
+                if (f2List.get(i).getName().startsWith(header)) {
+                    f2 = f2List.get(i);
+                    break;
+                }
+            }
+            int indexThresh1 = gr1.getOrderIndexOfProportionOfSite(proportion);
+            int indexThresh2 = gr2.getOrderIndexOfProportionOfSite(proportion);
+            int v1 = 0;
+            int v2 = 0;
+            double x;
+            double y;
+            try {
+                BufferedReader br1 = IOUtils.getTextGzipReader(f.getAbsolutePath());
+                BufferedReader br2 = IOUtils.getTextGzipReader(f2.getAbsolutePath());
+                BufferedWriter bw = IOUtils.getTextGzipWriter(outfileS);
+                bw.write("IfReliable(0/1)");
+                bw.newLine();
+                String temp1 = br1.readLine();
+                String temp2 = br2.readLine();
+                List<String> l = new ArrayList<>();
+                while ((temp1 = br1.readLine()) != null) {
+                    temp2 = br2.readLine();
+                    l = PStringUtils.fastSplit(temp1);
+                    x = Double.parseDouble(l.get(1));
+                    y = Double.parseDouble(l.get(2));
+                    if (gr1.isHighDensity(x, y, indexThresh1)) v1 = 1;
+                    else v1 = 0;
+                    l = PStringUtils.fastSplit(temp2);
+                    x = Double.parseDouble(l.get(1));
+                    y = Double.parseDouble(l.get(2));
+                    if (gr2.isHighDensity(x, y, indexThresh2)) v2 = 1;
+                    else v2 = 0;
+                    if (v1*v2 == 1) {
+                        bw.write("1");
+                    }
+                    else {
+                        bw.write("0");
+                    }
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println(outfileS);
+        });
+    }
+
+    private Grid getGrid (double xlow, double xhigh, double ylow, double yhigh, int binNum, String infileS) {
+        Grid gr = new Grid(xlow, xhigh, ylow, yhigh, binNum);
+        RowTable<String> t = new RowTable<>(infileS);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            gr.addXY(t.getCellAsDouble(i,2), t.getCellAsDouble(i,3));
+        }
+        gr.buildHashMap();
+        return gr;
+    }
+
+    public void densityFilter () {
+        double proportionOfSite = 0.60;
+        int binNum = 100;
+        String abInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/ab_popdep_sample.txt.gz";
+        String abd_abInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/abd_ab_popdep_sample.txt.gz";
+        String abd_dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/abd_d_popdep_sample.txt.gz";
+        String dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/d_popdep_sample.txt.gz";
+        String abOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/ab/scatter_p60.pdf";
+        String abd_abOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/abd_ab/scatter_p60.pdf";
+        String abd_dOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/abd_d/scatter_p60.pdf";
+        String dOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/d/scatter_p60.pdf";
+        this.densityFilter(abInfileS, abOutfileS, proportionOfSite, 2, 8, 2, 8, binNum, "AB");
+        this.densityFilter(abd_abInfileS, abd_abOutfileS, proportionOfSite, 5, 14, 3, 8, binNum, "ABD_AB");
+        this.densityFilter(abd_dInfileS, abd_dOutfileS, proportionOfSite, 5, 14, 3, 8, binNum, "ABD_D");
+        this.densityFilter(dInfileS, dOutfileS, proportionOfSite, 7, 13, 3, 9, binNum, "D");
+    }
+    
+    
+    private void densityFilter (String infileS, String outfileS, double proportion, double xlow, double xhigh, double ylow, double yhigh, int binNum, String genomeType) {
+        RowTable<String> t = new RowTable<>(infileS);
+        Grid gr = new Grid(xlow, xhigh, ylow, yhigh, binNum);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            gr.addXY(t.getCellAsDouble(i,2), t.getCellAsDouble(i,3));
+        }
+        gr.buildHashMap();
+        DoubleArrayList xList = new DoubleArrayList();
+        DoubleArrayList yList = new DoubleArrayList();
+        int indexThresh = gr.getOrderIndexOfProportionOfSite(proportion);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            double x = t.getCellAsDouble(i, 2);
+            double y = t.getCellAsDouble(i, 3);
+            if (!gr.isHighDensity(x, y , indexThresh)) continue;
+            xList.add(x);
+            yList.add(y);
+        }
+
+        ScatterPlot s = new ScatterPlot(xList.toDoubleArray(), yList.toDoubleArray());
+        s.setTitle(genomeType);
+        s.setColor(255,0, 0, 1);
+        s.setXLim(0, 20);
+        s.setYLim(0, 12);
+        s.setXLab("Mean of depth");
+        s.setYLab("SD of depth");
+        s.saveGraph(outfileS);
+    }
+    
+    public void geneDepthProfile () {
+        String geneFeatureFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";
+        String abPopDepDirS = "/Volumes/VMap2_Fei/popdep_vmap2/round_02/AB";
+        String dPopDepDirS = "/Volumes/VMap2_Fei/popdep_vmap2/round_02/D";
+        String outfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepGene/geneDepth.txt";
+        List<File> fList = IOUtils.getFileListInDirEndsWith(abPopDepDirS, ".gz");
+        List<File> dfList = IOUtils.getFileListInDirEndsWith(dPopDepDirS, ".gz");
+        fList.addAll(dfList);
+        GeneFeature gf = new GeneFeature(geneFeatureFileS);
+        HashIntFloatMap posDepthMap = HashIntFloatMaps.getDefaultFactory().withDefaultValue(-1).newMutableMap();
+        HashIntFloatMap posDepthSDMap = HashIntFloatMaps.getDefaultFactory().withDefaultValue(-1).newMutableMap();
+        try {
+            BufferedWriter bw = IOUtils.getTextWriter(outfileS);
+            bw.write("GeneName\tChr\tPosStart\tPosEnd\tSiteDepth\tSiteDepthSDBySites\tSiteDepthSD\tSiteDepthSDSDBySites");
+            bw.newLine();
+            int currentChr = -1;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < gf.getGeneNumber(); i++) {
+                sb.setLength(0);
+                sb.append(gf.getGeneName(i)).append("\t").append(gf.getChromosomeOfGene(i)).append("\t").append(gf.getGeneStart(i)).append("\t").append(gf.getGeneEnd(i)).append("\t");
+                int chr = gf.getChromosomeOfGene(i);
+                if (currentChr != chr) {
+                    File currentFile = this.getPopDepPath(chr, fList);
+                    if (currentFile == null) {
+                        sb.append("NA\tNA\tNA\tNA");
+                        bw.write(sb.toString());
+                        bw.newLine();
+                        continue;
+                    }
+                    else {
+                        posDepthMap.clear();
+                        posDepthSDMap.clear();
+                        BufferedReader br = IOUtils.getTextGzipReader(currentFile.getAbsolutePath());
+                        String temp = br.readLine();
+                        List<String> l = null;
+                        while ((temp = br.readLine()) != null) {
+                            l = PStringUtils.fastSplit(temp);
+                            posDepthMap.put(Integer.parseInt(l.get(0)), Float.parseFloat(l.get(1)));
+                            posDepthSDMap.put(Integer.parseInt(l.get(0)), Float.parseFloat(l.get(2)));
+                        }
+                        br.close();
+                        System.out.println("Finished reading in " + currentFile.getName());
+                        currentChr = chr;
+                    }
+                }
+                int tIndex = gf.getLongestTranscriptIndex(i);
+                List<Range> cdsList = gf.getCDSList(i, tIndex);
+                DoubleArrayList depthList = new DoubleArrayList();
+                DoubleArrayList depthSDList = new DoubleArrayList();
+                for (int j = 0; j < cdsList.size(); j++) {
+                    int cdsLength = cdsList.get(j).end - cdsList.get(j).start;
+                    for (int k = 0; k < cdsLength; k++) {
+                        depthList.add(posDepthMap.get(cdsList.get(j).start+k));
+                        depthSDList.add(posDepthSDMap.get(cdsList.get(j).start+k));
+                    }
+                }
+                DescriptiveStatistics d = new DescriptiveStatistics(depthList.toDoubleArray());
+                sb.append((float)d.getMean()).append("\t").append((float)d.getStandardDeviation()).append("\t");
+                d = new DescriptiveStatistics(depthSDList.toDoubleArray());
+                sb.append((float)d.getMean()).append("\t").append((float)d.getStandardDeviation());
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private File getPopDepPath(int chr, List<File> fList) {
+        String header = "chr"+PStringUtils.getNDigitNumber(3, chr);
+        for (int i = 0; i < fList.size(); i++) {
+            if (fList.get(i).getName().startsWith(header)) return fList.get(i);
+        }
+        return null;
     }
 
     public void plotPopDep () {

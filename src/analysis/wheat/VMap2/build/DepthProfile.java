@@ -24,13 +24,13 @@ class DepthProfile {
 //        this.runStep1();
 //        this.mkStep2FileS();
 //        this.runStep2();
-        this.popdepPlotSample();
+//        this.popdepPlotSample();
         //this.popdepPlot();
         //this.vcfPlotSample();
         //this.vcfPlot();
-        //this.findPopDepMode();
+//        this.findPopDepMode();
 //        this.densityFilter();
-        //this.mkReliableGenotypeSite();
+        this.mkReliableGenotypeSite();
         //this.mkReliableIntersection();
 //        this.intersectionCheck();
 
