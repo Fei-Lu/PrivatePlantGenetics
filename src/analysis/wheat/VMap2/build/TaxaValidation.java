@@ -1,6 +1,7 @@
 package analysis.wheat.VMap2.build;
 
 import pgl.infra.dna.genot.GenotypeGrid;
+import pgl.infra.dna.genot.SiteVCF;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
@@ -11,17 +12,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaxaValidation {
+class TaxaValidation {
 
     public TaxaValidation () {
 //        this.profileSNPNumber();
 //        this.sampleSNPs();
+        this.mergeTaxon();
     }
 
-    public void IBSMatrix () {
-        String abInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/taxaValidation/sampleGenotype/ab_sampleSite.vcf.gz";
-        String dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/taxaValidation/sampleGenotype/d_sampleSite.vcf.gz";
-        
+    public void mergeTaxon () {
+        //PI196905 AB_071 AB_129 needs to be merged, no other taxon needs to be removed.
+
     }
 
     public void sampleSNPs () {
@@ -89,6 +90,9 @@ public class TaxaValidation {
             BufferedWriter bw = IOUtils.getTextGzipWriter(outfileS);
             for (int i = 0; i < chrIDs.length; i++) {
                 for (int j = 0; j < resultLists[i].size(); j++) {
+                    if (i != 0) {
+                        if (resultLists[i].get(j).startsWith("#")) continue;
+                    }
                     bw.write(resultLists[i].get(j));
                     bw.newLine();
                 }
