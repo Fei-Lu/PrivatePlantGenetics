@@ -28,10 +28,14 @@ class DepthProfile2 {
 //        this.modifyPopDepAB();
 //        this.samplePopDep();
 //        this.plotPopDep();
+
 //        this.geneDepthProfile();
+//        this.geneDepthPlot();
+        this.geneDepthPCA();
+
 //        this.densityFilter();
 //        this.mkReliableSites();
-        this.profileReliableSites();
+//        this.profileReliableSites();
     }
 
     public void profileReliableSites () {
@@ -218,7 +222,86 @@ class DepthProfile2 {
         s.setYLab("SD of depth");
         s.saveGraph(outfileS);
     }
-    
+
+    public void geneDepthPCA () {
+        //Aoyue did the PCA, PC1 = 88.59%, PC2 = 10.39%
+        String infileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepGene/GeneDepthPCA.txt";
+        String outfileSAB = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepGene/GeneDepthFeature_AB.pdf";
+        String outfileSD = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepGene/GeneDepthFeature_D.pdf";
+        RowTable<String> t = new RowTable<>(infileS);
+        DoubleArrayList[] abList = new DoubleArrayList[2];
+        DoubleArrayList[] dList = new DoubleArrayList[2];
+        for (int i = 0; i < 2; i++) {
+            abList[i] = new DoubleArrayList();
+            dList[i] = new DoubleArrayList();
+        }
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            String type = t.getCell(i, 12);
+            if (type.startsWith("D")) {
+                dList[0].add(Double.parseDouble(t.getCell(i,7)));
+                dList[1].add(Double.parseDouble(t.getCell(i,8)));
+            }
+            else {
+                abList[0].add(Double.parseDouble(t.getCell(i,7)));
+                abList[1].add(Double.parseDouble(t.getCell(i,8)));
+            }
+        }
+        ScatterPlot s = new ScatterPlot(abList[0].toDoubleArray(), abList[1].toDoubleArray());
+        s.setTitle("GeneDepthFeature_AB");
+        s.setColor(255, 0, 0, 10);
+        s.setXLim(-5,5);
+        s.setYLim(-5,5);
+        s.setXLab("PC1");
+        s.setYLab("PC2");
+        s.saveGraph(outfileSAB);
+        s = new ScatterPlot(dList[0].toDoubleArray(), dList[1].toDoubleArray());
+        s.setColor(255, 0, 0, 10);
+        s.setXLim(-5,5);
+        s.setYLim(-5,5);
+        s.setXLab("PC1");
+        s.setYLab("PC2");
+        s.saveGraph(outfileSD);
+    }
+
+    public void geneDepthPlot () {
+        String infileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepGene/geneDepth.txt";
+        DoubleArrayList[] abLists = new DoubleArrayList[4];
+        DoubleArrayList[] dLists = new DoubleArrayList[4];
+        for (int i = 0; i < abLists.length; i++) {
+            abLists[i] = new DoubleArrayList();
+            dLists[i] = new DoubleArrayList();
+        }
+        int[] aChrIDs = RefV1Utils.getChrIDsOfSubgenomeA();
+        int[] bChrIDs = RefV1Utils.getChrIDsOfSubgenomeB();
+        int[] dChrIDs = RefV1Utils.getChrIDsOfSubgenomeD();
+        int[] abChrIDs = new int[aChrIDs.length+bChrIDs.length];
+        System.arraycopy(aChrIDs,0, abChrIDs,0, aChrIDs.length);
+        System.arraycopy(bChrIDs,0, abChrIDs, aChrIDs.length, bChrIDs.length);
+        RowTable<String> t = new RowTable<>(infileS);
+        for (int i = 0; i < t.getRowNumber(); i++) {
+            int chr = Integer.parseInt(t.getCell(i,1));
+            if (chr == 0) continue;
+            if (Arrays.binarySearch(abChrIDs, chr) >=0) {
+                for (int j = 0; j < 4; j++) {
+                    abLists[j].add(Double.parseDouble(t.getCell(i, j+4)));
+                }
+            }
+            else if (Arrays.binarySearch(dChrIDs,chr) >= 0) {
+                for (int j = 0; j < 4; j++) {
+                    dLists[j].add(Double.parseDouble(t.getCell(i, j+4)));
+                }
+            }
+
+        }
+
+        ScatterPlot s = new ScatterPlot(abLists[0].toDoubleArray(), abLists[2].toDoubleArray());
+        s.setColor(255, 0, 0, 2);
+        s.setXLim(0,20);
+        s.setYLim(0,20);
+        s.showGraph();
+
+    }
+
     public void geneDepthProfile () {
         String geneFeatureFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";
         String abPopDepDirS = "/Volumes/VMap2_Fei/popdep_vmap2/round_02/AB";

@@ -10,7 +10,11 @@ public class VMap2BuildGo {
     public void secondBuild() {
         this.depthProfile2();
 //        this.taxaValidation();
-//        new FilterSNPs();
+//        this.filterSNPs();
+    }
+
+    public void filterSNPs () {
+        new FilterSNPs();
     }
 
     public void taxaValidation () {
