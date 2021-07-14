@@ -125,8 +125,6 @@ class FilterSNPs {
                 }
                 bw.write(VCFUtils.getVCFAnnotation());
                 bw.newLine();
-                //remove empty line, error from step 1 filter
-                temp = br.readLine();
                 bw.write(temp);
                 bw.newLine();
                 cnt = 0;

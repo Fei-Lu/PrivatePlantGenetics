@@ -8,9 +8,14 @@ public class VMap2BuildGo {
     }
 
     public void secondBuild() {
-        this.depthProfile2();
+//        this.depthProfile2();
 //        this.taxaValidation();
 //        this.filterSNPs();
+        this.filterGenes();
+    }
+
+    public void filterGenes () {
+        new FilterGenes();
     }
 
     public void filterSNPs () {
