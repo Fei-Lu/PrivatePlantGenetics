@@ -21,7 +21,7 @@ import java.util.List;
 
 class FilterGenes {
     public FilterGenes() {
-//        this.geneDepthProfile();
+        this.geneDepthProfile();
 //        this.geneDepthPlot();
 //        this.geneDepthPCAPlot();
 //        this.densityFilter();

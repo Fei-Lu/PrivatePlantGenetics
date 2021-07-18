@@ -11,9 +11,8 @@ public class PGLToolDevGo {
 //        this.fastCallDev();
 //        this.hapScannerDev();
 //        this.fastCall2Dev();
-//        this.pCall();
 //        this.speedCallDev();
-        this.popdepDev();
+//        this.popdepDev();
     }
 
     public void popdepDev () {
@@ -22,11 +21,6 @@ public class PGLToolDevGo {
 
     public void speedCallDev () {
         new SpeedCallDev();
-    }
-
-    public void pCall () {
-        
-        new PCallDev();
     }
 
     public void fastCall2Dev () {

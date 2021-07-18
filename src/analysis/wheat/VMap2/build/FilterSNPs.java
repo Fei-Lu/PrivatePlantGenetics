@@ -26,6 +26,7 @@ class FilterSNPs {
         this.getVMapInfo();
     }
 
+
     public void getVMapInfo () {
         String inDirS = "/data1/home/feilu/filter2";
         String outDirS = "/data1/home/feilu/vmap2Info";

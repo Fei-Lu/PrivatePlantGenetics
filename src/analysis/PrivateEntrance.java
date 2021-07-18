@@ -9,17 +9,19 @@ import pgl.infra.utils.Benchmark;
 import pgl.tool.dev.PGLToolDevGo;
 import pgl.data.LabDataGo;
 import analysis.wheat.VMap2.WheatVMap2Go;
+import pgl.tool.dev.bug.PGLToolBugfixGo;
 
 public class PrivateEntrance {
 
     public PrivateEntrance (String[] args) {
-        this.analysis();
+//        this.analysis();
 //        this.data();
-//        this.tool();
+        this.tool();
     }
     
     private void tool () {
-        new PGLToolDevGo();
+//        new PGLToolDevGo();
+        new PGLToolBugfixGo();
     }
     
     private void data () {
@@ -29,7 +31,7 @@ public class PrivateEntrance {
     private void analysis () {
 //        this.svGo();
 //        this.wheatVMap1Go();
-        this.wheatVMap2BuildGo();
+//        this.wheatVMap2BuildGo();
 //        this.wheatVMap2Go();
 //        this.wheatVMap3Go();
 //        this.envGWASGo();
