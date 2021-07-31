@@ -14,14 +14,14 @@ import pgl.tool.dev.bug.PGLToolBugfixGo;
 public class PrivateEntrance {
 
     public PrivateEntrance (String[] args) {
-//        this.analysis();
+        this.analysis();
 //        this.data();
-        this.tool();
+//        this.tool();
     }
     
     private void tool () {
-//        new PGLToolDevGo();
-        new PGLToolBugfixGo();
+        new PGLToolDevGo();
+//        new PGLToolBugfixGo();
     }
     
     private void data () {
@@ -33,7 +33,7 @@ public class PrivateEntrance {
 //        this.wheatVMap1Go();
 //        this.wheatVMap2BuildGo();
 //        this.wheatVMap2Go();
-//        this.wheatVMap3Go();
+        this.wheatVMap3Go();
 //        this.envGWASGo();
 //        this.labPublicGo();
 
@@ -52,10 +52,6 @@ public class PrivateEntrance {
     }
 
     public void wheatVMap3Go () {
-        new WheatVMap3Go();
-    }
-
-    public void wheatVMap3 () {
         new WheatVMap3Go();
     }
 

@@ -7,9 +7,9 @@ import pgl.app.fastCall2.FastCall2;
 class FastCall2Dev {
 
     public FastCall2Dev () {
-//        this.callIndividual();
-//        this.mkVariationLib();
-//        this.genotyping();
+        this.callIndividual();
+        this.mkVariationLib();
+        this.genotyping();
 
     }
 

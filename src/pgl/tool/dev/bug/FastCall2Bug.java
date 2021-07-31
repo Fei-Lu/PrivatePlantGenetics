@@ -1,11 +1,14 @@
 package pgl.tool.dev.bug;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import pgl.app.fastCall2.VariationLibrary;
+import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +22,22 @@ class FastCall2Bug {
     public void nAltAllele () {
 //        this.findNAlt();
 //        this.checkOriginalVMap2();
-        this.compareN();
+//        this.compareN();
+        this.checkLibrary();
+    }
+
+    private void checkLibrary () {
+        String infileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/bugFix/nAlt/1_1_471304006.lib.gz";
+        String positionFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/bugFix/nAlt/nAlt.beforeAfter.txt";
+        String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/bugFix/nAlt/1_1_471304006.lib.txt";
+        VariationLibrary vl = new VariationLibrary(infileS);
+        RowTable<String> t = new RowTable<>(positionFileS);
+        int[] poses = t.getColumnAsIntArray(1);
+        int[] positionIndices = new int[poses.length];
+        for (int i = 0; i < poses.length; i++) {
+            positionIndices[i] = vl.getPositionIndex(poses[i]);
+        }
+        vl.writeTextFileS(outfileS, positionIndices);
     }
 
     private void compareN () {
