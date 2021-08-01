@@ -59,8 +59,8 @@ public class WheatVMap3Go {
                 SiteVCF vcf1 = null;
                 SiteVCF vcf2 = null;
                 int cnt = 0;
-                while ((temp1 = br2.readLine()) != null) {
-                    temp2 = br1.readLine();
+                while ((temp1 = br1.readLine()) != null) {
+                    temp2 = br2.readLine();
                     vcf1 = new SiteVCF(temp1);
                     vcf2 = new SiteVCF(temp2);
                     for (int i = 0; i < taxa2.length; i++) {
