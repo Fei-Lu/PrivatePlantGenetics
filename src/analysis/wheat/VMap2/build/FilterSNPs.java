@@ -172,17 +172,16 @@ class FilterSNPs {
         double hetThresh = 0.05;
         double nonmissingThresh = 0.8;
         int macThresh = 2;
-        String taxon1 = "AB_071";
-        String taxon2 = "AB_129";
-        String inDirS = "/data2/yafei/004_Vmap3/VCF/Raw_VCF/Vmap2_Out";
+//        String taxon1 = "AB_071";
+//        String taxon2 = "AB_129";
+        String inDirS = "/data1/home/xinyue/Vmap2_Out";
         String outDirS = "/data1/home/feilu/filter1";
 //        String inDirS = "/Users/feilu/Documents/analysisL/production/vmap2/taxaValidation/sampleGenotype";
 //        String outDirS = "/Users/feilu/Documents/analysisL/production/vmap2/taxaValidation/filter1";
+        new File(outDirS).mkdir();
         List<File> fList = IOUtils.getFileListInDirEndsWith(inDirS, ".gz");
         fList.parallelStream().forEach(f -> {
             String outfileS = new File (outDirS, f.getName()).getAbsolutePath();
-            int removeIndex = -1;
-            int addIndex = -1;
             int cnt = 0;
             try {
                 BufferedReader br = IOUtils.getTextGzipReader(f.getAbsolutePath());
@@ -192,59 +191,15 @@ class FilterSNPs {
                 String[] tem = temp.split("\t");
                 List<String> nameList = new ArrayList<>();
                 for (int i = 9; i < tem.length; i++) {
-                    if (tem[i].equals(taxon2))  {
-                        removeIndex = i-9;
-                        continue;
-                    }
-                    if (tem[i].equals(taxon1)) {
-                        nameList.add("AB_071M");
-                        addIndex = i-9;
-                    }
-                    else {
-                        nameList.add(tem[i]);
-                    }
+                    nameList.add(tem[i]);
                 }
                 bw.write(VCFUtils.getVCFAnnotation());
                 bw.newLine();
                 bw.write(VCFUtils.getVCFHeader(nameList.toArray(new String[nameList.size()])));
                 bw.newLine();
-                short[] depRemove;
-                short[] depAdd;
-                short[] depNew;
                 while ((temp = br.readLine()) != null) {
                     SiteVCF sv = new SiteVCF(temp);
                     if (sv.getAlleleNumber() > 2) continue;
-                    if (removeIndex > -1) {
-                        depRemove = sv.getAlleleDepth(removeIndex);
-                        depAdd = sv.getAlleleDepth(addIndex);
-                        if (depRemove[0] < 0) {
-                            for (int i = 0; i < depRemove.length; i++) {
-                                depRemove[i] = 0;
-                            }
-                        }
-                        if (depAdd[0] < 0) {
-                            for (int i = 0; i < depAdd.length; i++) {
-                                depAdd[i] = 0;
-                            }
-                        }
-                        depNew = new short[depAdd.length];
-                        for (int i = 0; i < depAdd.length; i++) {
-                            depNew[i] = (short)(depAdd[i]+depRemove[i]);
-                        }
-                        int sum = 0;
-                        int anyV = 0;
-                        for (int i = 0; i < depNew.length; i++) {
-                            if (depNew[i] < 0) anyV = -1;
-                            sum+=depNew[i];
-                        }
-                        if (sum == 0 || anyV < 0) {
-                            for (int i = 0; i < depNew.length; i++) {
-                                depNew[i] = Short.MIN_VALUE;
-                            }
-                        }
-                        sv.deleteTaxon(removeIndex);
-                        sv.setAlleleDepth(addIndex, depNew);
-                    }
                     if (sv.getTotalAllelePresence()[1] < macThresh) continue;
                     double ratio = (double)sv.getNonMissingTaxaNumber()/sv.getTaxaNumber();
                     if (ratio < nonmissingThresh) continue;
@@ -257,6 +212,7 @@ class FilterSNPs {
                 }
                 bw.flush();
                 bw.close();
+                System.out.println(outDirS);
             }
             catch (Exception e) {
                 e.printStackTrace();

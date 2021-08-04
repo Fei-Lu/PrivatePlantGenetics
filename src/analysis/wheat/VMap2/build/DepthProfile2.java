@@ -31,7 +31,7 @@ class DepthProfile2 {
 
 
 
-        this.densityFilter();
+//        this.densityFilter();
 //        this.mkReliableSites();
 //        this.profileReliableSites();
     }
@@ -95,9 +95,10 @@ class DepthProfile2 {
         String abd_dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/abd_d_popdep_sample.txt.gz";
         String dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/d_popdep_sample.txt.gz";
 
-        String outDirS = "/Volumes/VMap2_Fei/reliableSites/round_02/ABD_intersect";
+        String outDirS = "/Volumes/VMap2_Fei/reliableSites/round_02/ABD_intersect_80";
+        new File(outDirS).mkdir();
         int binNum = 100;
-        double proportion = 0.6;
+        double proportion = 0.8;
 
         Grid abGrid = getGrid(2, 8, 2, 8, binNum, abInfileS);
         Grid abd_abGrid = getGrid(5, 14, 3, 8, binNum, abd_abInfileS);
@@ -176,16 +177,16 @@ class DepthProfile2 {
     }
 
     public void densityFilter () {
-        double proportionOfSite = 0.60;
+        double proportionOfSite = 0.80;
         int binNum = 100;
         String abInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/ab_popdep_sample.txt.gz";
         String abd_abInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/abd_ab_popdep_sample.txt.gz";
         String abd_dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/abd_d_popdep_sample.txt.gz";
         String dInfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepSample/d_popdep_sample.txt.gz";
-        String abOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/ab/scatter_p60.pdf";
-        String abd_abOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/abd_ab/scatter_p60.pdf";
-        String abd_dOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/abd_d/scatter_p60.pdf";
-        String dOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/d/scatter_p60.pdf";
+        String abOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/ab/scatter_p80.pdf";
+        String abd_abOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/abd_ab/scatter_p80.pdf";
+        String abd_dOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/abd_d/scatter_p80.pdf";
+        String dOutfileS = "/Users/feilu/Documents/analysisL/production/vmap2/depth2/popDepPlot/d/scatter_p80.pdf";
         this.densityFilter(abInfileS, abOutfileS, proportionOfSite, 2, 8, 2, 8, binNum, "AB");
         this.densityFilter(abd_abInfileS, abd_abOutfileS, proportionOfSite, 5, 14, 3, 8, binNum, "ABD_AB");
         this.densityFilter(abd_dInfileS, abd_dOutfileS, proportionOfSite, 5, 14, 3, 8, binNum, "ABD_D");

@@ -1,5 +1,6 @@
 package analysis.wheat.VMap3;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import pgl.infra.dna.genot.SiteVCF;
 import pgl.infra.dna.genot.VCFUtils;
 import pgl.infra.utils.IOUtils;

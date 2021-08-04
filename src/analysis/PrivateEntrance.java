@@ -33,7 +33,7 @@ public class PrivateEntrance {
 //        this.wheatVMap1Go();
 //        this.wheatVMap2BuildGo();
 //        this.wheatVMap2Go();
-        this.wheatVMap3Go();
+//        this.wheatVMap3Go();
 //        this.envGWASGo();
 //        this.labPublicGo();
 
