@@ -32,13 +32,13 @@ class DepthProfile2 {
 
 
 //        this.densityFilter();
-//        this.mkReliableSites();
+        this.mkReliableSites();
 //        this.profileReliableSites();
     }
 
     public void profileReliableSites () {
-        String inDirS = "/Volumes/VMap2_Fei/reliableSites/round_02/ABD_intersect";
-        String outfileS = "/Volumes/VMap2_Fei/reliableSites/round_02/reliable_count.txt";
+        String inDirS = "/Volumes/VMap2_Fei/reliableSites/round_02/ABD_intersect_80";
+        String outfileS = "/Volumes/VMap2_Fei/reliableSites/round_02/reliable_count_80.txt";
         List<File> fList = IOUtils.getFileListInDirEndsWith(inDirS, ".gz");
         int[] chromLengths = new int[fList.size()];
         int[] reliableNumber = new int[fList.size()];

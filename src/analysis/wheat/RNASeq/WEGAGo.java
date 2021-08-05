@@ -9,17 +9,16 @@ package analysis.wheat.RNASeq;
  *
  * @author feilu
  */
-public class WheatRNASeqGo {
+public class WEGAGo {
     
-    public WheatRNASeqGo () {
+    public WEGAGo() {
         this.doMiscellaneous();
     }
     
     public void doMiscellaneous () {
         new Miscellaneous ();
     }
-    
-    public static void main (String[] args) {
-        new WheatRNASeqGo ();
-    }
+
+
+
 }
