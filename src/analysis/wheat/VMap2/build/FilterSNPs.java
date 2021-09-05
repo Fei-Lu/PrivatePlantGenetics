@@ -21,9 +21,9 @@ class FilterSNPs {
 
     public FilterSNPs () {
 //        this.profileFeatures();
-        this.filterSNPsStep1();
-        this.filterSNPsStep2();
-        this.getVMapInfo();
+//        this.filterSNPsStep1();
+//        this.filterSNPsStep2();
+//        this.getVMapInfo();
     }
 
 
@@ -172,9 +172,7 @@ class FilterSNPs {
         double hetThresh = 0.05;
         double nonmissingThresh = 0.8;
         int macThresh = 2;
-//        String taxon1 = "AB_071";
-//        String taxon2 = "AB_129";
-        String inDirS = "/data1/home/xinyue/Vmap2_Out";
+        String inDirS = "/data2/yafei/004_Vmap3/Fastcall2/04_Vmap3.0vcf/Vmap2_Out";
         String outDirS = "/data1/home/feilu/filter1";
 //        String inDirS = "/Users/feilu/Documents/analysisL/production/vmap2/taxaValidation/sampleGenotype";
 //        String outDirS = "/Users/feilu/Documents/analysisL/production/vmap2/taxaValidation/filter1";
@@ -198,6 +196,7 @@ class FilterSNPs {
                 bw.write(VCFUtils.getVCFHeader(nameList.toArray(new String[nameList.size()])));
                 bw.newLine();
                 while ((temp = br.readLine()) != null) {
+                    if (temp.substring(0, 50).split("\t")[0].contains("N")) continue;
                     SiteVCF sv = new SiteVCF(temp);
                     if (sv.getAlleleNumber() > 2) continue;
                     if (sv.getTotalAllelePresence()[1] < macThresh) continue;

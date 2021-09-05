@@ -30,10 +30,10 @@ public class PrivateEntrance {
     }
     
     private void analysis () {
-        this.wegaGo();
+//        this.wegaGo();
 //        this.svGo();
 //        this.wheatVMap1Go();
-//        this.wheatVMap2BuildGo();
+        this.wheatVMap2BuildGo();
 //        this.wheatVMap2Go();
 //        this.wheatVMap3Go();
 //        this.envGWASGo();
