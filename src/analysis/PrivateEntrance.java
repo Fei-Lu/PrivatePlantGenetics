@@ -1,6 +1,7 @@
 package analysis;
 
 import analysis.envGWAS.EnvGWASGo;
+import analysis.fastcall.FastCallGo;
 import analysis.wheat.RNASeq.WEGAGo;
 import analysis.wheat.VMap1.WheatVMap1Go;
 import analysis.wheat.VMap2.build.VMap2BuildGo;
@@ -10,18 +11,17 @@ import pgl.infra.utils.Benchmark;
 import pgl.tool.dev.PGLToolDevGo;
 import pgl.data.LabDataGo;
 import analysis.wheat.VMap2.WheatVMap2Go;
-import pgl.tool.dev.bug.PGLToolBugfixGo;
 
 public class PrivateEntrance {
 
     public PrivateEntrance (String[] args) {
-        this.analysis();
+//        this.analysis();
 //        this.data();
 //        this.tool();
     }
     
     private void tool () {
-        new PGLToolDevGo();
+//        new PGLToolDevGo();
 //        new PGLToolBugfixGo();
     }
     
@@ -33,11 +33,15 @@ public class PrivateEntrance {
 //        this.wegaGo();
 //        this.svGo();
 //        this.wheatVMap1Go();
-        this.wheatVMap2BuildGo();
+//        this.wheatVMap2BuildGo();
 //        this.wheatVMap2Go();
 //        this.wheatVMap3Go();
 //        this.envGWASGo();
+//        this.fastCallGo();
+    }
 
+    public void fastCallGo () {
+        new FastCallGo();
     }
 
     public void wegaGo () {
