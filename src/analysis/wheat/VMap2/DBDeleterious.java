@@ -13,14 +13,11 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TFloatArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.set.hash.TIntHashSet;
-import pgl.graph.tSaw.TablesawUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.util.*;
 
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Table;
 import pgl.infra.utils.Dyad;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
@@ -598,6 +595,7 @@ public class DBDeleterious {
         
     }
     
+    /*
     public void extractInfoFromVMap2 () {
         int subLength = 150;
         String outDirS = "/Users/feilu/Documents/analysisH/vmap2/002_genicSNP/001_genicSNPByChr/";
@@ -688,7 +686,7 @@ public class DBDeleterious {
             catch (Exception e) {
                 e.printStackTrace();
             }
-        });
-        
+        });  
     }
+    */
 }

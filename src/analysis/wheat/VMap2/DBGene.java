@@ -8,20 +8,12 @@ package analysis.wheat.VMap2;
 import pgl.infra.anno.gene.GeneFeature;
 import pgl.infra.range.Range;
 import pgl.infra.table.ColumnTable;
-import pgl.graph.tSaw.TablesawUtils;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.Plot;
-import tech.tablesaw.plotly.api.Histogram;
-import tech.tablesaw.plotly.api.ScatterPlot;
-import tech.tablesaw.plotly.components.Figure;
 import pgl.infra.utils.Dyad;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
@@ -93,7 +85,7 @@ public class DBGene {
         }
         VMapDBUtils.writeDB(header+"\tCDSExonNumber\tCDSLength", recordList, infileS);
     }
-    
+    /*
     public void selectHCGenes1 () {
         String infileS = "/Users/feilu/Documents/database/wheat/gene/gene_expression/geneExpression.txt";
         String geneFeatureFileS = "/Users/feilu/Documents/database/wheat/gene/v1.1/wheat_v1.1_Lulab.pgf";
@@ -147,4 +139,5 @@ public class DBGene {
             e.printStackTrace();
         }
     }
+    */
 }
