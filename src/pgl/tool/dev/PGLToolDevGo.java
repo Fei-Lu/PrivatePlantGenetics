@@ -10,7 +10,7 @@ public class PGLToolDevGo {
 //        this.genomeAnnotationDev();
 //        this.fastCallDev();
 //        this.hapScannerDev();
-        this.fastCall2Dev();
+//        this.fastCall2Dev();
 //        this.speedCallDev();
 //        this.popdepDev();
     }

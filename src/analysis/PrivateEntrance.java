@@ -17,11 +17,11 @@ public class PrivateEntrance {
     public PrivateEntrance (String[] args) {
 //        this.analysis();
 //        this.data();
-//        this.tool();
+        this.tool();
     }
     
     private void tool () {
-//        new PGLToolDevGo();
+        new PGLToolDevGo();
 //        new PGLToolBugfixGo();
     }
     
