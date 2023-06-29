@@ -17,7 +17,25 @@ public class FastCallDev {
 //        this.mkSubReference();
 //        this.mkBams();
 //        this.mkTaxaBamFiles();
-        this.runFastCall();
+//        this.runFastCall();
+        this.runFastCallCommand();
+    }
+
+    public void runFastCallCommand() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-app ").append("FastCall ");
+        sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
+        sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/taxaBamMap.txt ");
+        sb.append("-d ").append("0.05 ");
+        sb.append("-e ").append("0.4 ");
+        sb.append("-f ").append("1 ");
+        sb.append("-g ").append("2 ");
+        sb.append("-h ").append("1:1,200000 ");
+        sb.append("-i ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/vcf ");
+        sb.append("-j ").append("32 ");
+        sb.append("-l ").append("/usr/local/bin/samtools");
+        String[] args = sb.toString().split(" ");
+        new FastCall(args);
     }
 
     public void runFastCall () {

@@ -17,8 +17,7 @@ public class PrivateEntrance {
     public PrivateEntrance (String[] args) {
 //        this.analysis();
 //        this.data();
-//        this.tool();
-        System.out.println(1);
+        this.tool();
     }
     
     private void tool () {
