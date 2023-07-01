@@ -75,6 +75,6 @@ public class PrivateEntrance {
     public static void main (String[] args) {
         long start = System.nanoTime();
         new PrivateEntrance(args);
-        System.out.println("Program finished in " + (float)Benchmark.getTimeSpanMinutes(start) + " minutes");
+        System.out.println("Program is finished in " + (float)Benchmark.getTimeSpanMinutes(start) + " minutes");
     }
 }
