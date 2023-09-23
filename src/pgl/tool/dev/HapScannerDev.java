@@ -59,8 +59,8 @@ public class HapScannerDev {
             bw.newLine();
             for (int i = 0; i < size; i++) {
                 sb.setLength(0);
-                sb.append(gt.getChromosome(i)).append("\t").append(gt.getPosition(i)).append("\t").append(AlleleEncoder.getAlleleBaseFromByte(gt.getReferenceAlleleByte(i)));
-                sb.append("\t").append(AlleleEncoder.getAlleleBaseFromByte(gt.getAlternativeAlleleByte(i)));
+                sb.append(gt.getChromosome(i)).append("\t").append(gt.getPosition(i)).append("\t").append(AlleleEncoder.getAlleleBaseFromCoding(gt.getReferenceAlleleByte(i)));
+                sb.append("\t").append(AlleleEncoder.getAlleleBaseFromCoding(gt.getAlternativeAlleleByte(i)));
                 bw.write(sb.toString());
                 bw.newLine();
             }

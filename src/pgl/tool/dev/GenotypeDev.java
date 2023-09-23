@@ -89,12 +89,12 @@ public class GenotypeDev {
 
     public void testAlleles () {
         String genotype = "A.";
-        byte b1 = AlleleEncoder.getAlleleByteFromBase(genotype.charAt(0));
-        byte b2 = AlleleEncoder.getAlleleByteFromBase(genotype.charAt(1));
-        byte geno = AlleleEncoder.getGenotypeByte(b1, b2);
+        byte b1 = AlleleEncoder.getAlleleCodingFromBase(genotype.charAt(0));
+        byte b2 = AlleleEncoder.getAlleleCodingFromBase(genotype.charAt(1));
+        byte geno = AlleleEncoder.getGenotypeCoding(b1, b2);
         System.out.println(geno);
-        System.out.println(AlleleEncoder.getAlleleBase1FromGenotypeByte(geno));
-        System.out.println(AlleleEncoder.getAlleleBase2FromGenotypeByte(geno));
+        System.out.println(AlleleEncoder.getAlleleBase1FromGenotypeCoding(geno));
+        System.out.println(AlleleEncoder.getAlleleBase2FromGenotypeCoding(geno));
 
         Allele al = new Allele ('A');
         al.setAlleleType(AlleleType.Minor);

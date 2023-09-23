@@ -9,9 +9,9 @@ package pgl.data;
  *
  * @author feilu
  */
-public class LabDataGo {
+public class PGLDataSection {
     
-    public LabDataGo() {
+    public PGLDataSection() {
         //this.referenceGenome();
 //        this.referenceGene();
 //        this.bamManagement();

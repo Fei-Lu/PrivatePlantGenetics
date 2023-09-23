@@ -28,7 +28,7 @@ class FastCall2Dev {
         sb.append("-f ").append("0.2 ");
         sb.append("-g ").append("3 ");
         sb.append("-h ").append("0.8 ");
-        sb.append("-i ").append("0.4 ");
+        sb.append("-i ").append("0.35 ");
         sb.append("-j ").append("0.2 ");
         sb.append("-k ").append("1:1,200000 ");
         sb.append("-l ").append("32 ");

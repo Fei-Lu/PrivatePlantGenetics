@@ -1,8 +1,8 @@
 package pgl.tool.dev;
 
-public class PGLToolDevGo {
+public class PGLToolSection {
 
-    public PGLToolDevGo () {
+    public PGLToolSection() {
 //        this.dnaDev();
 //        this.alignmentDev();
 //        this.genotypeDev();
