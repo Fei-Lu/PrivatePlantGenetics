@@ -10,9 +10,9 @@ public class PrivateEntrance {
 
     public PrivateEntrance (String[] args) {
 //        this.analysis();
-        this.data();
+//        this.data();
 //        this.tool();
-//        this.learning();
+        this.learning();
     }
 
     private void learning () {
