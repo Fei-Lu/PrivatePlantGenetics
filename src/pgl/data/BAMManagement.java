@@ -1,6 +1,5 @@
 package pgl.data;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import pgl.infra.table.RowTable;
 import pgl.infra.utils.IOUtils;
 import pgl.infra.utils.PStringUtils;
