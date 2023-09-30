@@ -1,8 +1,19 @@
 package pgl.tool.dev;
 
+import pgl.tool.fix.FastCall2Fix;
+
 public class PGLToolSection {
 
     public PGLToolSection() {
+        this.dev();
+//        this.fix();
+    }
+
+    public void fix() {
+        new FastCall2Fix();
+    }
+
+    public void dev () {
 //        this.dnaDev();
 //        this.alignmentDev();
 //        this.genotypeDev();

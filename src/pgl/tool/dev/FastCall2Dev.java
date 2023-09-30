@@ -11,15 +11,19 @@ class FastCall2Dev {
         this.withCommandLine();
     }
 
+    public void test () {
+
+    }
+
     public void withCommandLine () {
-//        this.commandDiscovery();
-//        this.commandLibrary();
+        this.commandDiscovery();
+        this.commandLibrary();
         this.commandGenotype();
     }
     public void commandDiscovery () {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
-        sb.append("-step ").append("1 ");
+        sb.append("-tool ").append("disc ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/taxaBamMap.txt ");
         sb.append("-c ").append("30 ");
@@ -41,7 +45,7 @@ class FastCall2Dev {
     public void commandLibrary () {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
-        sb.append("-step ").append("2 ");
+        sb.append("-tool ").append("blib ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("1:1,200000 ");
         sb.append("-c ").append("2 ");
@@ -55,7 +59,7 @@ class FastCall2Dev {
     public void commandGenotype () {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
-        sb.append("-step ").append("3 ");
+        sb.append("-tool ").append("scan ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/taxaBamMap.txt ");
         sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
@@ -68,24 +72,27 @@ class FastCall2Dev {
         new FastCall2(args);
     }
 
-    public void withParameterFileS () {
-        this.callIndividual();
-        this.mkVariationLib();
-        this.genotyping();
-    }
-
-    public void genotyping () {
-        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/parameters_fastcall2_3.txt";
-        new FastCall2(parameterFileS);
-    }
-
-    public void mkVariationLib () {
-        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/parameters_fastcall2_2.txt";
-        new FastCall2(parameterFileS);
-    }
-
-    public void callIndividual () {
-        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/parameters_fastcall2_1.txt";
-        new FastCall2(parameterFileS);
-    }
+//    /**
+//     * @deprecated
+//     */
+//    public void withParameterFileS () {
+//        this.callIndividual();
+//        this.mkVariationLib();
+//        this.genotyping();
+//    }
+//
+//    public void genotyping () {
+//        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/parameters_fastcall2_3.txt";
+//        new FastCall2(parameterFileS);
+//    }
+//
+//    public void mkVariationLib () {
+//        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/parameters_fastcall2_2.txt";
+//        new FastCall2(parameterFileS);
+//    }
+//
+//    public void callIndividual () {
+//        String parameterFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/parameters_fastcall2_1.txt";
+//        new FastCall2(parameterFileS);
+//    }
 }
