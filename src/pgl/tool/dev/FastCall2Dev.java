@@ -3,23 +3,44 @@ package pgl.tool.dev;
 
 
 import pgl.app.fastCall2.FastCall2;
+import pgl.app.fastCall2.IndividualGenotype;
+import pgl.app.fastCall2.VariationLibrary;
 
 class FastCall2Dev {
 
     public FastCall2Dev () {
         this.withCommandLine();
+//        this.miscellaneous();
     }
 
-    public void test () {
+    public void miscellaneous () {
+//        this.viewIndividualGenotype();
+        this.viewVariationLibrary();
+    }
 
+    public void viewVariationLibrary () {
+        String infileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz";
+        String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/miscellaneous/1_1_200001.lib.txt";
+        VariationLibrary vl = new VariationLibrary(infileS);
+        vl.writeTextFileS(outfileS);
+    }
+
+    public void viewIndividualGenotype() {
+        String inputfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/ing/TW0060/1_1_200001.ing.gz";
+        String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/miscellaneous/TW0060_ing.txt";
+        IndividualGenotype g = new IndividualGenotype (inputfileS);
+        g.getAlleleChromPosition(1);
+        g.writeTextFile(outfileS);
     }
 
     public void withCommandLine () {
-        this.commandDiscovery();
-        this.commandLibrary();
-        this.commandGenotype();
+        this.variationDiscovery();
+        this.buildLibrary();
+        this.viewLibrary();
+        this.customizeLibrary();
+        this.scanGenotype();
     }
-    public void commandDiscovery () {
+    public void variationDiscovery() {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
         sb.append("-module ").append("disc ");
@@ -41,7 +62,7 @@ class FastCall2Dev {
         new FastCall2(args);
     }
 
-    public void commandLibrary () {
+    public void buildLibrary() {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
         sb.append("-module ").append("blib ");
@@ -55,13 +76,34 @@ class FastCall2Dev {
         new FastCall2(args);
     }
 
-    public void commandGenotype () {
+    public void viewLibrary () {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-app ").append("FastCall2 ");
+        sb.append("-module ").append("vlib ");
+        sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
+        sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/miscellaneous/1_1_200001.lib.txt ");
+        String[] args = sb.toString().split(" ");
+        new FastCall2(args);
+    }
+
+    public void customizeLibrary () {
+        StringBuilder sb = new StringBuilder();
+        sb.append("-app ").append("FastCall2 ");
+        sb.append("-module ").append("clib ");
+        sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
+        sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/custom_position.txt ");
+        sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001_sub.lib.gz ");
+        String[] args = sb.toString().split(" ");
+        new FastCall2(args);
+    }
+
+    public void scanGenotype() {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
         sb.append("-module ").append("scan ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/taxaBamMap.txt ");
-        sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
+        sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001_sub.lib.gz ");
         sb.append("-d ").append("1:1,200000 ");
         sb.append("-e ").append("30 ");
         sb.append("-f ").append("20 ");
