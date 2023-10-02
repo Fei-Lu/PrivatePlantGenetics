@@ -43,7 +43,7 @@ class FastCall2Dev {
     public void variationDiscovery() {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
-        sb.append("-module ").append("disc ");
+        sb.append("-mod ").append("disc ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/taxaBamMap.txt ");
         sb.append("-c ").append("30 ");
@@ -65,7 +65,7 @@ class FastCall2Dev {
     public void buildLibrary() {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
-        sb.append("-module ").append("blib ");
+        sb.append("-mod ").append("blib ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("1:1,200000 ");
         sb.append("-c ").append("2 ");
@@ -79,7 +79,7 @@ class FastCall2Dev {
     public void viewLibrary () {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
-        sb.append("-module ").append("vlib ");
+        sb.append("-mod ").append("vlib ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/miscellaneous/1_1_200001.lib.txt ");
         String[] args = sb.toString().split(" ");
@@ -89,7 +89,7 @@ class FastCall2Dev {
     public void customizeLibrary () {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
-        sb.append("-module ").append("clib ");
+        sb.append("-mod ").append("clib ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/custom_position.txt ");
         sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001_sub.lib.gz ");
@@ -100,7 +100,7 @@ class FastCall2Dev {
     public void scanGenotype() {
         StringBuilder sb = new StringBuilder();
         sb.append("-app ").append("FastCall2 ");
-        sb.append("-module ").append("scan ");
+        sb.append("-mod ").append("scan ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/taxaBamMap.txt ");
         sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001_sub.lib.gz ");
