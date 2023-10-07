@@ -63,7 +63,7 @@ class WheatReferenceGenome {
         boolean[] ifOut = new boolean[afb.getSeqNumber()];
         
         for (int i = 0; i < afb.getSeqNumber(); i++) {
-            String ori = currentOriMap.get(afb.getName(i));
+            String ori = currentOriMap.get(afb.getDescription(i));
             if (ori.split("_")[0].endsWith("A")) ifOut[i] = true;
             if (ori.contains("Mit")) ifOut[i] = true;
             if (ori.contains("Chl")) ifOut[i] = true;
@@ -73,7 +73,7 @@ class WheatReferenceGenome {
         
         ifOut = new boolean[afb.getSeqNumber()];
         for (int i = 0; i < afb.getSeqNumber(); i++) {
-            String ori = currentOriMap.get(afb.getName(i));
+            String ori = currentOriMap.get(afb.getDescription(i));
             if (ori.split("_")[0].endsWith("A") || ori.split("_")[0].endsWith("B")) ifOut[i] = true;
             if (ori.contains("Mit")) ifOut[i] = true;
             if (ori.contains("Chl")) ifOut[i] = true;
@@ -83,7 +83,7 @@ class WheatReferenceGenome {
 
         ifOut = new boolean[afb.getSeqNumber()];
         for (int i = 0; i < afb.getSeqNumber(); i++) {
-            String ori = currentOriMap.get(afb.getName(i));
+            String ori = currentOriMap.get(afb.getDescription(i));
             if (ori.split("_")[0].endsWith("D")) ifOut[i] = true;
             if (ori.contains("Mit")) ifOut[i] = true;
             if (ori.contains("Chl")) ifOut[i] = true;
@@ -93,7 +93,7 @@ class WheatReferenceGenome {
         
         ifOut = new boolean[afb.getSeqNumber()];
         for (int i = 0; i < afb.getSeqNumber(); i++) {
-            String ori = currentOriMap.get(afb.getName(i));
+            String ori = currentOriMap.get(afb.getDescription(i));
             if (ori.split("_")[0].endsWith("B")) ifOut[i] = true;
             if (ori.contains("Mit")) ifOut[i] = true;
             if (ori.contains("Chl")) ifOut[i] = true;
@@ -113,9 +113,9 @@ class WheatReferenceGenome {
         }
         FastaBit fn = new FastaBit(infileS);
         for (int i = 0; i < fn.getSeqNumber(); i++) {
-            String name = fn.getName(i);
+            String name = fn.getDescription(i);
             name = oriCurrentMap.get(name);
-            fn.setName(name, i);
+            fn.setDescription(name, i);
             String outfileS = new File (outDirS, "chr"+PStringUtils.getNDigitNumber(3, Integer.valueOf(name))+".fa.gz").getAbsolutePath();
             fn.writeFasta(outfileS, i, IOFileFormat.TextGzip);
         }
@@ -125,7 +125,7 @@ class WheatReferenceGenome {
         String infileS = "/Users/feilu/Documents/database/wheat/reference/download/iwgsc_refseqv1.0_all_chromosomes/161010_Chinese_Spring_v1.0_pseudomolecules_parts.fasta";
         FastaBit f = new FastaBit(infileS);
         System.out.println(f.isThereN());
-        String[] names = f.getNames();
+        String[] names = f.getDescriptions();
         for (int i = 0; i < names.length; i++) {
             System.out.println(names[i]);
         }

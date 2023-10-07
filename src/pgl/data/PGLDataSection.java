@@ -12,7 +12,7 @@ package pgl.data;
 public class PGLDataSection {
     
     public PGLDataSection() {
-        //this.referenceGenome();
+        this.referenceGenome();
 //        this.referenceGene();
 //        this.bamManagement();
 //        this.germplasm();
@@ -31,7 +31,8 @@ public class PGLDataSection {
     }
     
     public void referenceGenome () {
-        new WheatReferenceGenome();
+//        new WheatReferenceGenome();
+        new MaizeReferenceGenome();
     }
 
 
