@@ -14,7 +14,7 @@ public class PGLToolSection {
     }
 
     public void dev () {
-//        this.dnaDev();
+        this.dnaDev();
 //        this.alignmentDev();
 //        this.genotypeDev();
 //        this.popgenDev();

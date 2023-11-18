@@ -3,9 +3,9 @@ package analysis;
 import analysis.envGWAS.EnvGWASGo;
 import analysis.fastcall.FastCallGo;
 import analysis.wheat.RNASeq.WEGAGo;
-import analysis.wheat.VMap1.WheatVMap1Go;
-import analysis.wheat.VMap2.WheatVMap2Go;
-import analysis.wheat.VMap2.build.VMap2BuildGo;
+import zDeprecated.analysis.wheat.VMap1.WheatVMap1Go;
+import zDeprecated.analysis.wheat.VMap2.WheatVMap2Go;
+import zDeprecated.analysis.wheat.VMap2.build.VMap2BuildGo;
 import analysis.wheat.VMap3.WheatVMap3Go;
 import analysis.wheat.sv.WheatSVGo;
 
