@@ -48,8 +48,8 @@ class QualityCheck {
             e.printStackTrace();
         }
         DensityPlot d = new DensityPlot(nums);
-        d.setXLab("Read num");
-        d.setYLab("Density");
+        d.setXLabel("Read num");
+        d.setYLabel("Density");
         d.setTitle("Distribution of read num per taxon");
         d.setXLim(0, 200000);
         d.saveGraph(outfilePdf);

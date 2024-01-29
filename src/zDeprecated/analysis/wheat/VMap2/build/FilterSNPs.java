@@ -245,15 +245,15 @@ class FilterSNPs {
         DensityPlot d = new DensityPlot(het);
         d.setSmoothN(50000);
         d.setTitle(genomeType+"_heterozygosity");
-        d.setXLab("Heterozygosity");
-        d.setYLab("Density");
+        d.setXLabel("Heterozygosity");
+        d.setYLabel("Density");
         d.setXLim(0, 0.2);
         d.saveGraph(hetOut);
         d = new DensityPlot(nonmissing);
         d.setSmoothN(50000);
         d.setTitle(genomeType+"_nonMissing");
-        d.setXLab("NonMissing_rate");
-        d.setYLab("Density");
+        d.setXLabel("NonMissing_rate");
+        d.setYLabel("Density");
         d.setXLim(0, 1);
         d.saveGraph(nonmissingOut);
     }

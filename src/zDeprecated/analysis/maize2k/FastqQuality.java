@@ -392,8 +392,8 @@ public class FastqQuality {
         double[] value = t.getColumnAsDoubleArray(3);
         DensityPlot h = new DensityPlot(value);
         h.setTitle("Coverage of 40 maize samples");
-        h.setXLab("Coverage");
-        h.setYLab("Density");
+        h.setXLabel("Coverage");
+        h.setYLabel("Density");
         h.saveGraph(outfileS);
     }
     

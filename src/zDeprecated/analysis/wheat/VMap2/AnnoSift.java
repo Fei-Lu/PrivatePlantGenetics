@@ -60,8 +60,8 @@ public class AnnoSift {
         
         Histogram h = new Histogram(siftValues);
         h.setTitle("Sift value distribution of VMap II");
-        h.setXLab("Sift value");
-        h.setYLab("Proportion");
+        h.setXLabel("Sift value");
+        h.setYLabel("Proportion");
         h.saveGraph(outpdf);
     }
     

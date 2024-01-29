@@ -98,8 +98,8 @@ class TaxaSelection {
         double[] x = xList.toArray();
         double[] y = yList.toArray();
         ScatterPlot sp = new ScatterPlot(x,y);
-        sp.setXLab("PC 1");
-        sp.setYLab("PC 2");
+        sp.setXLabel("PC 1");
+        sp.setYLabel("PC 2");
         sp.setTitle("MDS of selected taxa from 358 lines");
         sp.setXLim(-0.3, 0.3);
         sp.setYLim(-0.25, 0.15);

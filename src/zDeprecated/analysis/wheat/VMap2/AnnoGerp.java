@@ -41,8 +41,8 @@ public class AnnoGerp {
         values = PArrayUtils.getNonredundantRandomSubset(values, 20000);
         Histogram h = new Histogram (values);
         h.setTitle("Gerp value distribution of wheat by aligning 29 species");
-        h.setXLab("Gerp value");
-        h.setYLab("Proportion");
+        h.setXLabel("Gerp value");
+        h.setYLabel("Proportion");
         h.saveGraph(outfileS);
     }
 

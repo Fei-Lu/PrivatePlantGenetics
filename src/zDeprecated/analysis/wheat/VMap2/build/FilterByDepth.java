@@ -94,28 +94,28 @@ class FilterByDepth {
         }
         Histogram h = new Histogram(missingSite.toArray());
         h.setTitle(genomeType+"_missing"+"_bySite");
-        h.setXLab("Missing rate");
-        h.setYLab("Proportion");
+        h.setXLabel("Missing rate");
+        h.setYLabel("Proportion");
         h.saveGraph(siteMissingPdf);
         h = new Histogram(hetSite.toArray());
         h.setTitle(genomeType+"_heterozygous"+"_bySite");
-        h.setXLab("Heterozygous proportion by site");
-        h.setYLab("Proportion");
+        h.setXLabel("Heterozygous proportion by site");
+        h.setYLabel("Proportion");
         h.saveGraph(siteHetPdf);
         h = new Histogram(maf.toArray());
         h.setTitle(genomeType+"_MAF"+"_bySite");
-        h.setXLab("MAF");
-        h.setYLab("Proportion");
+        h.setXLabel("MAF");
+        h.setYLabel("Proportion");
         h.saveGraph(mafPdf);
         h = new Histogram(missingTaxon.toArray());
         h.setTitle(genomeType+"_missing"+"_byTaxa");
-        h.setXLab("Missing rate");
-        h.setYLab("Proportion");
+        h.setXLabel("Missing rate");
+        h.setYLabel("Proportion");
         h.saveGraph(taxaMissingPdf);
         h = new Histogram(hetTaxon.toArray());
         h.setTitle(genomeType+"_heterozygous"+"_byTaxa");
-        h.setXLab("Heterozygous proportion by taxa");
-        h.setYLab("Proportion");
+        h.setXLabel("Heterozygous proportion by taxa");
+        h.setYLabel("Proportion");
         h.saveGraph(taxaHetPdf);
     }
 

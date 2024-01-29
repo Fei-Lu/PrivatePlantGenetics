@@ -212,8 +212,8 @@ class DepthProfile2 {
         s.setColor(255,0, 0, 1);
         s.setXLim(0, 20);
         s.setYLim(0, 12);
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.saveGraph(outfileS);
     }
 
@@ -258,16 +258,16 @@ class DepthProfile2 {
         DensityPlot d = new DensityPlot(values[0]);
         d.setTitle(genomeType);
         d.setXLim(0, 20);
-        d.setXLab("Mean of depth");
-        d.setYLab("Density");
+        d.setXLabel("Mean of depth");
+        d.setYLabel("Density");
         d.setSmoothN(50000);
         d.saveGraph(meanOutfileS);
 
         d = new DensityPlot(values[1]);
         d.setTitle(genomeType);
         d.setXLim(0, 20);
-        d.setXLab("SD of depth");
-        d.setYLab("Density");
+        d.setXLabel("SD of depth");
+        d.setYLabel("Density");
         d.setSmoothN(50000);
         d.saveGraph(sdOutFileS);
 
@@ -276,8 +276,8 @@ class DepthProfile2 {
 
         s.setXLim(0, 15);
         s.setYLim(0, 15);
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.setColor(255, 0, 0, 1);
         s.saveGraph(scatterFileS);
     }

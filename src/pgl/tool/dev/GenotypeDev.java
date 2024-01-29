@@ -10,12 +10,12 @@ import pgl.infra.utils.IOFileFormat;
 public class GenotypeDev {
 
     public GenotypeDev () {
-//        this.testAlleles();
+        this.testAlleles();
 //        this.ioTestGenotypeBit();
 //        this.ioTestGenotypeGrid();
 //        this.ibsDistanceTest1();
 //        this.ibsDistanceTest2();
-        this.test1();
+//        this.test1();
     }
 
     public void test1 () {

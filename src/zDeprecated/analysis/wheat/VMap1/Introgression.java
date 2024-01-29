@@ -7,7 +7,6 @@ import pgl.graph.r.BoxPlot;
 import pgl.graph.r.DensityPlot;
 import pgl.graph.r.Histogram;
 import pgl.infra.dna.genot.GenoIOFormat;
-import pgl.infra.dna.genot.GenotypeExport;
 import pgl.infra.dna.genot.GenotypeGrid;
 import pgl.infra.dna.genot.GenotypeTable;
 import pgl.infra.range.Range;
@@ -59,7 +58,7 @@ class Introgression {
             String outfileS = new File (inDirS, sb.toString()).getAbsolutePath();
             BoxPlot b = new BoxPlot(values, regions);
             b.setTitle("IBSD_"+subgenomes[i]);
-            b.setYLab("IBS Distance");
+            b.setYLabel("IBS Distance");
             b.saveGraph(outfileS);
         }
     }
@@ -106,8 +105,8 @@ class Introgression {
                 Histogram h = new Histogram(diss);
                 h.setTitle("IBS distance of " + regions[i] + "_" + subgenomes[j]);
                 h.setXLim(0, 0.3);
-                h.setXLab("IBS distance");
-                h.setYLab("Proportion");
+                h.setXLabel("IBS distance");
+                h.setYLabel("Proportion");
                 h.setBreakNumber(50);
                 h.saveGraph(outfileS);
                 try {
@@ -486,8 +485,8 @@ class Introgression {
             double[] sample = PArrayUtils.getNonredundantRandomSubset(fds.toArray(), 20000);
             Histogram h = new Histogram(sample);
             h.setTitle(dirList.get(i).getName());
-            h.setXLab("fd");
-            h.setYLab("Proportion");
+            h.setXLabel("fd");
+            h.setYLabel("Proportion");
             h.setBreakNumber(100);
             h.setXLim(0,1);
             h.saveGraph(outfileS);
@@ -658,23 +657,23 @@ class Introgression {
         DensityPlot d = new DensityPlot(AList.toArray());
         d.setSmoothN(5000);
         d.setTitle("Interval distribution of fd test in A subgenome");
-        d.setXLab("Interval size (bp)");
-        d.setYLab("Density");
+        d.setXLabel("Interval size (bp)");
+        d.setYLabel("Density");
         d.setXLim(0, 10000000);
         d.saveGraph(intervalA);
         d = new DensityPlot(BList.toArray());
         d.setSmoothN(5000);
         d.setTitle("Interval distribution of fd test in B subgenome");
-        d.setXLab("Interval size (bp)");
-        d.setYLab("Density");
+        d.setXLabel("Interval size (bp)");
+        d.setYLabel("Density");
         d.setXLim(0, 10000000);
         d.saveGraph(intervalB);
 
         d = new DensityPlot(DList.toArray());
         d.setSmoothN(5000);
         d.setTitle("Interval distribution of fd test in D subgenome");
-        d.setXLab("Interval size (bp)");
-        d.setYLab("Density");
+        d.setXLabel("Interval size (bp)");
+        d.setYLabel("Density");
         d.setXLim(0, 10000000);
         d.saveGraph(intervalD);
     }

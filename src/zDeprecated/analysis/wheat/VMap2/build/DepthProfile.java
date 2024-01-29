@@ -86,12 +86,12 @@ class DepthProfile {
             s.setXLim(0, 8);
             s.setYLim(0, 8);
             s.setColor(255, 0, 0, 5);
-            s.setXLab("Mean of depth");
-            s.setYLab("SD of depth");
+            s.setXLabel("Mean of depth");
+            s.setYLabel("SD of depth");
             s.saveGraph(scatterPlot);
             d.setXLim(0, 8);
-            d.setXLab("Mean of depth");
-            d.setYLab("Density");
+            d.setXLabel("Mean of depth");
+            d.setYLabel("Density");
             d.setTitle("AB_intersect");
             d.saveGraph(densityPlot);
         }
@@ -100,12 +100,12 @@ class DepthProfile {
             s.setXLim(0, 20);
             s.setYLim(0, 12);
             s.setColor(255, 0, 0, 5);
-            s.setXLab("Mean of depth");
-            s.setYLab("SD of depth");
+            s.setXLabel("Mean of depth");
+            s.setYLabel("SD of depth");
             s.saveGraph(scatterPlot);
             d.setXLim(0, 20);
-            d.setXLab("Mean of depth");
-            d.setYLab("Density");
+            d.setXLabel("Mean of depth");
+            d.setYLabel("Density");
             d.setTitle("ABD_intersect");
             d.saveGraph(densityPlot);
         }
@@ -114,12 +114,12 @@ class DepthProfile {
             s.setXLim(0, 20);
             s.setYLim(0, 12);
             s.setColor(255, 0, 0, 5);
-            s.setXLab("Mean of depth");
-            s.setYLab("SD of depth");
+            s.setXLabel("Mean of depth");
+            s.setYLabel("SD of depth");
             s.saveGraph(scatterPlot);
             d.setXLim(0, 20);
-            d.setXLab("Mean of depth");
-            d.setYLab("Density");
+            d.setXLabel("Mean of depth");
+            d.setYLabel("Density");
             d.setTitle("D_intersect");
             d.saveGraph(densityPlot);
         }
@@ -382,15 +382,15 @@ class DepthProfile {
         s.setColor(255,0, 0, 5);
         s.setXLim(0, 20);
         s.setYLim(0, 12);
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.saveGraph(beforeFileS);
         s = new ScatterPlot(xList.toArray(), yList.toArray());
         s.setColor(255,0, 0, 5);
         s.setXLim(0, 20);
         s.setYLim(0, 12);
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.saveGraph(afterFileS);
     }
     public void densityFilterPlotABD(double proportionOfSite, String inputFileS) {
@@ -423,15 +423,15 @@ class DepthProfile {
         s.setColor(255,0, 0, 5);
         s.setXLim(0, 20);
         s.setYLim(0, 12);
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.saveGraph(beforeFileS);
         s = new ScatterPlot(xList.toArray(), yList.toArray());
         s.setTitle("ABD_after");
         s.setColor(255,0, 0, 5);
         s.setXLim(0, 20);
         s.setYLim(0, 12);
-        s.setXLab("Mean of depth");
+        s.setXLabel("Mean of depth");
         s.saveGraph(afterFileS);
     }
 
@@ -464,16 +464,16 @@ class DepthProfile {
         s.setColor(255,0, 0, 5);
         s.setXLim(0, 8);
         s.setYLim(0, 8);
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.saveGraph(beforeFileS);
         s = new ScatterPlot(xList.toArray(), yList.toArray());
         s.setTitle("AB_after");
         s.setColor(255,0, 0, 5);
         s.setXLim(0, 8);
         s.setYLim(0, 8);
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.saveGraph(afterFileS);
     }
 
@@ -516,15 +516,15 @@ class DepthProfile {
         DensityPlot d = new DensityPlot(depth);
         d.setTitle(genomeType);
         d.setXLim(0, 20);
-        d.setXLab("Mean of depth");
-        d.setYLab("Density");
+        d.setXLabel("Mean of depth");
+        d.setYLabel("Density");
         d.saveGraph(depthDensity);
         ScatterPlot s = new ScatterPlot(depth, depthSD);
         s.setTitle(genomeType);
         s.setXLim(0, 20);
         s.setYLim(0, 20);
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.setColor(255, 0, 0, 20);
         s.saveGraph(depthScatter);
     }
@@ -673,23 +673,23 @@ class DepthProfile {
         DensityPlot d = new DensityPlot(depth);
         d.setTitle(genomeType);
         d.setXLim(0, 20);
-        d.setXLab("Mean of depth");
-        d.setYLab("Density");
+        d.setXLabel("Mean of depth");
+        d.setYLabel("Density");
         d.saveGraph(depthDensity);
 
         d = new DensityPlot(depthSD);
         d.setTitle(genomeType);
         d.setXLim(0, 13);
-        d.setXLab("Mean of depth SD");
-        d.setYLab("Density");
+        d.setXLabel("Mean of depth SD");
+        d.setYLabel("Density");
         d.setSmoothN(5000);
         //d.showGraph();
         d.saveGraph(sdDensity);
 
         d = new DensityPlot(depthStan);
         d.setXLim(0,3);
-        d.setXLab("Mean of standardized depth");
-        d.setYLab("Density");
+        d.setXLabel("Mean of standardized depth");
+        d.setYLabel("Density");
         d.saveGraph(depthStanDensity);
         ScatterPlot s = new ScatterPlot(depth, depthSD);
         s.setTitle(genomeType);
@@ -702,15 +702,15 @@ class DepthProfile {
             s.setYLim(0, 12);
         }
 
-        s.setXLab("Mean of depth");
-        s.setYLab("SD of depth");
+        s.setXLabel("Mean of depth");
+        s.setYLabel("SD of depth");
         s.setColor(255, 0, 0, 20);
         s.saveGraph(depthScatter);
         s = new ScatterPlot(depthStan, depthStanSD);
         s.setXLim(0, 2);
         s.setYLim(0, 1);
-        s.setXLab("Mean of standardized depth");
-        s.setYLab("SD of standardized depth");
+        s.setXLabel("Mean of standardized depth");
+        s.setYLabel("SD of standardized depth");
         s.setColor(255, 0, 0, 20);
         s.saveGraph(depthStanScatter);
     }

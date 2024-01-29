@@ -134,16 +134,16 @@ class FilterGenes {
         s.setColor(255, 0, 0, 10);
         s.setXLim(-0.5,0.5);
         s.setYLim(-0.5,0.5);
-        s.setXLab("PC1:92.83%");
-        s.setYLab("PC2:5.05%");
+        s.setXLabel("PC1:92.83%");
+        s.setYLabel("PC2:5.05%");
         s.saveGraph(outfileSAB);
         s = new ScatterPlot(dList[0].toDoubleArray(), dList[1].toDoubleArray());
         s.setTitle("GeneDepthFeature_D");
         s.setColor(255, 0, 0, 10);
         s.setXLim(-0.3,0.3);
         s.setYLim(-0.3,0.3);
-        s.setXLab("PC1:87.94%");
-        s.setYLab("PC2:11.59%");
+        s.setXLabel("PC1:87.94%");
+        s.setYLabel("PC2:11.59%");
         s.saveGraph(outfileSD);
 
         int binNum = 50;
@@ -171,8 +171,8 @@ class FilterGenes {
         s.setColor(255, 0, 0, 10);
         s.setXLim(-0.5,0.5);
         s.setYLim(-0.5,0.5);
-        s.setXLab("PC1:92.83%");
-        s.setYLab("PC2:5.05%");
+        s.setXLabel("PC1:92.83%");
+        s.setYLabel("PC2:5.05%");
         s.saveGraph(fOutfileSAB);
 
         gr = new Grid(-0.15, -0.0, -0.08, 0.08, binNum);
@@ -198,8 +198,8 @@ class FilterGenes {
         s.setColor(255, 0, 0, 10);
         s.setXLim(-0.3,0.3);
         s.setYLim(-0.3,0.3);
-        s.setXLab("PC1:87.94%");
-        s.setYLab("PC2:11.59%");
+        s.setXLabel("PC1:87.94%");
+        s.setYLabel("PC2:11.59%");
         s.saveGraph(fOutfileSD);
     }
 

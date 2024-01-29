@@ -35,10 +35,10 @@ class FastCall2Dev {
 
     public void withCommandLine () {
         this.variationDiscovery();
-        this.buildLibrary();
-        this.viewLibrary();
-        this.customizeLibrary();
-        this.scanGenotype();
+//        this.buildLibrary();
+//        this.viewLibrary();
+//        this.customizeLibrary();
+//        this.scanGenotype();
     }
     public void variationDiscovery() {
         StringBuilder sb = new StringBuilder();
