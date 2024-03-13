@@ -21,8 +21,8 @@ public class PGLToolSection {
 //        this.genomeAnnotationDev();
 //        this.fastCallDev();
 //        this.hapScannerDev();
-//        this.fastCall2Dev();
-        this.graphicsDev();
+        this.fastCall2Dev();
+//        this.graphicsDev();
 //        this.popdepDev();
     }
 

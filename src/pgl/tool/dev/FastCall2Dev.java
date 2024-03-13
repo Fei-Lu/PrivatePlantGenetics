@@ -3,6 +3,7 @@ package pgl.tool.dev;
 
 
 import pgl.app.fastCall2.FastCall2;
+import pgl.app.fastCall2.IndividualCount;
 import pgl.app.fastCall2.IndividualGenotype;
 import pgl.app.fastCall2.VariationLibrary;
 
@@ -15,7 +16,15 @@ class FastCall2Dev {
 
     public void miscellaneous () {
 //        this.viewIndividualGenotype();
-        this.viewVariationLibrary();
+//        this.viewVariationLibrary();
+//        this.viewIndiCounts();
+    }
+
+    public void viewIndiCounts () {
+        String infileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/gen/indiCounts/TW0060/1_1_200001.iac.gz";
+        String oufileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/miscellaneous/1_1_200001.iac.txt";
+        IndividualCount ic = new IndividualCount(infileS);
+        ic.writeTextFile(oufileS);
     }
 
     public void viewVariationLibrary () {
@@ -34,11 +43,11 @@ class FastCall2Dev {
     }
 
     public void withCommandLine () {
-        this.variationDiscovery();
+//        this.variationDiscovery();
 //        this.buildLibrary();
 //        this.viewLibrary();
 //        this.customizeLibrary();
-//        this.scanGenotype();
+        this.scanGenotype();
     }
     public void variationDiscovery() {
         StringBuilder sb = new StringBuilder();
@@ -116,5 +125,4 @@ class FastCall2Dev {
         String[] args = sb.toString().split(" ");
         new FastCall2(args);
     }
-
 }
