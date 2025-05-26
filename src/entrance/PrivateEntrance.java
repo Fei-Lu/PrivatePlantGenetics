@@ -13,7 +13,6 @@ public class PrivateEntrance {
 //        this.data();
         this.tool();
 //        this.learning();
-
     }
 
     private void learning () {

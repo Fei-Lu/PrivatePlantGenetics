@@ -21,7 +21,8 @@ public class PGLToolSection {
 //        this.genomeAnnotationDev();
 //        this.fastCallDev();
 //        this.hapScannerDev();
-        this.fastCall2Dev();
+//        this.fastCall2Dev();
+        this.fastCall3Dev();
 //        this.graphicsDev();
 //        this.popdepDev();
     }
@@ -36,6 +37,12 @@ public class PGLToolSection {
 
     public void fastCall2Dev () {
         new FastCall2Dev();
+    }
+
+
+    public void fastCall3Dev () {
+        new FastCall3Dev();
+
     }
 
     public void hapScannerDev () {

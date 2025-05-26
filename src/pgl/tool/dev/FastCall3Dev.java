@@ -10,13 +10,15 @@ import pgl.infra.utils.Benchmark;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import pgl.app.fastCall3.FastCall3;
 
-class FastCall2Dev {
+class FastCall3Dev {
 
-    public FastCall2Dev () {
+    public FastCall3Dev() {
         this.withCommandLine();
 //        this.miscellaneous();
     }
+
 
     public void miscellaneous () {
 //        this.viewIndividualGenotype();
@@ -132,10 +134,10 @@ class FastCall2Dev {
 
     public void withCommandLine () {
         this.variationDiscovery();
-//        this.buildLibrary();
-//        this.viewLibrary();
-//        this.customizeLibrary();
-//        this.scanGenotype();
+        this.buildLibrary();
+        this.viewLibrary();
+        this.customizeLibrary();
+        this.scanGenotype();
     }
     public void variationDiscovery() {
         StringBuilder sb = new StringBuilder();
@@ -155,10 +157,9 @@ class FastCall2Dev {
         sb.append("-l ").append("1:1,200000 ");
         sb.append("-m ").append("32 ");
         sb.append("-n ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/ing ");
-//        sb.append("-o ").append("/usr/local/bin/samtools "); //1.17
-        sb.append("-o ").append("/Users/feilu/Software/samtools-1.21/samtools "); //1.21 is faster than 1.17
+        sb.append("-o ").append("/Users/feilu/Software/samtools-1.21/samtools ");
         String[] args = sb.toString().split(" ");
-        new FastCall2(args);
+        new FastCall3(args);
     }
 
     public void buildLibrary() {
@@ -172,7 +173,7 @@ class FastCall2Dev {
         sb.append("-e ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/ing ");
         sb.append("-f ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib ");
         String[] args = sb.toString().split(" ");
-        new FastCall2(args);
+        new FastCall3(args);
     }
 
     public void viewLibrary () {
@@ -182,7 +183,7 @@ class FastCall2Dev {
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/miscellaneous/1_1_200001.lib.txt ");
         String[] args = sb.toString().split(" ");
-        new FastCall2(args);
+        new FastCall3(args);
     }
 
     public void customizeLibrary () {
@@ -193,7 +194,7 @@ class FastCall2Dev {
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/custom_position.txt ");
         sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001_sub.lib.gz ");
         String[] args = sb.toString().split(" ");
-        new FastCall2(args);
+        new FastCall3(args);
     }
 
     public void scanGenotype() {

@@ -1,6 +1,5 @@
 package pgl.tool.dev;
 
-import javafx.scene.chart.BarChart;
 import pgl.graph.r.BarPlot;
 import pgl.graph.r.ScatterPlot;
 
