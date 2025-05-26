@@ -213,6 +213,6 @@ class FastCall3Dev {
         sb.append("-j ").append("32 ");
         sb.append("-k ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/gen/ ");
         String[] args = sb.toString().split(" ");
-        new FastCall2(args);
+        new FastCall3(args);
     }
 }
