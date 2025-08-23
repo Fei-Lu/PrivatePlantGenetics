@@ -32,47 +32,45 @@ class FastCall3Dev {
     Samtools121 is finished in 51.792007 seconds
     Bcf121 is finished in 0.01449925 seconds
 
-    samtools 1.21 is 18% faster than 1.17
+    samtools 1.21 is 18% faster than 1.17, samtools 1.21 = samtools 1.22.1
     Bcftools doesn't output the pileup format of each site. It is slow because it calculate much more than needed (counting alleles).
     The time is short here because the inputstream did not capture the output from command (due to "|")
      */
     public void testPileup () {
-        String bamFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/pileupTest/bam/A_0001.bam";
-        String referenceFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/pileupTest/ref/chr001.fa.gz";
+//        String bamFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/pileupTest/bam/A_0001.bam";
+//        String referenceFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/pileupTest/ref/chr001.fa.gz";
 
-//        String bamFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/bams/TW0060.sub.bam";
-//        String referenceFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa";
+        String bamFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/bams/TW0060.sub.bam";
+        String referenceFileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa";
 
-        String samtools117Path = "/Users/feilu/Software/samtools-1.17/samtools";
-        String samtools121Path = "/Users/feilu/Software/samtools-1.21/samtools";
-        String bcf121Path = "/Users/feilu/Software/bcftools-1.21/bcftools";
-        String outfileS = "/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/pileupTest/output/out.txt";
+        String samtoolsAPath = "/Users/feilu/Software/samtools-1.17/samtools";
+        String samtoolsBPath = "/Users/feilu/Software/samtools-1.21/samtools";
+        String samtoolsCPath = "/Users/feilu/Software/samtools-1.22.1/samtools";
         int chrom = 1;
-        String commandSamtools117 = null;
+        String commandSamtoolsA = null;
         StringBuilder sb = new StringBuilder();
-        sb.append(samtools117Path).append(" mpileup --no-output-ends -B -q 30 -Q 20 ").append(" -f ").append(referenceFileS)
+        sb.append(samtoolsAPath).append(" mpileup --no-output-ends -B -q 30 -Q 20 ").append(" -f ").append(referenceFileS)
                 .append(" ").append(bamFileS).append(" -r ").append(chrom);
-        commandSamtools117 = sb.toString();
+        commandSamtoolsA = sb.toString();
         System.out.println(sb.toString());
-        String commandSamtools121 = null;
+        String commandSamtoolsB = null;
         sb.setLength(0);
-        sb.append(samtools121Path).append(" mpileup --no-output-ends -B -q 30 -Q 20 ").append(" -f ").append(referenceFileS)
+        sb.append(samtoolsBPath).append(" mpileup --no-output-ends -B -q 30 -Q 20 ").append(" -f ").append(referenceFileS)
                 .append(" ").append(bamFileS).append(" -r ").append(chrom);
-        commandSamtools121 =sb.toString();
+        commandSamtoolsB =sb.toString();
+        System.out.println(sb.toString());
+        String commandSamtoolsC = null;
+        sb.setLength(0);
+        sb.append(samtoolsCPath).append(" mpileup --no-output-ends -B -q 30 -Q 20 ").append(" -f ").append(referenceFileS)
+                .append(" ").append(bamFileS).append(" -r ").append(chrom);
+        commandSamtoolsC =sb.toString();
         System.out.println(sb.toString());
 
-        String commandBcf121 = null;
-        sb.setLength(0);
-
-        sb.append("sh -c ").append(bcf121Path).append(" mpileup -B -q 30 -Q 20 ").append(" -f ").append(referenceFileS)
-                .append(" ").append(bamFileS).append(" -r ").append(chrom).append(" | ").append(bcf121Path).append(" call -mv -Ov");
-        commandBcf121 = sb.toString();
-        System.out.println(sb.toString());
         try {
             Runtime rt = Runtime.getRuntime();
             long startTime = System.nanoTime();
             String temp = null;
-            Process p = rt.exec(commandSamtools117);
+            Process p = rt.exec(commandSamtoolsA);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((temp = br.readLine()) != null) {
@@ -80,10 +78,10 @@ class FastCall3Dev {
             }
             br.close();
             p.waitFor();
+            System.out.println("SamtoolsA is finished in " + (float) Benchmark.getTimeSpanSeconds(startTime)+ " seconds");
 
-            System.out.println("Samtools117 is finished in " + (float) Benchmark.getTimeSpanSeconds(startTime)+ " seconds");
             startTime = System.nanoTime();
-            p = rt.exec(commandSamtools121);
+            p = rt.exec(commandSamtoolsB);
             temp = null;
             br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((temp = br.readLine()) != null) {
@@ -91,18 +89,20 @@ class FastCall3Dev {
             }
             br.close();
             p.waitFor();
-            System.out.println("Samtools121 is finished in " + (float) Benchmark.getTimeSpanSeconds(startTime)+ " seconds");
+            System.out.println("SamtoolsB is finished in " + (float) Benchmark.getTimeSpanSeconds(startTime)+ " seconds");
 
             startTime = System.nanoTime();
-            p = rt.exec(commandBcf121);
+            p = rt.exec(commandSamtoolsC);
             temp = null;
             br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((temp = br.readLine()) != null) {
-                System.out.println(temp);
+
             }
             br.close();
             p.waitFor();
-            System.out.println("Bcf121 is finished in " + (float) Benchmark.getTimeSpanSeconds(startTime)+ " seconds");
+            System.out.println("SamtoolsC is finished in " + (float) Benchmark.getTimeSpanSeconds(startTime)+ " seconds");
+
+
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -134,10 +134,10 @@ class FastCall3Dev {
 
     public void withCommandLine () {
         this.variationDiscovery();
-        this.buildLibrary();
-        this.viewLibrary();
-        this.customizeLibrary();
-        this.scanGenotype();
+//        this.buildLibrary();
+//        this.viewLibrary();
+//        this.customizeLibrary();
+//        this.scanGenotype();
     }
     public void variationDiscovery() {
         StringBuilder sb = new StringBuilder();
