@@ -141,7 +141,7 @@ class FastCall3Dev {
     }
     public void variationDiscovery() {
         StringBuilder sb = new StringBuilder();
-        sb.append("-app ").append("FastCall2 ");
+        sb.append("-app ").append("FastCall3 ");
         sb.append("-mod ").append("disc ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/taxaBamMap.txt ");
@@ -155,9 +155,9 @@ class FastCall3Dev {
         sb.append("-j ").append("0.35 ");
         sb.append("-k ").append("0.2 ");
         sb.append("-l ").append("1:1,200000 ");
-        sb.append("-m ").append("32 ");
-        sb.append("-n ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/ing ");
-        sb.append("-o ").append("/Users/feilu/Software/samtools-1.21/samtools ");
+        sb.append("-m ").append("1 ");
+        sb.append("-n ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/ing ");
+        sb.append("-o ").append("/Users/feilu/Software/samtools-1.22.1/samtools ");
         String[] args = sb.toString().split(" ");
         new FastCall3(args);
     }
