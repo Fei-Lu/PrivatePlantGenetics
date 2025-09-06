@@ -42,7 +42,6 @@ public class PGLToolSection {
 
     public void fastCall3Dev () {
         new FastCall3Dev();
-
     }
 
     public void hapScannerDev () {
