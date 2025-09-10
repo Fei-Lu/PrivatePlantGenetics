@@ -133,11 +133,11 @@ class FastCall3Dev {
     }
 
     public void withCommandLine () {
-        this.variationDiscovery();
+//        this.variationDiscovery();
 //        this.buildLibrary();
 //        this.viewLibrary();
 //        this.customizeLibrary();
-//        this.scanGenotype();
+        this.scanGenotype();
     }
     public void variationDiscovery() {
         StringBuilder sb = new StringBuilder();
@@ -155,7 +155,7 @@ class FastCall3Dev {
         sb.append("-j ").append("0.35 ");
         sb.append("-k ").append("0.2 ");
         sb.append("-l ").append("1:1,200000 ");
-        sb.append("-m ").append("1 ");
+        sb.append("-m ").append("32 ");
         sb.append("-n ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/ing ");
         sb.append("-o ").append("/Users/feilu/Software/samtools-1.22.1/samtools ");
         String[] args = sb.toString().split(" ");
@@ -164,46 +164,46 @@ class FastCall3Dev {
 
     public void buildLibrary() {
         StringBuilder sb = new StringBuilder();
-        sb.append("-app ").append("FastCall2 ");
+        sb.append("-app ").append("FastCall3 ");
         sb.append("-mod ").append("blib ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("1:1,200000 ");
         sb.append("-c ").append("2 ");
         sb.append("-d ").append("32 ");
-        sb.append("-e ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/ing ");
-        sb.append("-f ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib ");
+        sb.append("-e ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/ing ");
+        sb.append("-f ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/vLib ");
         String[] args = sb.toString().split(" ");
         new FastCall3(args);
     }
 
     public void viewLibrary () {
         StringBuilder sb = new StringBuilder();
-        sb.append("-app ").append("FastCall2 ");
+        sb.append("-app ").append("FastCall3 ");
         sb.append("-mod ").append("vlib ");
-        sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
-        sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/miscellaneous/1_1_200001.lib.txt ");
+        sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/vLib/1_1_200001.lib.gz ");
+        sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/miscellaneous/1_1_200001.lib.txt ");
         String[] args = sb.toString().split(" ");
         new FastCall3(args);
     }
 
     public void customizeLibrary () {
         StringBuilder sb = new StringBuilder();
-        sb.append("-app ").append("FastCall2 ");
+        sb.append("-app ").append("FastCall3 ");
         sb.append("-mod ").append("clib ");
-        sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
-        sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/inputfile/custom_position.txt ");
-        sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001_sub.lib.gz ");
+        sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/vLib/1_1_200001.lib.gz ");
+        sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/inputfile/custom_position.txt ");
+        sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/vLib/1_1_200001_sub.lib.gz ");
         String[] args = sb.toString().split(" ");
         new FastCall3(args);
     }
 
     public void scanGenotype() {
         StringBuilder sb = new StringBuilder();
-        sb.append("-app ").append("FastCall2 ");
+        sb.append("-app ").append("FastCall3 ");
         sb.append("-mod ").append("scan ");
         sb.append("-a ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/ref/chr001_1Mb.fa ");
         sb.append("-b ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall/inputfile/taxaBamMap.txt ");
-        sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/vLib/1_1_200001.lib.gz ");
+        sb.append("-c ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/vLib/1_1_200001.lib.gz ");
         sb.append("-d ").append("1:1,200000 ");
         sb.append("-e ").append("0 ");
         sb.append("-f ").append("30 ");
@@ -211,7 +211,7 @@ class FastCall3Dev {
         sb.append("-h ").append("0.05 ");
         sb.append("-i ").append("/usr/local/bin/samtools ");
         sb.append("-j ").append("32 ");
-        sb.append("-k ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall2/gen/ ");
+        sb.append("-k ").append("/Users/feilu/Documents/analysisL/softwareTest/pgl/fastCall3/gen/ ");
         String[] args = sb.toString().split(" ");
         new FastCall3(args);
     }
